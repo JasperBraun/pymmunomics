@@ -1,11 +1,11 @@
-from typing import Iterable
+from typing import Any, Iterable, List, Union
 
 from pandas import concat, DataFrame
 
 
 def count(
     seq: DataFrame,
-    feature_groups: Iterable[str],
+    feature_groups: Iterable[List[str]],
     clonesize_column: str,
 ) -> DataFrame:
     """Grouped counts of clonotype features."""
@@ -14,18 +14,16 @@ def count(
         counts_list.append(
             seq.groupby(feature_group)[[clonesize_column]]
             .sum()
-            .reset_index()
-            .rename(
-                columns={feature_group: "feature", clonesize_column: "count"},
+            .pipe(
+                lambda df: df.assign(
+                    feature=df.index.to_flat_index(),
+                    feature_group=str(feature_group),
+                )
             )
-            .assign(feature_group=feature_group)[["feature_group", "feature", "count"]][
-                ["feature_group", "feature", "count"]
-            ]
+            .set_index(["feature_group", "feature"])
+            .rename(columns={clonesize_column: "count"})
         )
-    counts = concat(
-        counts_list,
-        ignore_index=True,
-    )
+    counts = concat(counts_list)
     return counts
 
 
@@ -35,13 +33,13 @@ def frequency(
     clonesize_column: str,
 ) -> DataFrame:
     """Grouped frequencies of clonotype features."""
-    total_counts = seq[clonesize_column].sum()
+    total_count = seq[clonesize_column].sum()
     counts = count(
         seq=seq,
         feature_groups=feature_groups,
         clonesize_column=clonesize_column,
     )
-    frequencies = counts.assign(frequency=counts["count"] / total_counts).drop(
+    frequencies = counts.assign(frequency=counts["count"] / total_count).drop(
         columns="count"
     )
     return frequencies
