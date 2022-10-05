@@ -7,7 +7,7 @@ def apply_partial_pooled_grouped(
     data_frame: DataFrame,
     func: Callable,
     by: Sequence[str],
-    pooled: Iterable[Iterable[str]],
+    pooled: Iterable[Sequence[str]],
     *func_args,
     pooled_val: str = "pooled",
     **func_kwargs,
