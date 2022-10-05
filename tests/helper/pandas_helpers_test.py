@@ -9,7 +9,102 @@ from pymmunomics.helper.pandas_helpers import (
 
 
 class TestApplyPartialPooledGrouped:
-    def test_expected(self):
+    def test_some_pooled(self):
+        data_frame = DataFrame(
+            {
+                "group1": ["a", "a", "b", "b", "a", "a", "b"],
+                "group2": ["a", "a", "a", "a", "b", "b", "a"],
+                "val": [1, 2, 3, 5, 7, 11, 13],
+            }
+        )
+        expected = DataFrame(
+            {
+                "val": [
+                    1 * 2 * 7 * 11,
+                    3 * 5 * 13,
+                    1 * 2 * 3 * 5 * 13,
+                    7 * 11,
+                ],
+            },
+            index=MultiIndex.from_arrays(
+                [
+                    ["a", "b", "pooled", "pooled"],
+                    ["pooled", "pooled", "a", "b"],
+                ],
+                names=["group1", "group2"],
+            ),
+        )
+        actual = apply_partial_pooled_grouped(
+            data_frame=data_frame,
+            func="prod",
+            by=["group1", "group2"],
+            pooled=[["group2"], ["group1"]],
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_all_pooled(self):
+        data_frame = DataFrame(
+            {
+                "group1": ["a", "a", "b", "b", "a", "a", "b"],
+                "group2": ["a", "a", "a", "a", "b", "b", "a"],
+                "val": [1, 2, 3, 5, 7, 11, 13],
+            }
+        )
+        expected = DataFrame(
+            {
+                "val": [
+                    1 * 2 * 3 * 5 * 7 * 11 * 13,
+                ],
+            },
+            index=MultiIndex.from_arrays(
+                [
+                    ["pooled"],
+                    ["pooled"],
+                ],
+                names=["group1", "group2"],
+            ),
+        )
+        actual = apply_partial_pooled_grouped(
+            data_frame=data_frame,
+            func="prod",
+            by=["group1", "group2"],
+            pooled=[["group1", "group2"]],
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_none_pooled(self):
+        data_frame = DataFrame(
+            {
+                "group1": ["a", "a", "b", "b", "a", "a", "b"],
+                "group2": ["a", "a", "a", "a", "b", "b", "a"],
+                "val": [1, 2, 3, 5, 7, 11, 13],
+            }
+        )
+        expected = DataFrame(
+            {
+                "val": [
+                    1 * 2,
+                    7 * 11,
+                    3 * 5 * 13,
+                ],
+            },
+            index=MultiIndex.from_arrays(
+                [
+                    ["a", "a", "b"],
+                    ["a", "b", "a"],
+                ],
+                names=["group1", "group2"],
+            ),
+        )
+        actual = apply_partial_pooled_grouped(
+            data_frame=data_frame,
+            func="prod",
+            by=["group1", "group2"],
+            pooled=[[]],
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_mixture_pooled(self):
         data_frame = DataFrame(
             {
                 "group1": ["a", "a", "b", "b", "a", "a", "b"],
@@ -113,7 +208,7 @@ class TestPivotPipeMelt:
         )
         assert_frame_equal(actual, expected)
 
-    def test_single_index_column(self):
+    def test_single_pivot_index(self):
         # pivotted:
         # val
         #     col a   b   c
@@ -149,7 +244,7 @@ class TestPivotPipeMelt:
         )
         assert_frame_equal(actual, expected)
 
-    def test_multiple_index_columns(self):
+    def test_multiple_pivot_index(self):
         # pivotted:
         #     col      a   b
         #  idx1 idx2
