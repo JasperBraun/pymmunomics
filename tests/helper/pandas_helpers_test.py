@@ -11,32 +11,38 @@ from pymmunomics.helper.pandas_helpers import (
 class TestApplyPartialPooledGrouped:
     def test_some_pooled(self):
         data_frame = DataFrame(
-            {
-                "group1": ["a", "a", "b", "b", "a", "a", "b"],
-                "group2": ["a", "a", "a", "a", "b", "b", "a"],
-                "val": [1, 2, 3, 5, 7, 11, 13],
-            }
+            columns=["group1", "group2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "a", 2],
+                ["b", "a", 3],
+                ["b", "a", 5],
+                ["a", "b", 7],
+                ["a", "b", 11],
+                ["b", "a", 13],
+            ],
         )
         expected = DataFrame(
-            {
-                "val": [
-                    1 * 2 * 7 * 11,
-                    3 * 5 * 13,
-                    1 * 2 * 3 * 5 * 13,
-                    7 * 11,
-                ],
-            },
-            index=MultiIndex.from_arrays(
-                [
-                    ["a", "b", "pooled", "pooled"],
-                    ["pooled", "pooled", "a", "b"],
-                ],
+            index=MultiIndex.from_tuples(
                 names=["group1", "group2"],
+                tuples=[
+                    ["a", "pooled"],
+                    ["b", "pooled"],
+                    ["pooled", "a"],
+                    ["pooled", "b"],
+                ],
             ),
+            columns=["val"],
+            data=[
+                [1 * 2 * 7 * 11],
+                [3 * 5 * 13],
+                [1 * 2 * 3 * 5 * 13],
+                [7 * 11],
+            ],
         )
         actual = apply_partial_pooled_grouped(
             data_frame=data_frame,
-            func="prod",
+            func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
             pooled=[["group2"], ["group1"]],
         )
@@ -44,29 +50,32 @@ class TestApplyPartialPooledGrouped:
 
     def test_all_pooled(self):
         data_frame = DataFrame(
-            {
-                "group1": ["a", "a", "b", "b", "a", "a", "b"],
-                "group2": ["a", "a", "a", "a", "b", "b", "a"],
-                "val": [1, 2, 3, 5, 7, 11, 13],
-            }
+            columns=["group1", "group2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "a", 2],
+                ["b", "a", 3],
+                ["b", "a", 5],
+                ["a", "b", 7],
+                ["a", "b", 11],
+                ["b", "a", 13],
+            ],
         )
         expected = DataFrame(
-            {
-                "val": [
-                    1 * 2 * 3 * 5 * 7 * 11 * 13,
-                ],
-            },
-            index=MultiIndex.from_arrays(
-                [
-                    ["pooled"],
-                    ["pooled"],
-                ],
+            index=MultiIndex.from_tuples(
                 names=["group1", "group2"],
+                tuples=[
+                    ("pooled", "pooled"),
+                ],
             ),
+            columns=["val"],
+            data=[
+                [1 * 2 * 3 * 5 * 7 * 11 * 13],
+            ],
         )
         actual = apply_partial_pooled_grouped(
             data_frame=data_frame,
-            func="prod",
+            func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
             pooled=[["group1", "group2"]],
         )
@@ -74,31 +83,36 @@ class TestApplyPartialPooledGrouped:
 
     def test_none_pooled(self):
         data_frame = DataFrame(
-            {
-                "group1": ["a", "a", "b", "b", "a", "a", "b"],
-                "group2": ["a", "a", "a", "a", "b", "b", "a"],
-                "val": [1, 2, 3, 5, 7, 11, 13],
-            }
+            columns=["group1", "group2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "a", 2],
+                ["b", "a", 3],
+                ["b", "a", 5],
+                ["a", "b", 7],
+                ["a", "b", 11],
+                ["b", "a", 13],
+            ],
         )
         expected = DataFrame(
-            {
-                "val": [
-                    1 * 2,
-                    7 * 11,
-                    3 * 5 * 13,
-                ],
-            },
-            index=MultiIndex.from_arrays(
-                [
-                    ["a", "a", "b"],
-                    ["a", "b", "a"],
-                ],
+            index=MultiIndex.from_tuples(
                 names=["group1", "group2"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("b", "a"),
+                ],
             ),
+            columns=["val"],
+            data=[
+                [1 * 2],
+                [7 * 11],
+                [3 * 5 * 13],
+            ],
         )
         actual = apply_partial_pooled_grouped(
             data_frame=data_frame,
-            func="prod",
+            func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
             pooled=[[]],
         )
@@ -106,34 +120,42 @@ class TestApplyPartialPooledGrouped:
 
     def test_mixture_pooled(self):
         data_frame = DataFrame(
-            {
-                "group1": ["a", "a", "b", "b", "a", "a", "b"],
-                "group2": ["a", "a", "a", "a", "b", "b", "a"],
-                "val": [1, 2, 3, 5, 7, 11, 13],
-            }
+            columns=["group1", "group2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "a", 2],
+                ["b", "a", 3],
+                ["b", "a", 5],
+                ["a", "b", 7],
+                ["a", "b", 11],
+                ["b", "a", 13],
+            ],
         )
         expected = DataFrame(
-            {
-                "val": [
-                    1 * 2,
-                    7 * 11,
-                    3 * 5 * 13,
-                    1 * 2 * 7 * 11,
-                    3 * 5 * 13,
-                    1 * 2 * 3 * 5 * 7 * 11 * 13,
-                ],
-            },
-            index=MultiIndex.from_arrays(
-                [
-                    ["a", "a", "b", "a", "b", "pooled"],
-                    ["a", "b", "a", "pooled", "pooled", "pooled"],
-                ],
+            index=MultiIndex.from_tuples(
                 names=["group1", "group2"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("b", "a"),
+                    ("a", "pooled"),
+                    ("b", "pooled"),
+                    ("pooled", "pooled"),
+                ],
             ),
+            columns=["val"],
+            data=[
+                [1 * 2],
+                [7 * 11],
+                [3 * 5 * 13],
+                [1 * 2 * 7 * 11],
+                [3 * 5 * 13],
+                [1 * 2 * 3 * 5 * 7 * 11 * 13],
+            ],
         )
         actual = apply_partial_pooled_grouped(
             data_frame=data_frame,
-            func="prod",
+            func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
             pooled=[[], ["group2"], ["group1", "group2"]],
         )
@@ -149,22 +171,46 @@ class TestPivotPipeMelt:
         #   a     1   2   3               a     1   nan 3
         #   b     4   5   nan             b     4   nan nan
         data_frame = DataFrame(
-            {
-                "col": ["a", "b", "c", "a", "b"],
-                "val1": [1, 2, 3, 4, 5],
-                "val2": [1, nan, 3, 4, nan],
-            },
-            index=Index(["a", "a", "a", "b", "b"], name="idx"),
+            index=Index(
+                name="idx",
+                data=[
+                    "a",
+                    "a",
+                    "a",
+                    "b",
+                    "b",
+                ],
+            ),
+            columns=["col", "val1", "val2"],
+            data=[
+                ["a", 1, 1],
+                ["b", 2, nan],
+                ["c", 3, 3],
+                ["a", 4, 4],
+                ["b", 5, nan],
+            ],
         )
         expected = DataFrame(
-            {
-                "val1": [1.0, 4.0, 2.0, 5.0, 3.0, 0.0],
-                "val2": [1.0, 4.0, 0.0, 0.0, 3.0, 0.0],
-            },
             index=Index(
-                ["a", "a", "b", "b", "c", "c"],
                 name="col",
+                data=[
+                    "a",
+                    "a",
+                    "b",
+                    "b",
+                    "c",
+                    "c",
+                ],
             ),
+            columns=["val1", "val2"],
+            data=[
+                [1., 1.],
+                [4., 4.],
+                [2., 0.],
+                [5., 0.],
+                [3., 3.],
+                [0., 0.],
+            ],
         )
         actual = pivot_pipe_melt(
             data_frame=data_frame,
@@ -177,27 +223,66 @@ class TestPivotPipeMelt:
 
     def test_multiple_pivot_columns(self):
         data_frame = DataFrame(
-            {
-                "col1": ["a", "a", "b", "c", "c", "b", "b", "c", "c"],
-                "col2": ["a", "b", "b", "a", "b", "a", "b", "a", "b"],
-                "val": [1, 2, 4, 5, 6, 9, 10, 11, 12],
-            },
             index=Index(
-                ["a", "a", "a", "a", "a", "b", "b", "b", "b"],
                 name="idx",
+                data=[
+                    "a",
+                    "a",
+                    "a",
+                    "a",
+                    "a",
+                    "b",
+                    "b",
+                    "b",
+                    "b",
+                ],
             ),
+            columns=["col1", "col2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "b", 2],
+                ["b", "b", 4],
+                ["c", "a", 5],
+                ["c", "b", 6],
+                ["b", "a", 9],
+                ["b", "b", 10],
+                ["c", "a", 11],
+                ["c", "b", 12],
+            ],
         )
         expected = DataFrame(
-            {
-                "val": [1.0, 0.0, 2.0, 0.0, 0.0, 9.0, 4.0, 10.0, 5.0, 11.0, 6.0, 12.0],
-            },
-            index=MultiIndex.from_arrays(
-                [
-                    ["a", "a", "a", "a", "b", "b", "b", "b", "c", "c", "c", "c"],
-                    ["a", "a", "b", "b", "a", "a", "b", "b", "a", "a", "b", "b"],
-                ],
+            index=MultiIndex.from_tuples(
                 names=["col1", "col2"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("a", "b"),
+                    ("b", "a"),
+                    ("b", "a"),
+                    ("b", "b"),
+                    ("b", "b"),
+                    ("c", "a"),
+                    ("c", "a"),
+                    ("c", "b"),
+                    ("c", "b"),
+                ],
             ),
+            columns=["val"],
+            data=[
+                [1.0],
+                [0.0],
+                [2.0],
+                [0.0],
+                [0.0],
+                [9.0],
+                [4.0],
+                [10.0],
+                [5.0],
+                [11.0],
+                [6.0],
+                [12.0],
+            ],
         )
         actual = pivot_pipe_melt(
             data_frame=data_frame,
@@ -216,23 +301,36 @@ class TestPivotPipeMelt:
         #   a     1   2   3
         #   b     4   5   nan
         data_frame = DataFrame(
-            {
-                "idx": ["a", "a", "a", "b", "b"],
-                "col": ["a", "b", "c", "a", "b"],
-                "val": [1, 2, 3, 4, 5],
-            },
+            columns=["idx", "col", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "b", 2],
+                ["a", "c", 3],
+                ["b", "a", 4],
+                ["b", "b", 5],
+            ],
         )
         expected = DataFrame(
-            {
-                "val": [1.0, 2.0, 3.0, 4.0, 5.0, 0.0],
-            },
-            index=MultiIndex.from_arrays(
-                [
-                    ["a", "a", "a", "b", "b", "b"],
-                    ["a", "b", "c", "a", "b", "c"],
-                ],
+            index=MultiIndex.from_tuples(
                 names=["idx", "col"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("a", "c"),
+                    ("b", "a"),
+                    ("b", "b"),
+                    ("b", "c"),
+                ],
             ),
+            columns=["val"],
+            data=[
+                [1.0],
+                [2.0],
+                [3.0],
+                [4.0],
+                [5.0],
+                [0.0],
+            ],
         )
         actual = pivot_pipe_melt(
             data_frame=data_frame,
@@ -254,25 +352,48 @@ class TestPivotPipeMelt:
         #   b    b     9   10
         #   b    c     11  12
         data_frame = DataFrame(
-            {
-                "idx1": ["a", "a", "a", "a", "a", "b", "b", "b", "b"],
-                "idx2": ["a", "a", "b", "c", "c", "b", "b", "c", "c"],
-                "col": ["a", "b", "b", "a", "b", "a", "b", "a", "b"],
-                "val": [1, 2, 4, 5, 6, 9, 10, 11, 12],
-            },
+            columns=["idx1", "idx2", "col", "val"],
+            data=[
+                ["a", "a", "a", 1],
+                ["a", "a", "b", 2],
+                ["a", "b", "b", 4],
+                ["a", "c", "a", 5],
+                ["a", "c", "b", 6],
+                ["b", "b", "a", 9],
+                ["b", "b", "b", 10],
+                ["b", "c", "a", 11],
+                ["b", "c", "b", 12],
+            ],
         )
         expected = DataFrame(
-            {
-                "val": [1.0, 2.0, 0.0, 4.0, 5.0, 6.0, 9.0, 10.0, 11.0, 12.0],
-            },
-            index=MultiIndex.from_arrays(
-                [
-                    ["a", "a", "a", "a", "a", "a", "b", "b", "b", "b"],
-                    ["a", "a", "b", "b", "c", "c", "b", "b", "c", "c"],
-                    ["a", "b", "a", "b", "a", "b", "a", "b", "a", "b"],
-                ],
+            index=MultiIndex.from_tuples(
                 names=["idx1", "idx2", "col"],
+                tuples=[
+                    ('a', 'a', 'a'),
+                    ('a', 'a', 'b'),
+                    ('a', 'b', 'a'),
+                    ('a', 'b', 'b'),
+                    ('a', 'c', 'a'),
+                    ('a', 'c', 'b'),
+                    ('b', 'b', 'a'),
+                    ('b', 'b', 'b'),
+                    ('b', 'c', 'a'),
+                    ('b', 'c', 'b'),
+                ],
             ),
+            columns=["val"],
+            data=[
+                [ 1.0],
+                [ 2.0],
+                [ 0.0],
+                [ 4.0],
+                [ 5.0],
+                [ 6.0],
+                [ 9.0],
+                [10.0],
+                [11.0],
+                [12.0],
+            ],
         )
         actual = pivot_pipe_melt(
             data_frame=data_frame,
@@ -280,6 +401,49 @@ class TestPivotPipeMelt:
             values=["val"],
             columns="col",
             index=["idx1", "idx2"],
+            value=0,
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_mixture(self):
+        data_frame = DataFrame(
+            columns=["idx", "col", "val1", "val2"],
+            data=[
+                ["a", "a", 1, 1],
+                ["a", "b", 2, nan],
+                ["a", "c", 3, 3],
+                ["b", "a", 4, 4],
+                ["b", "b", 5, nan],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["idx", "col"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("a", "c"),
+                    ("b", "a"),
+                    ("b", "b"),
+                    ("b", "c"),
+                ],
+            ),
+            columns=["val1", "val2"],
+            data=[
+                [1.0, 1.0],
+                [2.0, 0.0],
+                [3.0, 3.0],
+                [4.0, 4.0],
+                [5.0, 0.0],
+                [0.0, 0.0],
+            ],
+        )
+        actual = pivot_pipe_melt(
+            data_frame=data_frame,
+            func=DataFrame.fillna,
+            values=["val1", "val2"],
+            columns="col",
+            index=["idx"],
             value=0,
         )
         assert_frame_equal(actual, expected)
