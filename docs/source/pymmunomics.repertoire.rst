@@ -7,7 +7,8 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   pymmunomics.repertoire.count
+   pymmunomics.repertoire.clonotype
+   pymmunomics.repertoire.repertoire
 
 Module contents
 ---------------

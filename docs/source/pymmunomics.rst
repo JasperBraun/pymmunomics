@@ -10,14 +10,6 @@ Subpackages
    pymmunomics.helper
    pymmunomics.repertoire
 
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 4
-
-   pymmunomics.plot
-
 Module contents
 ---------------
 
