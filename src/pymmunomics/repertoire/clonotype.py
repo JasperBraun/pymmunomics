@@ -31,7 +31,7 @@ def count(
     Examples
     --------
     >>> import pandas as pd
-    >>> from pymmunomics.repertoire.count import count
+    >>> from pymmunomics.repertoire.clonotype import count
     >>> 
     >>> repertoire = pd.DataFrame(
     ...     columns=["feature_1", "feature_2", "clonesize"],
@@ -106,7 +106,7 @@ def frequency(
     Examples
     --------
     >>> import pandas as pd
-    >>> from pymmunomics.repertoire.count import frequency
+    >>> from pymmunomics.repertoire.clonotype import frequency
     >>> 
     >>> repertoire = pd.DataFrame(
     ...     columns=["feature_1", "feature_2", "clonesize"],

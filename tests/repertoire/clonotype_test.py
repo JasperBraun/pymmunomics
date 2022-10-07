@@ -1,7 +1,7 @@
 from pandas import DataFrame, MultiIndex
 from pandas.testing import assert_frame_equal
 
-from pymmunomics.repertoire.count import (
+from pymmunomics.repertoire.clonotype import (
     count,
     frequency,
 )
