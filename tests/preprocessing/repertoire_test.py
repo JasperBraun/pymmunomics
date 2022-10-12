@@ -1,7 +1,7 @@
 from pandas import DataFrame
 from pandas.testing import assert_frame_equal
 
-from pymmunomics.repertoire.repertoire import count_clonotype_features
+from pymmunomics.preprocessing.repertoire import count_clonotype_features
 
 class TestCountClonotypes:
     def test_no_pools_no_shared_feature_groups(self):
@@ -235,7 +235,7 @@ class TestCountClonotypes:
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
             clonesize="clonesize",
-            relative_counts=False
+            normalize=False
         )
         assert_frame_equal(actual, expected)
 
@@ -292,7 +292,7 @@ class TestCountClonotypes:
             clonotype_features=["f1", "f2"],
             clonesize="clonesize",
             partial_repertoire_pools=[[], ["g1"], ["g1", "g2"]],
-            relative_counts=False,
+            normalize=False,
             shared_clonotype_feature_groups=["g1"],
         )
         assert_frame_equal(actual, expected)

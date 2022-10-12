@@ -3,54 +3,10 @@ from typing import Iterable, Mapping, Sequence, Union
 from pandas import DataFrame
 
 from pymmunomics.helper.pandas_helpers import (
-    apply_partial_pooled_grouped,
-    pivot_pipe_melt,
+    concat_partial_groupby_apply,
+    concat_pivot_pipe_melt,
+    concat_weighted_value_counts,
 )
-from pymmunomics.repertoire.clonotype import (
-    count,
-    frequency,
-)
-
-# def group_features(
-#     feature_table: DataFrame,
-#     # repertoire_groups: Sequence[str],
-#     combine_repertoire_groups: Mapping[str, Iterable[Sequence[str]]],
-#     prepend_group: Union[Sequence[str], None],
-#     inplace: bool = False
-# ):
-#     if inplace:
-#         grouped_features = feature_table
-#     else:
-#         grouped_features = feature_table.copy()
-#     if prepend_group is None:
-#         prepend_group = []
-
-#     for combine_col, combine_vals in combine_repertoire_groups.items():
-#         constant_cols = [
-#             col for col in grouped_features.columns
-#             if col != combine_col
-#             and col not in prepend_group
-#         ]
-#         all_combine_cols = []
-#         for vals in combine_vals:
-#             for val in vals:
-#                 all_combine_cols.append(val)
-#         # figure out prepend stuff
-#             all_combine_cols.col for col in vals for vals in combine_vals]
-#         for vals in combine_vals:
-#             if len(vals) > 1:
-#                 for group_col in prepend_group:
-#                     grouped_features[group_col] = [
-#                         "_".join([group_val, prepend_val])
-#                         if group_val in vals
-#                         for group_val, prepend_val
-#                         in zip(grouped_features[group_col], grouped_features[prepend_val])
-#                     ]
-#                 combined = "_".join(vals)
-#                 grouped_features[column] = grouped_features[column].map(
-#                     lambda val: combined if val in vals else val
-#                 )
-
 
 def count_clonotype_features(
     repertoire: DataFrame,
@@ -58,7 +14,7 @@ def count_clonotype_features(
     clonotype_features: Sequence[str],
     clonesize: str,
     partial_repertoire_pools: Union[Iterable[Sequence[str]], None] = None,
-    relative_counts: bool = True,
+    normalize: bool = True,
     shared_clonotype_feature_groups: Union[Sequence[str], None] = None,
 
 ):
@@ -72,7 +28,8 @@ def count_clonotype_features(
     repertoire_groups:
         Columns indicating repertoire memberships.
     clonotype_features:
-        Columns representing different clonotype features.
+        Columns representing different clonotype features or
+        combinations thereof.
     clonesize:
         Column listing the clone sizes in corresponding to the
         clonotypes and repertoires.
@@ -81,11 +38,11 @@ def count_clonotype_features(
         each member of this list with the indicated columns' values
         replaced by the value "pooled" effectively combining repertoires
         with same values in these columns.
-    relative_counts:
+    normalize:
         Whether or not to provide frequency counts as opposed to
         absolute counts.
     shared_clonotype_feature_groups:
-        If provided, all repertoires with the same value in these
+        If provided, all repertoires with the same value in all but these
         columns are forced to have frequencies for the same clonotype
         feature values per feature group. Missing counts are set to 0.
 
@@ -104,7 +61,7 @@ def count_clonotype_features(
     Examples
     --------
     >>> import pandas as pd
-    >>> from pymmunomics.repertoire.repertoire import count_clonotype_features
+    >>> from pymmunomics.preprocessing.repertoire import count_clonotype_features
     >>> 
     >>> repertoire = pd.DataFrame(
     ...     columns=[
@@ -152,25 +109,25 @@ def count_clonotype_features(
     """
     if partial_repertoire_pools is None:
         partial_repertoire_pools = [[]]
-    if relative_counts:
-        count_func = frequency
+    if normalize:
         count_col = "frequency"
     else:
-        count_func = count
         count_col = "count"
     counts = (
-        apply_partial_pooled_grouped(
+        concat_partial_groupby_apply(
             data_frame=repertoire,
-            func=count_func,
+            func=concat_weighted_value_counts,
             by=repertoire_groups,
             pooled=partial_repertoire_pools,
-            features=clonotype_features,
-            clonesize=clonesize,
+            subsets=clonotype_features,
+            weight=clonesize,
+            normalize=normalize,
         )
         .reset_index()
-        .astype({"value": str})
+        .astype({"values": str})
         .rename(columns={
-            "value": "feature_value",
+            "values": "feature_value",
+            "columns": "feature",
         })
     )
     
@@ -186,7 +143,7 @@ def count_clonotype_features(
             counts
             .groupby(groupby_cols)
             .apply(
-                pivot_pipe_melt,
+                concat_pivot_pipe_melt,
                 DataFrame.fillna,
                 values=[count_col],
                 columns="feature_value",
@@ -204,7 +161,7 @@ def count_clonotype_features(
     else:
         repertoire_feature_table = counts
 
-    if not relative_counts:
+    if not normalize:
         repertoire_feature_table["count"] = repertoire_feature_table["count"].astype(int)
 
     return (

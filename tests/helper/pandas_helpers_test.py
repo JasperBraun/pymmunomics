@@ -3,8 +3,9 @@ from pandas import DataFrame, Index, MultiIndex
 from pandas.testing import assert_frame_equal
 
 from pymmunomics.helper.pandas_helpers import (
-    apply_partial_pooled_grouped,
-    pivot_pipe_melt,
+    concat_partial_groupby_apply,
+    concat_pivot_pipe_melt,
+    concat_weighted_value_counts,
 )
 
 
@@ -40,7 +41,7 @@ class TestApplyPartialPooledGrouped:
                 [7 * 11],
             ],
         )
-        actual = apply_partial_pooled_grouped(
+        actual = concat_partial_groupby_apply(
             data_frame=data_frame,
             func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
@@ -73,7 +74,7 @@ class TestApplyPartialPooledGrouped:
                 [1 * 2 * 3 * 5 * 7 * 11 * 13],
             ],
         )
-        actual = apply_partial_pooled_grouped(
+        actual = concat_partial_groupby_apply(
             data_frame=data_frame,
             func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
@@ -110,7 +111,7 @@ class TestApplyPartialPooledGrouped:
                 [3 * 5 * 13],
             ],
         )
-        actual = apply_partial_pooled_grouped(
+        actual = concat_partial_groupby_apply(
             data_frame=data_frame,
             func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
@@ -153,7 +154,7 @@ class TestApplyPartialPooledGrouped:
                 [1 * 2 * 3 * 5 * 7 * 11 * 13],
             ],
         )
-        actual = apply_partial_pooled_grouped(
+        actual = concat_partial_groupby_apply(
             data_frame=data_frame,
             func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
@@ -212,7 +213,7 @@ class TestPivotPipeMelt:
                 [0., 0.],
             ],
         )
-        actual = pivot_pipe_melt(
+        actual = concat_pivot_pipe_melt(
             data_frame=data_frame,
             func=DataFrame.fillna,
             values=["val1", "val2"],
@@ -284,7 +285,7 @@ class TestPivotPipeMelt:
                 [12.0],
             ],
         )
-        actual = pivot_pipe_melt(
+        actual = concat_pivot_pipe_melt(
             data_frame=data_frame,
             func=DataFrame.fillna,
             values=["val"],
@@ -332,7 +333,7 @@ class TestPivotPipeMelt:
                 [0.0],
             ],
         )
-        actual = pivot_pipe_melt(
+        actual = concat_pivot_pipe_melt(
             data_frame=data_frame,
             func=DataFrame.fillna,
             values=["val"],
@@ -395,7 +396,7 @@ class TestPivotPipeMelt:
                 [12.0],
             ],
         )
-        actual = pivot_pipe_melt(
+        actual = concat_pivot_pipe_melt(
             data_frame=data_frame,
             func=DataFrame.fillna,
             values=["val"],
@@ -438,12 +439,313 @@ class TestPivotPipeMelt:
                 [0.0, 0.0],
             ],
         )
-        actual = pivot_pipe_melt(
+        actual = concat_pivot_pipe_melt(
             data_frame=data_frame,
             func=DataFrame.fillna,
             values=["val1", "val2"],
             columns="col",
             index=["idx"],
             value=0,
+        )
+        assert_frame_equal(actual, expected)
+
+class TestConcatWeightedValueCounts:
+    def test_single_column(self):
+        data_frame = DataFrame(
+            columns=["column_1", "column_2", "weight"],
+            data=[
+                ["a", "x", 1],
+                ["a", "x", 10],
+                ["b", "x", 100],
+                ["b", "y", 1000],
+                ["c", "y", 10000],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["columns", "values"],
+                tuples=[
+                    ("column_1", "a"),
+                    ("column_1", "b"),
+                    ("column_1", "c"),
+                ],
+            ),
+            columns=["count"],
+            data=[
+                [11],
+                [1100],
+                [10000],
+            ],
+        )
+        actual = concat_weighted_value_counts(
+            data_frame=data_frame,
+            subsets=["column_1"],
+            weight="weight",
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_multiple_columns(self):
+        data_frame = DataFrame(
+            columns=["column_1", "column_2", "weight"],
+            data=[
+                ["a", "x", 1],
+                ["a", "x", 10],
+                ["b", "x", 100],
+                ["b", "y", 1000],
+                ["c", "y", 10000],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["columns", "values"],
+                tuples=[
+                    ("column_1", "a"),
+                    ("column_1", "b"),
+                    ("column_1", "c"),
+                    ("column_2", "x"),
+                    ("column_2", "y"),
+                ],
+            ),
+            columns=["count"],
+            data=[
+                [11],
+                [1100],
+                [10000],
+                [111],
+                [11000],
+            ],
+        )
+        actual = concat_weighted_value_counts(
+            data_frame=data_frame,
+            subsets=["column_1", "column_2"],
+            weight="weight",
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_compound_column(self):
+        data_frame = DataFrame(
+            columns=["column_1", "column_2", "weight"],
+            data=[
+                ["a", "x", 1],
+                ["a", "x", 10],
+                ["b", "x", 100],
+                ["b", "y", 1000],
+                ["c", "y", 10000],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["columns", "values"],
+                tuples=[
+                    (("column_1", "column_2"), ("a", "x")),
+                    (("column_1", "column_2"), ("b", "x")),
+                    (("column_1", "column_2"), ("b", "y")),
+                    (("column_1", "column_2"), ("c", "y")),
+                ],
+            ),
+            columns=["count"],
+            data=[
+                [11],
+                [100],
+                [1000],
+                [10000],
+            ],
+        )
+        actual = concat_weighted_value_counts(
+            data_frame=data_frame,
+            subsets=[["column_1", "column_2"]],
+            weight="weight",
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_mixed_columns(self):
+        data_frame = DataFrame(
+            columns=["column_1", "column_2", "weight"],
+            data=[
+                ["a", "x", 1],
+                ["a", "x", 10],
+                ["b", "x", 100],
+                ["b", "y", 1000],
+                ["c", "y", 10000],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["columns", "values"],
+                tuples=[
+                    ("column_2", "x"),
+                    ("column_2", "y"),
+                    (("column_1", "column_2"), ("a", "x")),
+                    (("column_1", "column_2"), ("b", "x")),
+                    (("column_1", "column_2"), ("b", "y")),
+                    (("column_1", "column_2"), ("c", "y")),
+                ],
+            ),
+            columns=["count"],
+            data=[
+                [111],
+                [11000],
+                [11],
+                [100],
+                [1000],
+                [10000],
+            ],
+        )
+        actual = concat_weighted_value_counts(
+            data_frame=data_frame,
+            subsets=["column_2", ["column_1", "column_2"]],
+            weight="weight",
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_single_column_normalize(self):
+        data_frame = DataFrame(
+            columns=["column_1", "column_2", "weight"],
+            data=[
+                ["a", "x", 1],
+                ["a", "x", 10],
+                ["b", "x", 100],
+                ["b", "y", 1000],
+                ["c", "y", 10000],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["columns", "values"],
+                tuples=[
+                    ("column_1", "a"),
+                    ("column_1", "b"),
+                    ("column_1", "c"),
+                ],
+            ),
+            columns=["frequency"],
+            data=[
+                [11 / 11111],
+                [1100 / 11111],
+                [10000 / 11111],
+            ],
+        )
+        actual = concat_weighted_value_counts(
+            data_frame=data_frame,
+            subsets=["column_1"],
+            weight="weight",
+            normalize=True,
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_multiple_columns_normalize(self):
+        data_frame = DataFrame(
+            columns=["column_1", "column_2", "weight"],
+            data=[
+                ["a", "x", 1],
+                ["a", "x", 10],
+                ["b", "x", 100],
+                ["b", "y", 1000],
+                ["c", "y", 10000],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["columns", "values"],
+                tuples=[
+                    ("column_1", "a"),
+                    ("column_1", "b"),
+                    ("column_1", "c"),
+                    ("column_2", "x"),
+                    ("column_2", "y"),
+                ],
+            ),
+            columns=["frequency"],
+            data=[
+                [11 / 11111],
+                [1100 / 11111],
+                [10000 / 11111],
+                [111 / 11111],
+                [11000 / 11111],
+            ],
+        )
+        actual = concat_weighted_value_counts(
+            data_frame=data_frame,
+            subsets=["column_1", "column_2"],
+            weight="weight",
+            normalize=True,
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_compound_column_normalize(self):
+        data_frame = DataFrame(
+            columns=["column_1", "column_2", "weight"],
+            data=[
+                ["a", "x", 1],
+                ["a", "x", 10],
+                ["b", "x", 100],
+                ["b", "y", 1000],
+                ["c", "y", 10000],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["columns", "values"],
+                tuples=[
+                    (("column_1", "column_2"), ("a", "x")),
+                    (("column_1", "column_2"), ("b", "x")),
+                    (("column_1", "column_2"), ("b", "y")),
+                    (("column_1", "column_2"), ("c", "y")),
+                ],
+            ),
+            columns=["frequency"],
+            data=[
+                [11 / 11111],
+                [100 / 11111],
+                [1000 / 11111],
+                [10000 / 11111],
+            ],
+        )
+        actual = concat_weighted_value_counts(
+            data_frame=data_frame,
+            subsets=[["column_1", "column_2"]],
+            weight="weight",
+            normalize=True,
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_mixed_columns_normalize(self):
+        data_frame = DataFrame(
+            columns=["column_1", "column_2", "weight"],
+            data=[
+                ["a", "x", 1],
+                ["a", "x", 10],
+                ["b", "x", 100],
+                ["b", "y", 1000],
+                ["c", "y", 10000],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["columns", "values"],
+                tuples=[
+                    ("column_2", "x"),
+                    ("column_2", "y"),
+                    (("column_1", "column_2"), ("a", "x")),
+                    (("column_1", "column_2"), ("b", "x")),
+                    (("column_1", "column_2"), ("b", "y")),
+                    (("column_1", "column_2"), ("c", "y")),
+                ],
+            ),
+            columns=["frequency"],
+            data=[
+                [111 / 11111],
+                [11000 / 11111],
+                [11 / 11111],
+                [100 / 11111],
+                [1000 / 11111],
+                [10000 / 11111],
+            ],
+        )
+        actual = concat_weighted_value_counts(
+            data_frame=data_frame,
+            subsets=["column_2", ["column_1", "column_2"]],
+            weight="weight",
+            normalize=True,
         )
         assert_frame_equal(actual, expected)

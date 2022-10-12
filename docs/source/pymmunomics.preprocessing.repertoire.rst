@@ -1,4 +1,4 @@
-.. automodule:: pymmunomics.repertoire.clonotype
+.. automodule:: pymmunomics.preprocessing.repertoire
    :members:
    :undoc-members:
    :show-inheritance:

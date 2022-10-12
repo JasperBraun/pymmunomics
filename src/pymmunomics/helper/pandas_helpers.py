@@ -1,9 +1,17 @@
-from typing import Callable, Iterable, Mapping, Optional, Sequence, Union
+from typing import (
+    Callable,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Union,
+)
 
 from pandas import concat, DataFrame
 
 
-def apply_partial_pooled_grouped(
+def concat_partial_groupby_apply(
     data_frame: DataFrame,
     func: Callable,
     by: Sequence[str],
@@ -46,7 +54,7 @@ def apply_partial_pooled_grouped(
     Examples
     --------
     >>> import pandas as pd
-    >>> from pymmunomics.helper.pandas_helpers import apply_partial_pooled_grouped
+    >>> from pymmunomics.helper.pandas_helpers import concat_partial_groupby_apply
     >>> 
     >>> data_frame = pd.DataFrame(
     ...     columns=["group1", "group2", "val"],
@@ -60,7 +68,7 @@ def apply_partial_pooled_grouped(
     ...         ["b", "a", 13],
     ...     ],
     ... )
-    >>> apply_partial_pooled_grouped(
+    >>> concat_partial_groupby_apply(
     ...     data_frame=data_frame,
     ...     func=lambda df: df[["val"]].prod(),
     ...     by=["group1", "group2"],
@@ -89,7 +97,7 @@ def apply_partial_pooled_grouped(
     )
 
 
-def pivot_pipe_melt(
+def concat_pivot_pipe_melt(
     data_frame: DataFrame,
     func: Callable,
     values: Sequence[str],
@@ -130,7 +138,7 @@ def pivot_pipe_melt(
     --------
     >>> import numpy as np
     >>> import pandas as pd
-    >>> from pymmunomics.helper.pandas_helpers import pivot_pipe_melt
+    >>> from pymmunomics.helper.pandas_helpers import concat_pivot_pipe_melt
     >>> 
     >>> data_frame = pd.DataFrame(
     ...     columns=["idx", "col", "val1", "val2"],
@@ -149,7 +157,7 @@ def pivot_pipe_melt(
     2   a   c     3   3.0
     3   b   a     4   4.0
     4   b   b     5   NaN
-    >>> pivot_pipe_melt(
+    >>> concat_pivot_pipe_melt(
     ...     data_frame=data_frame,
     ...     func=pd.DataFrame.fillna,
     ...     values=["val1", "val2"],
@@ -178,3 +186,97 @@ def pivot_pipe_melt(
         axis=1,
     )
     return melted.sort_index()
+
+
+def concat_weighted_value_counts(
+    data_frame: DataFrame,
+    subsets: Iterable[Union[str, List[str]]],
+    weight: Union[str, None] = None,
+    normalize: bool = False,
+) -> DataFrame:
+    """Counts weighted number of occurrences of value combinations.
+
+    Parameters
+    ----------
+    data_frame:
+        Table whose values to count.
+    subsets:
+        Column combinations whose values to count.
+    weight:
+        Effective count of each row's value combination.
+    normalize:
+        If true, return relative frequencies instead of absolute counts.
+        The counts for each column combination are normalized
+        independently.
+
+    Returns
+    -------
+    feature_counts:
+        A table indexed by column combinations (index level 'columns')
+        and their corresponding values (index level 'values') with
+        single column 'count' (or 'frequency' if `normalize == True`),
+        which contains the sum of the effective counts of the indexed
+        value combination (normalized by the sum of all effective
+        counts).
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from pymmunomics.helper.pandas_helpers import concat_weighted_value_counts
+    >>> data_frame = pd.DataFrame(
+    ...     columns=["column_1", "column_2", "weight"],
+    ...     data=[
+    ...         ["a", "x", 1],
+    ...         ["a", "x", 10],
+    ...         ["b", "x", 100],
+    ...         ["b", "y", 1000],
+    ...         ["c", "y", 10000],
+    ...     ],
+    ... )
+    >>> concat_weighted_value_counts(
+    ...     data_frame=data_frame,
+    ...     subsets=["column_2", ["column_1", "column_2"]],
+    ...     weight="weight",
+    ...     normalize=True,
+    ... )
+                                 frequency
+    columns              values           
+    column_2             x        0.009990
+                         y        0.990010
+    (column_1, column_2) (a, x)   0.000990
+                         (b, x)   0.009000
+                         (b, y)   0.090001
+                         (c, y)   0.900009
+    """
+    counts_list = []
+    if weight is None:
+        # produces nonexistent column header
+        weight = "_".join(data_frame.columns) + "_"
+        data_frame = data_frame[weight] = 1
+
+    for subset in subsets:
+        counts_list.append(
+            data_frame
+            .groupby(subset)
+            [[weight]]
+            .sum()
+            .pipe(lambda df: df.assign(
+                values=df.index.to_flat_index(),
+                columns=(
+                    [
+                        subset
+                        if type(subset) == str
+                        else tuple(subset)
+                    ]
+                    * len(df)
+                ),
+            ))
+            .set_index(["columns", "values"])
+            .rename(columns={
+                weight: "frequency" if normalize else "count"
+            })
+        )
+        if normalize:
+            counts_list[-1] /= data_frame[weight].sum()
+    counts = concat(counts_list)
+    return counts
