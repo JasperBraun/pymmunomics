@@ -1,4 +1,4 @@
-from typing import Iterable, Sequence, Union
+from typing import Iterable, Mapping, Sequence, Union
 
 from pandas import DataFrame
 
@@ -10,6 +10,47 @@ from pymmunomics.repertoire.clonotype import (
     count,
     frequency,
 )
+
+# def group_features(
+#     feature_table: DataFrame,
+#     # repertoire_groups: Sequence[str],
+#     combine_repertoire_groups: Mapping[str, Iterable[Sequence[str]]],
+#     prepend_group: Union[Sequence[str], None],
+#     inplace: bool = False
+# ):
+#     if inplace:
+#         grouped_features = feature_table
+#     else:
+#         grouped_features = feature_table.copy()
+#     if prepend_group is None:
+#         prepend_group = []
+
+#     for combine_col, combine_vals in combine_repertoire_groups.items():
+#         constant_cols = [
+#             col for col in grouped_features.columns
+#             if col != combine_col
+#             and col not in prepend_group
+#         ]
+#         all_combine_cols = []
+#         for vals in combine_vals:
+#             for val in vals:
+#                 all_combine_cols.append(val)
+#         # figure out prepend stuff
+#             all_combine_cols.col for col in vals for vals in combine_vals]
+#         for vals in combine_vals:
+#             if len(vals) > 1:
+#                 for group_col in prepend_group:
+#                     grouped_features[group_col] = [
+#                         "_".join([group_val, prepend_val])
+#                         if group_val in vals
+#                         for group_val, prepend_val
+#                         in zip(grouped_features[group_col], grouped_features[prepend_val])
+#                     ]
+#                 combined = "_".join(vals)
+#                 grouped_features[column] = grouped_features[column].map(
+#                     lambda val: combined if val in vals else val
+#                 )
+
 
 def count_clonotype_features(
     repertoire: DataFrame,
