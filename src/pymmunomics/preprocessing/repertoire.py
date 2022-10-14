@@ -12,7 +12,7 @@ def count_clonotype_features(
     repertoire: DataFrame,
     repertoire_groups: Sequence[str],
     clonotype_features: Sequence[str],
-    clonesize: str,
+    clonesize: Union[str, None] = None,
     partial_repertoire_pools: Union[Iterable[Sequence[str]], None] = None,
     normalize: bool = True,
     shared_clonotype_feature_groups: Union[Sequence[str], None] = None,
@@ -170,5 +170,25 @@ def count_clonotype_features(
         .reset_index(drop=True)
     )
 
-
-
+def get_repertoire_sizes(
+    repertoire: DataFrame,
+    repertoire_groups: Sequence[str],
+    id_var: str = "sample",
+    clonesize: Union[str, None] = None,
+    partial_repertoire_pools: Union[Iterable[Sequence[str]], None] = None,
+):
+    sizes = (
+        count_clonotype_features(
+            repertoire=repertoire,
+            repertoire_groups=repertoire_groups,
+            clonotype_features=[id_var],
+            clonesize=clonesize,
+            partial_repertoire_pools=partial_repertoire_pools,
+            normalize=False,
+        )
+        .rename(columns={"feature_value": id_var})
+        .pivot(index=id_var, columns=repertoire_groups, values="count")
+        .fillna(0)
+        .astype(int)
+    )
+    return sizes

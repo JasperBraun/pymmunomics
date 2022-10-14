@@ -1,7 +1,10 @@
-from pandas import DataFrame
+from pandas import DataFrame, Index, MultiIndex
 from pandas.testing import assert_frame_equal
 
-from pymmunomics.preprocessing.repertoire import count_clonotype_features
+from pymmunomics.preprocessing.repertoire import (
+    count_clonotype_features,
+    get_repertoire_sizes,
+)
 
 class TestCountClonotypes:
     def test_no_pools_no_shared_feature_groups(self):
@@ -348,3 +351,157 @@ class TestCountClonotypes:
             shared_clonotype_feature_groups=["g1"],
         )
         assert_frame_equal(actual, expected)
+
+class TestRepertoireSizes:
+    def test_default(self):
+        repertoire = DataFrame(
+            columns=["g1", "g2", "sample", "other1", "other2"],
+            data=[
+                ["a", "a", "foo", 1, "foo"],
+                ["a", "a", "foo", 2, "foo"],
+                ["a", "b", "foo", 3, "bar"],
+                ["b", "a", "foo", 4, "foo"],
+                ["a", "a", "bar", 5, "bar"],
+                ["a", "b", "bar", 6, "foo"],
+                ["a", "b", "bar", 7, "bar"],
+                ["b", "a", "bar", 8, "foo"],
+            ],
+        )
+        expected = DataFrame(
+            index=Index(
+                name="sample",
+                data=[
+                    "foo",
+                    "bar",
+                ],
+            ),
+            columns=MultiIndex.from_tuples(
+                names=["g1", "g2"],
+                tuples=[("a", "a"), ("a", "b"), ("b", "a")],
+            ),
+            data=[
+                [2, 1, 1],
+                [1, 2, 1],
+            ],
+        )
+        actual = get_repertoire_sizes(
+            repertoire=repertoire,
+            repertoire_groups=["g1", "g2"],
+        )
+        assert_frame_equal(actual, expected, check_like=True)
+
+    def test_id_var(self):
+        repertoire = DataFrame(
+            columns=["g1", "g2", "id", "sample", "other1", "other2"],
+            data=[
+                ["a", "a", "foo", "foo", 1, "foo"],
+                ["a", "a", "foo", "bar", 2, "foo"],
+                ["a", "b", "foo", "bar", 3, "bar"],
+                ["b", "a", "foo", "bar", 4, "foo"],
+                ["a", "a", "bar", "bar", 5, "bar"],
+                ["a", "b", "bar", "bar", 6, "foo"],
+                ["a", "b", "bar", "bar", 7, "bar"],
+                ["b", "a", "bar", "bar", 8, "foo"],
+            ],
+        )
+        expected = DataFrame(
+            index=Index(
+                name="id",
+                data=[
+                    "foo",
+                    "bar",
+                ],
+            ),
+            columns=MultiIndex.from_tuples(
+                names=["g1", "g2"],
+                tuples=[("a", "a"), ("a", "b"), ("b", "a")],
+            ),
+            data=[
+                [2, 1, 1],
+                [1, 2, 1],
+            ],
+        )
+        actual = get_repertoire_sizes(
+            repertoire=repertoire,
+            repertoire_groups=["g1", "g2"],
+            id_var="id",
+        )
+        assert_frame_equal(actual, expected, check_like=True)
+
+    def test_clonesize(self):
+        repertoire = DataFrame(
+            columns=["g1", "g2", "sample", "clonesize", "other1", "other2"],
+            data=[
+                ["a", "a", "foo", 1, 1, "foo"],
+                ["a", "a", "foo", 2, 2, "foo"],
+                ["a", "b", "foo", 3, 3, "bar"],
+                ["b", "a", "foo", 4, 4, "foo"],
+                ["a", "a", "bar", 5, 5, "bar"],
+                ["a", "b", "bar", 6, 6, "foo"],
+                ["a", "b", "bar", 7, 7, "bar"],
+                ["b", "a", "bar", 8, 8, "foo"],
+            ],
+        )
+        expected = DataFrame(
+            index=Index(
+                name="sample",
+                data=[
+                    "foo",
+                    "bar",
+                ],
+            ),
+            columns=MultiIndex.from_tuples(
+                names=["g1", "g2"],
+                tuples=[("a", "a"), ("a", "b"), ("b", "a")],
+            ),
+            data=[
+                [3, 3, 4],
+                [5, 13, 8],
+            ],
+        )
+        actual = get_repertoire_sizes(
+            repertoire=repertoire,
+            repertoire_groups=["g1", "g2"],
+            clonesize="clonesize"
+        )
+        assert_frame_equal(actual, expected, check_like=True)
+
+    def test_partial_repertoire_pools(self):
+        repertoire = DataFrame(
+            columns=["g1", "g2", "sample", "other1", "other2"],
+            data=[
+                ["a", "a", "foo", 1, "foo"],
+                ["a", "a", "foo", 2, "foo"],
+                ["a", "b", "foo", 3, "bar"],
+                ["b", "a", "foo", 4, "foo"],
+                ["a", "a", "bar", 5, "bar"],
+                ["a", "b", "bar", 6, "foo"],
+                ["a", "b", "bar", 7, "bar"],
+                ["b", "a", "bar", 8, "foo"],
+            ],
+        )
+        expected = DataFrame(
+            index=Index(
+                name="sample",
+                data=[
+                    "foo",
+                    "bar",
+                ],
+            ),
+            columns=MultiIndex.from_tuples(
+                names=["g1", "g2"],
+                tuples=[
+                    ("a", "a"), ("a", "b"), ("b", "a"), ("pooled", "a"), ("pooled", "b")
+                ],
+            ),
+            data=[
+                [2, 1, 1, 3, 1],
+                [1, 2, 1, 2, 2],
+            ],
+        )
+        actual = get_repertoire_sizes(
+            repertoire=repertoire,
+            repertoire_groups=["g1", "g2"],
+            partial_repertoire_pools=[[], ["g1"]],
+        )
+        assert_frame_equal(actual, expected, check_like=True)

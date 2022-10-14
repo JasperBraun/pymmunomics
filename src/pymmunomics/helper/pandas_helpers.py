@@ -252,7 +252,7 @@ def concat_weighted_value_counts(
     if weight is None:
         # produces nonexistent column header
         weight = "_".join(data_frame.columns) + "_"
-        data_frame = data_frame[weight] = 1
+        data_frame = data_frame.assign(**{weight: 1})
 
     for subset in subsets:
         counts_list.append(
