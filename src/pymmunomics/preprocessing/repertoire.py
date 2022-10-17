@@ -40,6 +40,7 @@ def count_features(
         with same values in these columns.
     stat:
         Determines how features are counted.
+
         - 'count': provides absolute counts
         - 'frequency': provides counts normalized by repertoire sizes
         - 'onehot': provides one-hot encoding indicating

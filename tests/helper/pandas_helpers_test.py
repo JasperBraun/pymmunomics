@@ -1,15 +1,113 @@
 from numpy import nan
 from pandas import DataFrame, Index, MultiIndex
 from pandas.testing import assert_frame_equal
+from pytest import raises
 
 from pymmunomics.helper.pandas_helpers import (
+    assert_groups_equal,
     concat_partial_groupby_apply,
     concat_pivot_pipe_melt,
     concat_weighted_value_counts,
 )
 
 
-class TestApplyPartialPooledGrouped:
+class TestAssertGroupsEqual:
+    def test_nopipe(self):
+        data_frame = DataFrame(
+            columns=["g1", "g2", "val1", "val2"],
+            data=[
+                ["a", "a", 1, 1],
+                ["a", "a", 2, 2],
+                ["a", "b", 1, -1],
+                ["a", "b", 2, 2],
+                ["b", "a", 1, 1],
+                ["b", "a", 2, 2],
+            ],
+        )
+        with raises(AssertionError):
+            assert_groups_equal(
+                data_frame=data_frame,
+                groupby_kwargs={"by": ["g1", "g2"]},
+            )
+
+    def test_equal(self):
+        data_frame = DataFrame(
+            columns=["g1", "g2", "val1", "val2"],
+            data=[
+                ["a", "a", 1, 1],
+                ["a", "a", 2, 2],
+                ["a", "b", 1, -1],
+                ["a", "b", 2, 2],
+                ["b", "a", 1, 1],
+                ["b", "a", 2, 2],
+            ],
+        )
+        assert_groups_equal(
+            data_frame=data_frame,
+            groupby_kwargs={"by": ["g1", "g2"]},
+            group_pipe=lambda df: df[["val1"]].reset_index(drop=True),
+        )
+
+    def test_different(self):
+        data_frame = DataFrame(
+            columns=["g1", "g2", "val1", "val2"],
+            data=[
+                ["a", "a", 1, 1],
+                ["a", "a", 2, 2],
+                ["a", "b", 1, -1],
+                ["a", "b", 2, 2],
+                ["b", "a", 1, 1],
+                ["b", "a", 2, 2],
+            ],
+        )
+        with raises(AssertionError):
+            assert_groups_equal(
+                data_frame=data_frame,
+                groupby_kwargs={"by": ["g1", "g2"]},
+                group_pipe=lambda df: df[["val2"]].reset_index(drop=True),
+            )
+
+    def test_float_close_assert_frame_equal_kwargs(self):
+        data_frame = DataFrame(
+            columns=["g1", "g2", "val1", "val2"],
+            data=[
+                ["a", "a", 1, 1],
+                ["a", "a", 2, 2],
+                ["a", "b", 1 + 1e-3, -1],
+                ["a", "b", 2, 2],
+                ["b", "a", 1, 1],
+                ["b", "a", 2, 2],
+            ],
+        )
+        assert_groups_equal(
+            data_frame=data_frame,
+            groupby_kwargs={"by": ["g1", "g2"]},
+            group_pipe=lambda df: df[["val1"]].reset_index(drop=True),
+            assert_frame_equal_kwargs={"check_exact": False, "rtol": 0, "atol": 1e-2},
+        )
+
+    def test_float_differ_assert_frame_equal_kwargs(self):
+        data_frame = DataFrame(
+            columns=["g1", "g2", "val1", "val2"],
+            data=[
+                ["a", "a", 1, 1],
+                ["a", "a", 2, 2],
+                ["a", "b", 1 + 1e-3, -1],
+                ["a", "b", 2, 2],
+                ["b", "a", 1, 1],
+                ["b", "a", 2, 2],
+            ],
+        )
+        with raises(AssertionError):
+            assert_groups_equal(
+                data_frame=data_frame,
+                groupby_kwargs={"by": ["g1", "g2"]},
+                group_pipe=lambda df: (df[["val1"]].reset_index(drop=True)),
+                assert_frame_equal_kwargs={"check_exact": False, "rtol": 0, "atol": 1e-4},
+            )
+
+
+class TestConcatPartialGroupbyApply:
     def test_some_pooled(self):
         data_frame = DataFrame(
             columns=["group1", "group2", "val"],
@@ -163,7 +261,7 @@ class TestApplyPartialPooledGrouped:
         assert_frame_equal(actual, expected)
 
 
-class TestPivotPipeMelt:
+class TestConcatPivotPipeMelt:
     def test_multiple_pivot_values(self):
         # pivotted:
         # val1                          val2

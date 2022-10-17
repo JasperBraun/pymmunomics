@@ -7,6 +7,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   pymmunomics.helper.exception
    pymmunomics.helper.pandas_helpers
 
 Module contents

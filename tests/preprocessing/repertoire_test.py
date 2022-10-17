@@ -386,7 +386,7 @@ class TestCountFeatures:
                 ["b", "a", "f2", "y", 0],
             ],
         )
-        actual = count_clonotype_features(
+        actual = count_features(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],

@@ -1,5 +1,6 @@
 from typing import (
     Callable,
+    Dict,
     Iterable,
     List,
     Mapping,
@@ -9,6 +10,76 @@ from typing import (
 )
 
 from pandas import concat, DataFrame
+from pandas.testing import assert_frame_equal
+
+def assert_groups_equal(
+    data_frame: DataFrame,
+    groupby_kwargs: Dict,
+    group_pipe: Union[Callable, None] = None,
+    assert_frame_equal_kwargs: Union[Dict, None] = None,
+):
+    """Checks equality of all-against-one groups in data_frame.
+
+    Parameters
+    ----------
+    data_frame:
+        Data to group and test equality of all-against-one group.
+    groupby_kwargs:
+        Keyword arguments for `pandas.DataFrame.groupby`.
+    group_pipe:
+        Function applied to each group before testing equality.
+    assert_frame_equal_kwargs:
+        Keyword arguments for `pandas.testing.assert_frame_equal` used
+        for each pair of groups.
+
+    Raises
+    ------
+    AssertionError:
+        Propagated from `pandas.testing.assert_frame_equal` when a
+        comparison fails.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from pymmunomics.helper.pandas_helpers import assert_groups_equal
+    >>> 
+    >>> data_frame = pd.DataFrame(
+    ...     index=[1, 2, 2, 1, 1, 2],
+    ...     columns=["g1", "g2", "val1", "val2"],
+    ...     data=[
+    ...         ["a", "a", 1, 1],
+    ...         ["a", "a", 2, 2],
+    ...         ["a", "b", 1, -1],
+    ...         ["a", "b", 2, 2],
+    ...         ["b", "a", 1, 1],
+    ...         ["b", "a", 2, 2],
+    ...     ],
+    ... )
+    >>> assert_groups_equal(
+    ...     data_frame=data_frame,
+    ...     groupby_kwargs={"by": ["g1", "g2"]},
+    ...     group_pipe=lambda df: df[["val1"]].reset_index(drop=True),
+    ... )
+    >>> assert_groups_equal(
+    ...     data_frame=data_frame,
+    ...     groupby_kwargs={"by": ["g1", "g2"]},
+    ...     group_pipe=lambda df: df[["val2"]].reset_index(drop=True),
+    ... )
+    Traceback (most recent call last):
+        ...
+    AssertionError: DataFrame.iloc[:, 0] (column name="val2") are different
+    """
+    if group_pipe is None:
+        group_pipe = lambda df: df
+    if assert_frame_equal_kwargs is None:
+        assert_frame_equal_kwargs = {}
+
+    groupby = data_frame.groupby(**groupby_kwargs)
+    groups = list(groupby.groups)
+    first = group_pipe(groupby.get_group(groups[0]))
+    for group in groups[1:]:
+        other = group_pipe(groupby.get_group(group))
+        assert_frame_equal(first, other, **assert_frame_equal_kwargs)
 
 
 def concat_partial_groupby_apply(
@@ -28,7 +99,7 @@ def concat_partial_groupby_apply(
         Data to group and apply function to.
     func:
         Must take a group of `data_frame` grouped by `by` and return a
-        ```DataFrame``. Additional arguments and keyword argument can be
+        ``DataFrame``. Additional arguments and keyword argument can be
         passed using `*func_args` and `*func_kwargs`.
     by:
         The columns to group by if no columns were pooled.
