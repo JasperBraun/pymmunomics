@@ -238,7 +238,7 @@ class TestCountClonotypes:
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
             clonesize="clonesize",
-            normalize=False
+            stat="count",
         )
         assert_frame_equal(actual, expected)
 
@@ -295,7 +295,7 @@ class TestCountClonotypes:
             clonotype_features=["f1", "f2"],
             clonesize="clonesize",
             partial_repertoire_pools=[[], ["g1"], ["g1", "g2"]],
-            normalize=False,
+            stat="count",
             shared_clonotype_feature_groups=["g1"],
         )
         assert_frame_equal(actual, expected)
@@ -348,6 +348,50 @@ class TestCountClonotypes:
             clonotype_features=["f1", "f2"],
             clonesize="clonesize",
             partial_repertoire_pools=[[], ["g1"]],
+            shared_clonotype_feature_groups=["g1"],
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_onehot_shared_feature_groups(self):
+        repertoire = DataFrame(
+            columns=[
+                "g1", "g2", "f1", "f2", "clonesize",
+            ],
+            data=[
+                ["a", "a", 1, "x", 1],
+                ["a", "b", 2, "x", 2],
+                ["a", "a", 3, "y", 10],
+                ["b", "a", 1, "x", 20],
+                ["a", "b", 2, "y", 100],
+                ["a", "b", 3, "x", 200],
+                ["a", "a", 1, "y", 1000],
+            ],
+        )
+        expected = DataFrame(
+            columns=[
+                "g1", "g2", "feature", "feature_value", "value",
+            ],
+            data=[
+                ["a", "a", "f1", "1", 1],
+                ["a", "a", "f1", "3", 1],
+                ["a", "a", "f2", "x", 1],
+                ["a", "a", "f2", "y", 1],
+                ["a", "b", "f1", "2", 1],
+                ["a", "b", "f1", "3", 1],
+                ["a", "b", "f2", "x", 1],
+                ["a", "b", "f2", "y", 1],
+                ["b", "a", "f1", "1", 1],
+                ["b", "a", "f1", "3", 0],
+                ["b", "a", "f2", "x", 1],
+                ["b", "a", "f2", "y", 0],
+            ],
+        )
+        actual = count_clonotype_features(
+            repertoire=repertoire,
+            repertoire_groups=["g1", "g2"],
+            clonotype_features=["f1", "f2"],
+            clonesize="clonesize",
+            stat="onehot",
             shared_clonotype_feature_groups=["g1"],
         )
         assert_frame_equal(actual, expected)

@@ -1,4 +1,4 @@
-from typing import Iterable, Mapping, Sequence, Union
+from typing import Iterable, Literal, Mapping, Sequence, Union
 
 from pandas import DataFrame
 
@@ -14,7 +14,7 @@ def count_clonotype_features(
     clonotype_features: Sequence[str],
     clonesize: Union[str, None] = None,
     partial_repertoire_pools: Union[Iterable[Sequence[str]], None] = None,
-    normalize: bool = True,
+    stat: Literal["count", "frequency", "onehot"] = "frequency",
     shared_clonotype_feature_groups: Union[Sequence[str], None] = None,
 
 ):
@@ -38,9 +38,14 @@ def count_clonotype_features(
         each member of this list with the indicated columns' values
         replaced by the value "pooled" effectively combining repertoires
         with same values in these columns.
-    normalize:
-        Whether or not to provide frequency counts as opposed to
-        absolute counts.
+    stat:
+        Determines how features are counted.
+        - 'count': provides absolute counts
+        - 'frequency': provides counts normalized by repertoire sizes
+        - 'onehot': provides one-hot encoding indicating
+          presence/absences of values; zeros value can only be achieved
+          when a valid argument for shared_clonotype_feature_groups is
+          provided.
     shared_clonotype_feature_groups:
         If provided, all repertoires with the same value in all but these
         columns are forced to have frequencies for the same clonotype
@@ -109,10 +114,12 @@ def count_clonotype_features(
     """
     if partial_repertoire_pools is None:
         partial_repertoire_pools = [[]]
-    if normalize:
-        count_col = "frequency"
-    else:
-        count_col = "count"
+    count_col, normalize = {
+        "count": ("count", False),
+        "frequency": ("frequency", True),
+        "onehot": ("value", False),
+    }[stat]
+    
     counts = (
         concat_partial_groupby_apply(
             data_frame=repertoire,
@@ -128,6 +135,7 @@ def count_clonotype_features(
         .rename(columns={
             "values": "feature_value",
             "columns": "feature",
+            {True: "frequency", False: "count"}[normalize]: count_col,
         })
     )
     
@@ -160,9 +168,17 @@ def count_clonotype_features(
         )
     else:
         repertoire_feature_table = counts
+    if stat == "onehot":
+        repertoire_feature_table[count_col] = (
+            repertoire_feature_table[count_col]
+            .map(lambda val: int(val > 0))
+        )
 
-    if not normalize:
-        repertoire_feature_table["count"] = repertoire_feature_table["count"].astype(int)
+    if stat != "frequency":
+        repertoire_feature_table[count_col] = (
+            repertoire_feature_table[count_col]
+            .astype(int)
+        )
 
     return (
         repertoire_feature_table
@@ -184,7 +200,7 @@ def get_repertoire_sizes(
             clonotype_features=[id_var],
             clonesize=clonesize,
             partial_repertoire_pools=partial_repertoire_pools,
-            normalize=False,
+            stat="count",
         )
         .rename(columns={"feature_value": id_var})
         .pivot(index=id_var, columns=repertoire_groups, values="count")
