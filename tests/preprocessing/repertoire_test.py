@@ -2,11 +2,11 @@ from pandas import DataFrame, Index, MultiIndex
 from pandas.testing import assert_frame_equal
 
 from pymmunomics.preprocessing.repertoire import (
-    count_clonotype_features,
+    count_features,
     get_repertoire_sizes,
 )
 
-class TestCountClonotypes:
+class TestCountFeatures:
     def test_no_pools_no_shared_feature_groups(self):
         repertoire = DataFrame(
             columns=[
@@ -39,7 +39,7 @@ class TestCountClonotypes:
                 ["b", "a", "f2", "x",   20 /   20],
             ],
         )
-        actual = count_clonotype_features(
+        actual = count_features(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
@@ -92,7 +92,7 @@ class TestCountClonotypes:
                 ["pooled", "pooled", "f2", "y", 1110 / 1333],
             ],
         )
-        actual = count_clonotype_features(
+        actual = count_features(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
@@ -135,7 +135,7 @@ class TestCountClonotypes:
                 ["b", "a", "f2", "x",   20 /   20],
             ],
         )
-        actual = count_clonotype_features(
+        actual = count_features(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
@@ -191,7 +191,7 @@ class TestCountClonotypes:
                 ["pooled", "pooled", "f2", "y", 1110 / 1333],
             ],
         )
-        actual = count_clonotype_features(
+        actual = count_features(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
@@ -233,7 +233,7 @@ class TestCountClonotypes:
                 ["b", "a", "f2", "x",   20],
             ],
         )
-        actual = count_clonotype_features(
+        actual = count_features(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
@@ -289,7 +289,7 @@ class TestCountClonotypes:
                 ["pooled", "pooled", "f2", "y", 1110],
             ],
         )
-        actual = count_clonotype_features(
+        actual = count_features(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
@@ -342,7 +342,7 @@ class TestCountClonotypes:
                 ["pooled", "b", "f2", "y",  100 /  302],
             ],
         )
-        actual = count_clonotype_features(
+        actual = count_features(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
             clonotype_features=["f1", "f2"],
@@ -396,7 +396,7 @@ class TestCountClonotypes:
         )
         assert_frame_equal(actual, expected)
 
-class TestRepertoireSizes:
+class TestGetRepertoireSizes:
     def test_default(self):
         repertoire = DataFrame(
             columns=["g1", "g2", "sample", "other1", "other2"],
@@ -546,6 +546,47 @@ class TestRepertoireSizes:
         actual = get_repertoire_sizes(
             repertoire=repertoire,
             repertoire_groups=["g1", "g2"],
+            partial_repertoire_pools=[[], ["g1"]],
+        )
+        assert_frame_equal(actual, expected, check_like=True)
+
+    def test_partial_pooles_clone_sizes_docs_example(self):
+        repertoire = DataFrame(
+            columns=["g1", "g2", "sample", "clonesize"],
+            data=[
+                ["a", "a", "foo", 1],
+                ["a", "a", "foo", 2],
+                ["a", "b", "foo", 3],
+                ["b", "a", "foo", 4],
+                ["a", "a", "bar", 5],
+                ["a", "b", "bar", 6],
+                ["a", "b", "bar", 7],
+                ["b", "a", "bar", 8],
+            ],
+        )
+        expected = DataFrame(
+            index=Index(
+                name="sample",
+                data=[
+                    "foo",
+                    "bar",
+                ],
+            ),
+            columns=MultiIndex.from_tuples(
+                names=["g1", "g2"],
+                tuples=[
+                    ("a", "a"), ("a", "b"), ("b", "a"), ("pooled", "a"), ("pooled", "b")
+                ],
+            ),
+            data=[
+                [3, 3, 4, 7, 3],
+                [5, 13, 8, 13, 13],
+            ],
+        )
+        actual = get_repertoire_sizes(
+            repertoire=repertoire,
+            repertoire_groups=["g1", "g2"],
+            clonesize="clonesize",
             partial_repertoire_pools=[[], ["g1"]],
         )
         assert_frame_equal(actual, expected, check_like=True)

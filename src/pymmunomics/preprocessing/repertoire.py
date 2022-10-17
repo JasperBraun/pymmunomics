@@ -8,7 +8,7 @@ from pymmunomics.helper.pandas_helpers import (
     concat_weighted_value_counts,
 )
 
-def count_clonotype_features(
+def count_features(
     repertoire: DataFrame,
     repertoire_groups: Sequence[str],
     clonotype_features: Sequence[str],
@@ -66,7 +66,7 @@ def count_clonotype_features(
     Examples
     --------
     >>> import pandas as pd
-    >>> from pymmunomics.preprocessing.repertoire import count_clonotype_features
+    >>> from pymmunomics.preprocessing.repertoire import count_features
     >>> 
     >>> repertoire = pd.DataFrame(
     ...     columns=[
@@ -82,7 +82,7 @@ def count_clonotype_features(
     ...         ["a", "a", 1, "y", 1000],
     ...     ],
     ... )
-    >>> count_clonotype_features(
+    >>> count_features(
     ...     repertoire=repertoire,
     ...     repertoire_groups=["g1", "g2"],
     ...     clonotype_features=["f1", "f2"],
@@ -193,8 +193,70 @@ def get_repertoire_sizes(
     clonesize: Union[str, None] = None,
     partial_repertoire_pools: Union[Iterable[Sequence[str]], None] = None,
 ):
+    """Obtains sequence repertoire sizes in various groupings.
+
+    Parameters
+    ----------
+    repertoire:
+        Table of clonotypes and their clone sizes as well as columns
+        indicating repertoire membership.
+    repertoire_groups:
+        Columns by which to group repertoires.
+    id_var:
+        Indicates which column identifies individual repertoires within
+        repertoire groups.
+    clonesize:
+        If provided, repertoire is sum of clonesizes in rows with given
+        value in `id_var` within groups determined by value
+        combinations in `repertoire_groups`. If None, each row has an
+        effective clone size of 1.
+    partial_repertoire_pools:
+        If specified, repertoire sizes are calculated and concatenated
+        once for each member of this list with the indicated columns'
+        values replaced by the value "pooled" effectively combining
+        repertoires with same values in these columns.
+
+    Returns
+    -------
+    repertoire_sizes:
+        Table listing repertoire sizes. Index consists of values in
+        `id_var` column, and columns are indexed by combinations of
+        values in `repertoire_groups`, replacing some values with
+        "pooled" if `partial_repertoire_pools` are specified. Each value
+        is the indexed repertoire size within the column's group.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from pymmunomics.preprocessing.repertoire import get_repertoire_sizes
+    >>> 
+    >>> repertoire = pd.DataFrame(
+    ...     columns=["g1", "g2", "sample", "clonesize"],
+    ...     data=[
+    ...         ["a", "a", "foo", 1],
+    ...         ["a", "a", "foo", 2],
+    ...         ["a", "b", "foo", 3],
+    ...         ["b", "a", "foo", 4],
+    ...         ["a", "a", "bar", 5],
+    ...         ["a", "b", "bar", 6],
+    ...         ["a", "b", "bar", 7],
+    ...         ["b", "a", "bar", 8],
+    ...     ],
+    ... )
+    >>> get_repertoire_sizes(
+    ...     repertoire=repertoire,
+    ...     repertoire_groups=["g1", "g2"],
+    ...     clonesize="clonesize",
+    ...     partial_repertoire_pools=[[], ["g1"]],
+    ... )
+    g1      a      b pooled    
+    g2      a   b  a      a   b
+    sample                     
+    bar     5  13  8     13  13
+    foo     3   3  4      7   3
+    """
     sizes = (
-        count_clonotype_features(
+        count_features(
             repertoire=repertoire,
             repertoire_groups=repertoire_groups,
             clonotype_features=[id_var],
