@@ -3,3 +3,9 @@ class PymmunomicsBaseWarning(Warning):
 
 class ArgumentWarning(PymmunomicsBaseWarning):
     pass
+
+class PymmunomicsBaseError(Exception):
+    pass
+
+class InvalidArgumentError(PymmunomicsBaseError):
+    pass

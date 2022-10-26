@@ -36,6 +36,11 @@ html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 html_sidebars = { '**': ['searchbox.html', 'globaltoc.html']}#, 'relations.html', 'sourcelink.html', ] }
 html_short_title = "pymmunomics"
+html_theme_options = {
+   "navbar_align": "left",
+   "show_prev_next": False,
+   "page_sidebar_items": [],
+}
 
 # autosummary
 # https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html
@@ -44,6 +49,7 @@ autosummary_generate = True
 # autodoc settings
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 # autodoc_typehints = "description" # Doesn't work with numpydoc
+autoclass_content = "both"
 
 # doctest settings
 # https://www.sphinx-doc.org/en/master/usage/extensions/doctest.html

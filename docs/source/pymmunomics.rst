@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    pymmunomics.helper
+   pymmunomics.ml
    pymmunomics.preprocessing
 
 Module contents
