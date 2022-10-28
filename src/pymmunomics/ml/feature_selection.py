@@ -11,6 +11,8 @@ from sklearn.base import TransformerMixin
 
 from pymmunomics.helper.exception import InvalidArgumentError
 
+def _kendalltau(x, y):
+    return kendalltau(x, y, variant="c")[0]
 
 class GroupedTransformer(TransformerMixin):
 
@@ -140,7 +142,7 @@ class NullScoreSelectorBase(TransformerMixin, ABC):
         null_y: str,
         train_data: Union[DataFrame, None] = None,
         train_y: Union[str, None] = None,
-        score_func: Callable = lambda x, y: kendalltau(x, y, variant="c")[0],
+        score_func: Callable = _kendalltau,
         alpha: float = 0.05,
     ):
         """Base class for variable selectors via null distribution of scores.
