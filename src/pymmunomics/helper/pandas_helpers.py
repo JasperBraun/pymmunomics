@@ -84,11 +84,13 @@ def assert_groups_equal(
 
 def concat_partial_groupby_apply(
     data_frame: DataFrame,
-    func: Callable,
+    func: Union[Callable, list[Callable]],
     by: Sequence[str],
-    pooled: Iterable[Sequence[str]],
     *func_args,
+    pooled: Iterable[Sequence[str]] = [[]],
     pooled_val: str = "pooled",
+    func_keys: Union[Sequence, None] = None,
+    col_names: Union[list, None] = None,
     **func_kwargs,
 ) -> DataFrame:
     """Applies func to partial groupings data.
@@ -100,7 +102,10 @@ def concat_partial_groupby_apply(
     func:
         Must take a group of `data_frame` grouped by `by` and return a
         ``DataFrame``. Additional arguments and keyword argument can be
-        passed using `*func_args` and `*func_kwargs`.
+        passed using `*func_args` and `*func_kwargs`. If multiple
+        callables, the functions are applied independently and their
+        results are concatenated along axis=1 per partially pooled
+        group.
     by:
         The columns to group by if no columns were pooled.
     pooled:
@@ -110,6 +115,12 @@ def concat_partial_groupby_apply(
     pooled_val:
         The value to assign to the columns defined by members of
         `pooled` whenever their subgroups are pooled.
+    func_keys:
+        If provided, an additional index level is prepended to the
+        columns with these values corresponding to the results of each
+        of the applied functions.
+    col_names:
+        Names for the levels in the resulting hierarchical column index.
     *func_args, **func_kwargs:
         Additional positional and keyword arguments to forward to func
         in addition to each data group.
@@ -154,18 +165,32 @@ def concat_partial_groupby_apply(
     b      pooled    195
     pooled pooled  30030
     """
-    return concat(
-        [
-            (
-                (
-                    data_frame.drop(columns=pcols)
-                    .assign(**{col: pooled_val for col in pcols})
-                    .groupby(by)
-                ).apply(func, *func_args, **func_kwargs)
+    if type(func) != list:
+        func = [func]
+    concat_vertical = []
+    for pcols in pooled:
+        concat_horizontal = []
+        for func_ in func:
+            pooled_data_frame = (
+                data_frame
+                .drop(columns=pcols)
+                .assign(**{col: pooled_val for col in pcols})
             )
-            for pcols in pooled
-        ],
-    )
+            horizontal_item = (
+                pooled_data_frame
+                .groupby(by)
+                .apply(func_, *func_args, **func_kwargs)
+            )
+            concat_horizontal.append(horizontal_item)
+        vertical_item = concat(
+            concat_horizontal,
+            axis=1,
+            keys=func_keys,
+            names=col_names,
+        )
+        concat_vertical.append(vertical_item)
+    result = concat(concat_vertical)
+    return result
 
 
 def concat_pivot_pipe_melt(
@@ -351,3 +376,79 @@ def concat_weighted_value_counts(
             counts_list[-1] /= data_frame[weight].sum()
     counts = concat(counts_list)
     return counts
+
+def weighted_mean(
+    data_frame: DataFrame,
+    value: str,
+    weight: str,
+):
+    """Calculates weigthed mean of column values.
+
+    Parameters
+    ----------
+    data_frame:
+        The table containing weights and values.
+    value:
+        Column containing values.
+    weight:
+        Column containing weights corresponding to values.
+
+    Returns
+    -------
+    result
+        The resulting weighted mean defined as:
+            sum(weights * values)
+    """
+    data_frame_ = data_frame[
+        ~(data_frame[[weight, value]].isna().any(axis=1))
+    ]
+    return (data_frame_[value] * data_frame_[weight]).sum()
+
+def weighted_variance(data_frame, value, weight):
+    """Calculates variance from values and weights.
+    
+    Parameters
+    ----------
+    data_frame:
+        The table containing weights and values.
+    value:
+        Column containing values.
+    weight:
+        Column containing weights corresponding to values.
+
+    Returns
+    -------
+    result
+        The resulting variance defined as:
+            sum(weights * ((values - mean) ** 2))
+    """
+    data_frame_ = data_frame[
+        ~(data_frame[[weight, value]].isna().any(axis=1))
+    ]
+    mean = weighted_mean(data_frame_, value=value, weight=weight)
+    return (data_frame_[weight] * ((data_frame_[value] - mean) ** 2)).sum()
+
+def weighted_skewness(data_frame, value, weight):
+    """Calculates skewness from values and weights.
+    
+    Parameters
+    ----------
+    data_frame:
+        The table containing weights and values.
+    value:
+        Column containing values.
+    weight:
+        Column containing weights corresponding to values.
+
+    Returns
+    -------
+    result
+        The resulting skewness defined as:
+            sum(weights * ((values - mean) ** 3)) / (sum(weights * ((values - mean) ** 2)) ** (3/2))
+    """
+    data_frame_ = data_frame[
+        ~(data_frame[[weight, value]].isna().any(axis=1))
+    ]
+    mean = weighted_mean(data_frame_, value=value, weight=weight)
+    variance = weighted_variance(data_frame_, value=value, weight=weight)
+    return (data_frame_[weight] * ((data_frame_[value] - mean) ** 3)).sum() / (variance ** (3/2))

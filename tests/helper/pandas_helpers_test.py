@@ -1,13 +1,16 @@
-from numpy import nan
-from pandas import DataFrame, Index, MultiIndex
+from numpy import isclose, nan
+from pandas import DataFrame, isna, Index, MultiIndex
 from pandas.testing import assert_frame_equal
-from pytest import raises
+from pytest import raises, warns
 
 from pymmunomics.helper.pandas_helpers import (
     assert_groups_equal,
     concat_partial_groupby_apply,
     concat_pivot_pipe_melt,
     concat_weighted_value_counts,
+    weighted_mean,
+    weighted_variance,
+    weighted_skewness,
 )
 
 
@@ -213,7 +216,6 @@ class TestConcatPartialGroupbyApply:
             data_frame=data_frame,
             func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
-            pooled=[[]],
         )
         assert_frame_equal(actual, expected)
 
@@ -257,6 +259,200 @@ class TestConcatPartialGroupbyApply:
             func=lambda df: df[["val"]].prod(),
             by=["group1", "group2"],
             pooled=[[], ["group2"], ["group1", "group2"]],
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_multiple_func(self):
+        data_frame = DataFrame(
+            columns=["group1", "group2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "a", 2],
+                ["b", "a", 3],
+                ["b", "a", 5],
+                ["a", "b", 7],
+                ["a", "b", 11],
+                ["b", "a", 13],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["group1", "group2"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("b", "a"),
+                    ("a", "pooled"),
+                    ("b", "pooled"),
+                    ("pooled", "pooled"),
+                ],
+            ),
+            columns=["val", "val"],
+            data=[
+                [1 * 2, 1 + 2],
+                [7 * 11, 7 + 11],
+                [3 * 5 * 13, 3 + 5 + 13],
+                [1 * 2 * 7 * 11, 1 + 2 + 7 + 11],
+                [3 * 5 * 13, 3 + 5 + 13],
+                [1 * 2 * 3 * 5 * 7 * 11 * 13, 1 + 2 + 3 + 5 + 7 + 11 + 13],
+            ],
+        )
+        actual = concat_partial_groupby_apply(
+            data_frame=data_frame,
+            func=[
+                lambda df: df[["val"]].prod(),
+                lambda df: df[["val"]].sum(),
+            ],
+            by=["group1", "group2"],
+            pooled=[[], ["group2"], ["group1", "group2"]],
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_multiple_func_with_keys(self):
+        data_frame = DataFrame(
+            columns=["group1", "group2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "a", 2],
+                ["b", "a", 3],
+                ["b", "a", 5],
+                ["a", "b", 7],
+                ["a", "b", 11],
+                ["b", "a", 13],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["group1", "group2"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("b", "a"),
+                    ("a", "pooled"),
+                    ("b", "pooled"),
+                    ("pooled", "pooled"),
+                ],
+            ),
+            columns=MultiIndex.from_tuples(
+                [("prod", "val"), ("sum", "val")],
+            ),
+            data=[
+                [1 * 2, 1 + 2],
+                [7 * 11, 7 + 11],
+                [3 * 5 * 13, 3 + 5 + 13],
+                [1 * 2 * 7 * 11, 1 + 2 + 7 + 11],
+                [3 * 5 * 13, 3 + 5 + 13],
+                [1 * 2 * 3 * 5 * 7 * 11 * 13, 1 + 2 + 3 + 5 + 7 + 11 + 13],
+            ],
+        )
+        actual = concat_partial_groupby_apply(
+            data_frame=data_frame,
+            func=[
+                lambda df: df[["val"]].prod(),
+                lambda df: df[["val"]].sum(),
+            ],
+            by=["group1", "group2"],
+            pooled=[[], ["group2"], ["group1", "group2"]],
+            func_keys=["prod", "sum"],
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_single_func_with_keys_and_names(self):
+        data_frame = DataFrame(
+            columns=["group1", "group2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "a", 2],
+                ["b", "a", 3],
+                ["b", "a", 5],
+                ["a", "b", 7],
+                ["a", "b", 11],
+                ["b", "a", 13],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["group1", "group2"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("b", "a"),
+                    ("a", "pooled"),
+                    ("b", "pooled"),
+                    ("pooled", "pooled"),
+                ],
+            ),
+            columns=MultiIndex.from_tuples(
+                [("prod", "val")],
+                names=["func", "col"],
+            ),
+            data=[
+                [1 * 2],
+                [7 * 11],
+                [3 * 5 * 13],
+                [1 * 2 * 7 * 11],
+                [3 * 5 * 13],
+                [1 * 2 * 3 * 5 * 7 * 11 * 13],
+            ],
+        )
+        actual = concat_partial_groupby_apply(
+            data_frame=data_frame,
+            func=lambda df: df[["val"]].prod(),
+            by=["group1", "group2"],
+            pooled=[[], ["group2"], ["group1", "group2"]],
+            func_keys=["prod"],
+            col_names=["func", "col"],
+        )
+        assert_frame_equal(actual, expected)
+
+    def test_multiple_func_with_keys_and_names(self):
+        data_frame = DataFrame(
+            columns=["group1", "group2", "val"],
+            data=[
+                ["a", "a", 1],
+                ["a", "a", 2],
+                ["b", "a", 3],
+                ["b", "a", 5],
+                ["a", "b", 7],
+                ["a", "b", 11],
+                ["b", "a", 13],
+            ],
+        )
+        expected = DataFrame(
+            index=MultiIndex.from_tuples(
+                names=["group1", "group2"],
+                tuples=[
+                    ("a", "a"),
+                    ("a", "b"),
+                    ("b", "a"),
+                    ("a", "pooled"),
+                    ("b", "pooled"),
+                    ("pooled", "pooled"),
+                ],
+            ),
+            columns=MultiIndex.from_tuples(
+                [("prod", "val"), ("sum", "val")],
+                names=["func", "col"],
+            ),
+            data=[
+                [1 * 2,                       1 + 2],
+                [7 * 11,                      7 + 11],
+                [3 * 5 * 13,                  3 + 5 + 13],
+                [1 * 2 * 7 * 11,              1 + 2 + 7 + 11],
+                [3 * 5 * 13,                  3 + 5 + 13],
+                [1 * 2 * 3 * 5 * 7 * 11 * 13, 1 + 2 + 3 + 5 + 7 + 11 + 13],
+            ],
+        )
+        actual = concat_partial_groupby_apply(
+            data_frame=data_frame,
+            func=[
+                lambda df: df[["val"]].prod(),
+                lambda df: df[["val"]].sum(),
+            ],
+            by=["group1", "group2"],
+            pooled=[[], ["group2"], ["group1", "group2"]],
+            func_keys=["prod", "sum"],
+            col_names=["func", "col"],
         )
         assert_frame_equal(actual, expected)
 
@@ -847,3 +1043,125 @@ class TestConcatWeightedValueCounts:
             normalize=True,
         )
         assert_frame_equal(actual, expected)
+
+class TestWeightedMean:
+    def test_simple(self):
+        data_frame = DataFrame({
+            "weight": [1,2,3],
+            "value": [10, 100, 1000],
+        })
+        expected = 3210
+        actual = weighted_mean(
+            data_frame=data_frame,
+            value="value",
+            weight="weight",
+        )
+        assert actual == expected
+
+    def test_empty(self):
+        data_frame = DataFrame({
+            "weight": [],
+            "value": [],
+        })
+        expected = 0.0
+        actual = weighted_mean(
+            data_frame=data_frame,
+            value="value",
+            weight="weight",
+        )
+        assert actual == expected
+
+    def test_nans(self):
+        data_frame = DataFrame({
+            "weight": [1,2,nan],
+            "value": [nan, 100, 1000],
+        })
+        expected = 200.0
+        actual = weighted_mean(
+            data_frame=data_frame,
+            value="value",
+            weight="weight",
+        )
+        assert isclose(actual, expected)
+
+class TestWeightedVariance:
+    def test_simple(self):
+        data_frame = DataFrame({
+            "weight": [1,2,3],
+            "value": [10, 100, 1000],
+        })
+        expected = 44236500
+        actual = weighted_variance(
+            data_frame=data_frame,
+            value="value",
+            weight="weight",
+        )
+        assert actual == expected
+
+    def test_empty(self):
+        data_frame = DataFrame({
+            "weight": [],
+            "value": [],
+        })
+        expected = 0.0
+        actual = weighted_variance(
+            data_frame=data_frame,
+            value="value",
+            weight="weight",
+        )
+        assert actual == expected
+
+    def test_nans(self):
+        data_frame = DataFrame({
+            "weight": [1,2,nan],
+            "value": [nan, 100, 1000],
+        })
+        expected = 20000
+        actual = weighted_variance(
+            data_frame=data_frame,
+            value="value",
+            weight="weight",
+        )
+        assert isclose(actual, expected)
+
+class TestWeightedSkewness:
+    def test_simple(self):
+        data_frame = DataFrame({
+            "weight": [1,2,3],
+            "value": [10, 100, 1000],
+        })
+        expected = -0.42590697123040466
+        actual = weighted_skewness(
+            data_frame=data_frame,
+            value="value",
+            weight="weight",
+        )
+        assert actual == expected
+
+    def test_empty(self):
+        data_frame = DataFrame({
+            "weight": [],
+            "value": [],
+        })
+        with warns(RuntimeWarning):
+            actual = weighted_skewness(
+                data_frame=data_frame,
+                value="value",
+                weight="weight",
+            )
+        assert isna(actual)
+
+    def test_nans(self):
+        data_frame = DataFrame({
+            "weight": [1,2,nan],
+            "value": [nan, 100, 1000],
+        })
+        expected = -0.7071067811865476
+        actual = weighted_skewness(
+            data_frame=data_frame,
+            value="value",
+            weight="weight",
+        )
+        assert isclose(actual, expected)
+
+
