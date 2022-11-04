@@ -4,7 +4,7 @@ from typing import Any, Callable, Iterable, Sequence, Union
 
 from numpy import arange, array, empty, isin
 from numpy.typing import ArrayLike
-from pandas import concat, DataFrame, Series
+from pandas import concat, DataFrame, MultiIndex, Series
 from scipy.stats import kendalltau
 from scipy.stats.mstats import mquantiles
 from sklearn.base import TransformerMixin
@@ -126,7 +126,7 @@ class GroupedTransformer(TransformerMixin):
         X_new:
             The transformed data.
         """
-        return concat(
+        result = concat(
             [
                 transformer.transform(X[column_range])
                 for column_range, transformer
@@ -134,6 +134,12 @@ class GroupedTransformer(TransformerMixin):
             ],
             axis=1,
         )
+        if type(result.columns) == MultiIndex:
+            flat_names = str(tuple(result.columns.names))
+            flat_columns = result.columns.to_flat_index().map(str)
+            result.columns = flat_columns
+            result.columns.name = flat_names
+        return result
 
 class NullScoreSelectorBase(TransformerMixin, ABC):
     def __init__(
@@ -248,7 +254,6 @@ class SelectNullScoreOutlier(NullScoreSelectorBase):
             (self.train_scores < self.lower_quantile)
             | (self.upper_quantile < self.train_scores)
         ]
-        # breakpoint()
         return self
 
 class SelectPairedNullScoreOutlier(NullScoreSelectorBase):

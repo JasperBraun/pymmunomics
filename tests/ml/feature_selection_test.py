@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from numpy import array_equal, zeros
-from pandas import DataFrame
+from pandas import DataFrame, Index, MultiIndex
 from pandas.testing import assert_frame_equal
 from pytest import fixture
 from sklearn.base import TransformerMixin
@@ -155,6 +155,69 @@ class TestGroupedTransformer:
         grouped_transformer.fit(X, y)
         expected = DataFrame(
             columns=["f1", "g1", "g2"],
+            data=[
+                [1, -1, -1],
+                [1, -1, -1],
+                [1, -1, -1],
+                [1, -1, -1],
+                [1, -1, -1],
+            ]
+        )
+        X_new = grouped_transformer.transform(X)
+        assert_frame_equal(X_new, expected)
+
+    def test_multiindex_columns_subset_fit(self, add_one, subtract_one):
+        X = DataFrame(
+            columns=MultiIndex.from_arrays(
+                [
+                    ["a1", "a1", "a1", "a2"],
+                    ["f1", "f2", "g1", "g2"],
+                ],
+                names=["f", "a"],
+            ),
+            data=zeros(shape=(5, 4), dtype=int),
+        )
+        y = zeros(5)
+        column_ranges = [[("a1", "f1")], [("a1", "g1"), ("a2", "g2")]]
+        transformers = [add_one, subtract_one]
+        
+        grouped_transformer = GroupedTransformer(
+            column_ranges=column_ranges,
+            transformers=transformers,
+        )        
+        grouped_transformer.fit(X, y)
+        f_X, f_y = grouped_transformer.transformers[0].fit.call_args_list[-1].args
+        assert_frame_equal(f_X, X[[("a1", "f1")]])
+        assert array_equal(f_y, y)
+        g_X, g_y = grouped_transformer.transformers[1].fit.call_args_list[-1].args
+        assert_frame_equal(g_X, X[[("a1", "g1"), ("a2", "g2")]])
+        assert array_equal(g_y, y)
+
+    def test_multiindex_columns_subset_transform(self, add_one, subtract_one):
+        X = DataFrame(
+            columns=MultiIndex.from_arrays(
+                [
+                    ["a1", "a1", "a1", "a2"],
+                    ["f1", "f2", "g1", "g2"],
+                ],
+                names=["f", "a"],
+            ),
+            data=zeros(shape=(5, 4), dtype=int),
+        )
+        y = zeros(5)
+        column_ranges = [[("a1", "f1")], [("a1", "g1"), ("a2", "g2")]]
+        transformers = [add_one, subtract_one]
+        
+        grouped_transformer = GroupedTransformer(
+            column_ranges=column_ranges,
+            transformers=transformers,
+        )        
+        grouped_transformer.fit(X, y)
+        expected = DataFrame(
+            columns=Index(
+                ["('a1', 'f1')", "('a1', 'g1')", "('a2', 'g2')"],
+                name="('f', 'a')",
+            ),
             data=[
                 [1, -1, -1],
                 [1, -1, -1],
