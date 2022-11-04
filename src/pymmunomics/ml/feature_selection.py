@@ -20,6 +20,7 @@ class GroupedTransformer(TransformerMixin):
         self,
         column_ranges: Iterable[Sequence],
         transformers: Iterable[TransformerMixin],
+        flatten_columns: bool = True,
     ):
         """Applies different transformers to runs of columns independently.
 
@@ -30,6 +31,9 @@ class GroupedTransformer(TransformerMixin):
         transformers:
             The transformers correponding to the column header groups
             specified by `column_ranges`.
+        flatten_columns:
+            Convert ``pandas.MultiIndex`` columns to strings of tuples
+            during transformation.
 
         Notes
         -----
@@ -91,6 +95,7 @@ class GroupedTransformer(TransformerMixin):
         """
         self.column_ranges = column_ranges
         self.transformers = transformers
+        self.flatten_columns = flatten_columns
 
     def fit(self, X: DataFrame, y: Any):
         """Fits transformers on their respective columns of X.
@@ -134,7 +139,7 @@ class GroupedTransformer(TransformerMixin):
             ],
             axis=1,
         )
-        if type(result.columns) == MultiIndex:
+        if self.flatten_columns and type(result.columns) == MultiIndex:
             flat_names = str(tuple(result.columns.names))
             flat_columns = result.columns.to_flat_index().map(str)
             result.columns = flat_columns
