@@ -176,7 +176,9 @@ class NullScoreSelectorBase(TransformerMixin, ABC):
             Will be used to assign scores to variables in null and
             train data. Called with one column of null or train data as
             the first argument and the dependent variable column as the
-            second.
+            second. Default calculates Kendall-tau-C correlation
+            coefficient, but returns 0 when ``scipy.stats.kendalltau`
+            productes a NaN result.
         alpha:
             Determines how extreme selected variable scores have to be
             compared to null scores.
