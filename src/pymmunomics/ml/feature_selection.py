@@ -12,7 +12,11 @@ from sklearn.base import TransformerMixin
 from pymmunomics.helper.exception import InvalidArgumentError
 
 def _kendalltau(x, y):
-    return kendalltau(x, y, variant="c")[0]
+    correlation = kendalltau(x, y, variant="c")[0]
+    if pd.isna(correlation):
+        return 0.0
+    else:
+        return correlation
 
 class GroupedTransformer(TransformerMixin):
 
