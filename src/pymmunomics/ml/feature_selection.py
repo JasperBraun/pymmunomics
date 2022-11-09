@@ -4,7 +4,7 @@ from typing import Any, Callable, Iterable, Sequence, Union
 
 from numpy import arange, array, empty, isin
 from numpy.typing import ArrayLike
-from pandas import concat, DataFrame, MultiIndex, Series
+from pandas import concat, DataFrame, isna, MultiIndex, Series
 from scipy.stats import kendalltau
 from scipy.stats.mstats import mquantiles
 from sklearn.base import TransformerMixin
@@ -13,7 +13,7 @@ from pymmunomics.helper.exception import InvalidArgumentError
 
 def _kendalltau(x, y):
     correlation = kendalltau(x, y, variant="c")[0]
-    if pd.isna(correlation):
+    if isna(correlation):
         return 0.0
     else:
         return correlation
