@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
 from functools import partial
-from typing import Any, Callable, Iterable, Sequence, Union
+from typing import Any, Callable, Iterable, Mapping, Sequence, Union
 
 from numpy import arange, array, empty, isin
 from numpy.typing import ArrayLike
 from pandas import concat, DataFrame, isna, MultiIndex, Series
 from scipy.stats import kendalltau
 from scipy.stats.mstats import mquantiles
-from sklearn.base import TransformerMixin
+from sklearn.base import BaseEstimator, TransformerMixin
+from skopt.space.space import Dimension
 
 from pymmunomics.helper.exception import InvalidArgumentError
 
@@ -18,12 +19,46 @@ def _kendalltau(x, y):
     else:
         return correlation
 
-class GroupedTransformer(TransformerMixin):
+class IdentityDimension(ABC):
+    def __init__(self):
+        self.transformer = FunctionTransformer()
+
+    def transform(self, X):
+        return self.transformer.transform(X)
+
+    def inverse_transform(self, Xt):
+        return self.transformer.inverse_transform(Xt)
+
+    @abstractmethod
+    def rvs(self, n_samples=1, random_state=None):
+        pass
+
+class DimensionList(Dimension, IdentityDimension):
+    def __init__(
+        self,
+        dimensions: Sequence[Mapping[str, Dimension]],
+    ):
+        self.dimensions = dimensions
+
+    def rvs(self, n_samples=1, random_state=None):
+        sample = []
+        for dimension_map in self.dimensions:
+            item = {}
+            for param, dimension in dimension_map.items():
+                item[param] = dimension.rvs(
+                    n_samples=n_samples,
+                    random_state=random_state,
+                )
+            sample.append(item)
+        return sample
+
+class GroupedTransformer(BaseEstimator, TransformerMixin):
 
     def __init__(
         self,
-        column_ranges: Iterable[Sequence],
-        transformers: Iterable[TransformerMixin],
+        column_ranges: Union[Sequence[Sequence], None] = None,
+        transformers: Union[Sequence[TransformerMixin], None] = None,
+        params: Union[Sequence[dict], None] = None,
         flatten_columns: bool = True,
     ):
         """Applies different transformers to runs of columns independently.
@@ -35,6 +70,8 @@ class GroupedTransformer(TransformerMixin):
         transformers:
             The transformers correponding to the column header groups
             specified by `column_ranges`.
+        params:
+            Keyword arguments for corresponding transformers
         flatten_columns:
             Convert ``pandas.MultiIndex`` columns to strings of tuples
             during transformation.
@@ -99,6 +136,7 @@ class GroupedTransformer(TransformerMixin):
         """
         self.column_ranges = column_ranges
         self.transformers = transformers
+        self.params = params
         self.flatten_columns = flatten_columns
 
     def fit(self, X: DataFrame, y: Any):
@@ -117,6 +155,14 @@ class GroupedTransformer(TransformerMixin):
         self:
             Fitted transformer.
         """
+        if self.column_ranges is None:
+            self.columns_ranges = [X.columns]
+        if self.transformers is None:
+            self.transformers = [FunctionTransformer()]
+        if self.params is None:
+            self.params = [{} for _ in range(len(self.transformers))]
+        for transformer, params_ in zip(self.transformers, self.params):
+            transformer.set_params(**params_)
         for column_range, transformer in zip(self.column_ranges, self.transformers):
             transformer.fit(X[column_range], y)
         return self
@@ -150,13 +196,13 @@ class GroupedTransformer(TransformerMixin):
             result.columns.name = flat_names
         return result
 
-class NullScoreSelectorBase(TransformerMixin, ABC):
+class NullScoreSelectorBase(BaseEstimator, TransformerMixin, ABC):
     def __init__(
         self,
-        null_data: DataFrame,
-        null_y: str,
-        train_data: Union[DataFrame, None] = None,
-        train_y: Union[str, None] = None,
+        null_X: Union[DataFrame, None] = None,
+        null_y: Union[ArrayLike, None] = None,
+        train_X: Union[DataFrame, None] = None,
+        train_y: Union[ArrayLike, None] = None,
         score_func: Callable = _kendalltau,
         alpha: float = 0.05,
     ):
@@ -164,13 +210,12 @@ class NullScoreSelectorBase(TransformerMixin, ABC):
 
         Parameters
         ----------
-        null_data, train_data, null_y, train_y:
-            Rows correspond to samples, columns to variables. Columns
-            `null_y`, and `train_y` designate the dependent variable,
-            all others are independent variables. Index and column
-            headers are used to identify samples and variables,
-            respectively. Either both, or neither of `train_data`
-            and `train_y` must be provided.
+        null_X, train_X, null_y, train_y:
+            Rows correspond to samples, columns to variables for
+            `null_X` and `train_X`. Index and column headers are used to
+            identify samples and variables, respectively. `null_y`, and
+            `train_y` are the dependent variable values. Either both, or
+            neither of `train_data` and `train_y` should be provided.
         score_func:
             Function that takes two numpy arrays and returns a score.
             Will be used to assign scores to variables in null and
@@ -183,18 +228,10 @@ class NullScoreSelectorBase(TransformerMixin, ABC):
             Determines how extreme selected variable scores have to be
             compared to null scores.
         """
-        if sum(map(lambda arg: arg is None, [train_data, train_y])) == 1:
-            raise InvalidArgumentError(
-                "Must specify both or neither of `train_data` and `train_y`"
-            )
-
-        self.null_y = null_data.pop(null_y).to_numpy()
-        self.null_X = null_data
-        if train_y is not None:
-            self.train_y = train_data.pop(train_y).to_numpy()
-            self.train_X = train_data
-        else:
-            self.train_y, self.train_X = (None, None)
+        self.null_X = null_X
+        self.null_y = null_y
+        self.train_X = train_X
+        self.train_y = train_y
         self.score_func = score_func
         self.alpha = alpha
 
@@ -206,7 +243,15 @@ class NullScoreSelectorBase(TransformerMixin, ABC):
 
     @abstractmethod
     def fit(self, X, y):
-        pass
+        if self.null_X is None or self.null_y is None:
+            raise InvalidArgumentError(
+                "Must specify both null_X and null_y"
+            )
+        if sum(map(lambda attr: attr is None, [self.train_X, self.train_y])) == 1:
+            raise InvalidArgumentError(
+                "Must specify both or neither of `train_X` and `train_y`"
+            )
+        return self
 
     def transform(self, X):
         """Filters `X` returning only the selected columns in `X`."""
@@ -255,6 +300,7 @@ class SelectNullScoreOutlier(NullScoreSelectorBase):
         self:
             Fitted feature-selector.
         """
+        super().fit(X, y)
         self._decide_train_Xy(X, y)
         self._calculate_scores(set(X.index))
         self.lower_quantile, self.upper_quantile = mquantiles(
@@ -296,6 +342,7 @@ class SelectPairedNullScoreOutlier(NullScoreSelectorBase):
         self:
             Fitted feature-selector.
         """
+        super().fit(X, y)
         self._decide_train_Xy(X, y)
         self.train_X = self.train_X[self.null_X.columns]
         self._calculate_scores(set(X.index))

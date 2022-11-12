@@ -323,6 +323,7 @@ class TestSelectNullScoreOutlier:
                 [1, 2, 4, 3, 5,  0],
             ],
         )
+        null_y = data.pop("null_y").to_numpy()
         # alpha first_train_row lower_quantile upper_quantile
         #  0.25        sample_1           2.05           5.95
         #  0.25        sample_2           1.05           4.95
@@ -332,7 +333,7 @@ class TestSelectNullScoreOutlier:
         #  0.8         sample_2           2.48           3.52
         #  0.8         sample_3           1.48           2.52
         #  0.8         sample_4           2.48           3.52
-        return data
+        return (data, null_y)
 
     @fixture
     def train_data(self):
@@ -353,6 +354,7 @@ class TestSelectNullScoreOutlier:
                 [2, 5, 1, 3, 4, 4,  -1],
             ],
         )
+        train_y = data.pop("train_y").to_numpy()
         # alpha train_samples lower_quantile upper_quantile selected_features
         #  0.25           all           2.05           5.95   train_1, train_2, train_6
         #  0.25       1, 2, 3           2.05           5.95   train_1, train_4, train_5, train_6
@@ -362,7 +364,7 @@ class TestSelectNullScoreOutlier:
         #  0.8        1, 2, 3           3.48           4.52   train_1, train_2, train_4, train_5, train_6
         #  0.8           2, 3           2.48           3.52   train_2, train_3, train_4, train_5, train_6
         #  0.8              3           1.48           2.52   train_1, train_2, train_3, train_5, train_6
-        return data
+        return (data, train_y)
 
     @fixture
     def zeros_train_data(self):
@@ -383,104 +385,116 @@ class TestSelectNullScoreOutlier:
                 [0, 0, 0, 0, 0, 0, -10],
             ],
         )
+        train_y = data.pop("train_y").to_numpy()
         # would always all get selected
-        return data
+        return (data, train_y)
 
     def test_full_train(self, null_data, train_data, score_func):
+        null_X, null_y = null_data
         selector = SelectNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
+            null_X=null_X,
+            null_y=null_y,
             score_func=score_func,
             alpha=0.25,
         )
-        train_y = train_data.pop("train_y")
+        train_X, train_y = train_data
         selector.fit(
-            X=train_data, y=train_y,
+            X=train_X, y=train_y,
         )
-        expected = train_data[["train_1", "train_2", "train_6"]]
-        actual = selector.transform(train_data)
+        expected = train_X[["train_1", "train_2", "train_6"]]
+        actual = selector.transform(train_X)
         assert_frame_equal(actual, expected)
 
     def test_subset_train(self, null_data, train_data, score_func):
+        null_X, null_y = null_data
         selector = SelectNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
+            null_X=null_X,
+            null_y=null_y,
             score_func=score_func,
             alpha=0.25,
         )
-        train_data = train_data.iloc[1:] # subsetting train data
-        train_y = train_data.pop("train_y")
+        train_X, train_y = train_data
+        train_X = train_X.iloc[1:] # subsetting train data
+        train_y = train_y[1:]
         selector.fit(
-            X=train_data, y=train_y,
+            X=train_X, y=train_y,
         )
-        expected = train_data[["train_1", "train_4", "train_5", "train_6"]]
-        actual = selector.transform(train_data)
+        expected = train_X[["train_1", "train_4", "train_5", "train_6"]]
+        actual = selector.transform(train_X)
         assert_frame_equal(actual, expected)
 
     def test_full_predefined_train(self, null_data, train_data, zeros_train_data, score_func):
+        null_X, null_y = null_data
+        train_X, train_y = train_data
         selector = SelectNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
-            train_data=train_data,
-            train_y="train_y",
+            null_X=null_X,
+            null_y=null_y,
+            train_X=train_X,
+            train_y=train_y,
             score_func=score_func,
             alpha=0.25,
         )
-        zeros_train_y = zeros_train_data.pop("train_y")
+        zeros_train_X, zeros_train_y = zeros_train_data
         selector.fit(
-            X=zeros_train_data, y=zeros_train_y,
+            X=zeros_train_X, y=zeros_train_y,
         )
-        expected = zeros_train_data[["train_1", "train_2", "train_6"]]
-        actual = selector.transform(zeros_train_data)
+        expected = zeros_train_X[["train_1", "train_2", "train_6"]]
+        actual = selector.transform(zeros_train_X)
         assert_frame_equal(actual, expected)
 
     def test_subset_predefined_train(self, null_data, train_data, zeros_train_data, score_func):
+        null_X, null_y = null_data
+        train_X, train_y = train_data
         selector = SelectNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
-            train_data=train_data,
-            train_y="train_y",
+            null_X=null_X,
+            null_y=null_y,
+            train_X=train_X,
+            train_y=train_y,
             score_func=score_func,
             alpha=0.25,
         )
-        zeros_train_data = zeros_train_data.iloc[2:]
-        zeros_train_y = zeros_train_data.pop("train_y")
+        zeros_train_X, zeros_train_y = zeros_train_data
+        zeros_train_X = zeros_train_X.iloc[2:]
+        zeros_train_y = zeros_train_y[2:]
         selector.fit(
-            X=zeros_train_data, y=zeros_train_y,
+            X=zeros_train_X, y=zeros_train_y,
         )
-        expected = zeros_train_data[["train_2", "train_5", "train_6"]]
-        actual = selector.transform(zeros_train_data)
+        expected = zeros_train_X[["train_2", "train_5", "train_6"]]
+        actual = selector.transform(zeros_train_X)
         assert_frame_equal(actual, expected)
 
     def test_alpha_full_train(self, null_data, train_data, score_func):
+        null_X, null_y = null_data
         selector = SelectNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
+            null_X=null_X,
+            null_y=null_y,
             score_func=score_func,
             alpha=0.8,
         )
-        train_y = train_data.pop("train_y")
+        train_X, train_y = train_data
         selector.fit(
-            X=train_data, y=train_y,
+            X=train_X, y=train_y,
         )
-        expected = train_data[["train_1", "train_2", "train_3", "train_5", "train_6"]]
-        actual = selector.transform(train_data)
+        expected = train_X[["train_1", "train_2", "train_3", "train_5", "train_6"]]
+        actual = selector.transform(train_X)
         assert_frame_equal(actual, expected)
 
     def test_alpha_subset_train(self, null_data, train_data, score_func):
+        null_X, null_y = null_data
         selector = SelectNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
+            null_X=null_X,
+            null_y=null_y,
             score_func=score_func,
             alpha=0.8,
         )
-        train_data = train_data.iloc[1:] # subsetting train data
-        train_y = train_data.pop("train_y")
+        train_X, train_y = train_data
+        train_X = train_X.iloc[1:] # subsetting train data
+        train_y = train_y[1:]
         selector.fit(
-            X=train_data, y=train_y,
+            X=train_X, y=train_y,
         )
-        expected = train_data[["train_1", "train_2", "train_4", "train_5", "train_6"]]
-        actual = selector.transform(train_data)
+        expected = train_X[["train_1", "train_2", "train_4", "train_5", "train_6"]]
+        actual = selector.transform(train_X)
         assert_frame_equal(actual, expected)
 
 class TestSelectPairedNullScoreOutlier:
@@ -509,12 +523,13 @@ class TestSelectPairedNullScoreOutlier:
                 [1, 2, 4, 3, 5,  0],
             ],
         )
+        null_y = data.pop("null_y").to_numpy()
         # train_samples scores
         #           all   6, 2, 3, 4, 5
         #         1,2,3   6, 2, 3, 4, 5
         #           2,3   3, 4, 2, 1, 5
         #             3   1, 3, 2, 0, 4
-        return data
+        return (data, null_y)
 
     @fixture
     def train_data(self):
@@ -535,6 +550,7 @@ class TestSelectPairedNullScoreOutlier:
                 [2, 5, 1, 3, 4,  -1],
             ],
         )
+        train_y = data.pop("train_y").to_numpy()
         # train_samples    scores           delta_scores
         #           all    1, 2, 5, 4, 3    -5,  0,  2,  0, -2
         #       1, 2, 3    2, 3, 4, 0, 1    -4,  1,  1, -4, -4
@@ -550,7 +566,7 @@ class TestSelectPairedNullScoreOutlier:
         #  0.8          1,2,3          -4.             -1.4     col_2, col_3
         #  0.8            2,3           0.48            1.52    col_1, col_2, col_3, col_5
         #  0.8              3          -0.52            0.52    col_2, col_3, col_4, col_5
-        return data
+        return (data, train_y)
 
     @fixture
     def zeros_train_data(self):
@@ -571,104 +587,116 @@ class TestSelectPairedNullScoreOutlier:
                 [0, 0, 0, 0, 0, -100],
             ],
         )
+        train_y = data.pop("train_y").to_numpy()
         # would always all get selected
-        return data
+        return (data, train_y)
 
     def test_full_train(self, null_data, train_data, score_func):
+        null_X, null_y = null_data
         selector = SelectPairedNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
+            null_X=null_X,
+            null_y=null_y,
             score_func=score_func,
             alpha=0.25,
         )
-        train_y = train_data.pop("train_y")
+        train_X, train_y = train_data
         selector.fit(
-            X=train_data, y=train_y,
+            X=train_X, y=train_y,
         )
-        expected = train_data[["col_1", "col_3"]]
-        actual = selector.transform(train_data)
+        expected = train_X[["col_1", "col_3"]]
+        actual = selector.transform(train_X)
         assert_frame_equal(actual, expected)
 
     def test_subset_train(self, null_data, train_data, score_func):
+        null_X, null_y = null_data
         selector = SelectPairedNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
+            null_X=null_X,
+            null_y=null_y,
             score_func=score_func,
             alpha=0.25,
         )
-        train_data = train_data.iloc[1:] # subsetting train data
-        train_y = train_data.pop("train_y")
+        train_X, train_y = train_data
+        train_X = train_X.iloc[1:] # subsetting train data
+        train_y = train_y[1:]
         selector.fit(
-            X=train_data, y=train_y,
+            X=train_X, y=train_y,
         )
-        expected = train_data[[]]
-        actual = selector.transform(train_data)
+        expected = train_X[[]]
+        actual = selector.transform(train_X)
         assert_frame_equal(actual, expected)
 
     def test_full_predefined_train(self, null_data, train_data, zeros_train_data, score_func):
+        null_X, null_y = null_data
+        train_X, train_y = train_data
         selector = SelectPairedNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
-            train_data=train_data,
-            train_y="train_y",
+            null_X=null_X,
+            null_y=null_y,
+            train_X=train_X,
+            train_y=train_y,
             score_func=score_func,
             alpha=0.25,
         )
-        zeros_train_y = zeros_train_data.pop("train_y")
+        zeros_train_X, zeros_train_y = zeros_train_data
         selector.fit(
-            X=zeros_train_data, y=zeros_train_y,
+            X=zeros_train_X, y=zeros_train_y,
         )
-        expected = zeros_train_data[["col_1", "col_3"]]
-        actual = selector.transform(zeros_train_data)
+        expected = zeros_train_X[["col_1", "col_3"]]
+        actual = selector.transform(zeros_train_X)
         assert_frame_equal(actual, expected)
 
     def test_subset_predefined_train(self, null_data, train_data, zeros_train_data, score_func):
+        null_X, null_y = null_data
+        train_X, train_y = train_data
         selector = SelectPairedNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
-            train_data=train_data,
-            train_y="train_y",
+            null_X=null_X,
+            null_y=null_y,
+            train_X=train_X,
+            train_y=train_y,
             score_func=score_func,
             alpha=0.25,
         )
-        zeros_train_data = zeros_train_data.iloc[3:]
-        zeros_train_y = zeros_train_data.pop("train_y")
+        zeros_train_X, zeros_train_y = zeros_train_data
+        zeros_train_X = zeros_train_X.iloc[3:]
+        zeros_train_y = zeros_train_y[3:]
         selector.fit(
-            X=zeros_train_data, y=zeros_train_y,
+            X=zeros_train_X, y=zeros_train_y,
         )
-        expected = zeros_train_data[["col_3", "col_4"]]
-        actual = selector.transform(zeros_train_data)
+        expected = zeros_train_X[["col_3", "col_4"]]
+        actual = selector.transform(zeros_train_X)
         assert_frame_equal(actual, expected)
 
     def test_alpha_full_train(self, null_data, train_data, score_func):
+        null_X, null_y = null_data
         selector = SelectPairedNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
+            null_X=null_X,
+            null_y=null_y,
             score_func=score_func,
             alpha=0.8,
         )
-        train_y = train_data.pop("train_y")
+        train_X, train_y = train_data
         selector.fit(
-            X=train_data, y=train_y,
+            X=train_X, y=train_y,
         )
-        expected = train_data[["col_1", "col_3", "col_5"]]
-        actual = selector.transform(train_data)
+        expected = train_X[["col_1", "col_3", "col_5"]]
+        actual = selector.transform(train_X)
         assert_frame_equal(actual, expected)
 
     def test_alpha_subset_train(self, null_data, train_data, score_func):
+        null_X, null_y = null_data
         selector = SelectPairedNullScoreOutlier(
-            null_data=null_data,
-            null_y="null_y",
+            null_X=null_X,
+            null_y=null_y,
             score_func=score_func,
             alpha=0.8,
         )
-        train_data = train_data.iloc[1:] # subsetting train data
-        train_y = train_data.pop("train_y")
+        train_X, train_y = train_data
+        train_X = train_X.iloc[1:] # subsetting train data
+        train_y = train_y[1:]
         selector.fit(
-            X=train_data, y=train_y,
+            X=train_X, y=train_y,
         )
-        expected = train_data[["col_2", "col_3"]]
-        actual = selector.transform(train_data)
+        expected = train_X[["col_2", "col_3"]]
+        actual = selector.transform(train_X)
         assert_frame_equal(actual, expected)
 
 
