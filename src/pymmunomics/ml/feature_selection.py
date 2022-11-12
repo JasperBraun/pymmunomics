@@ -356,3 +356,56 @@ class SelectPairedNullScoreOutlier(NullScoreSelectorBase):
             | (self.upper_quantile < delta_scores)
         ]
         return self
+
+class AggregateNullScoreOutlier(NullScoreSelectorBase):
+    def fit(self, X: DataFrame, y: ArrayLike):
+        """Calculates scores and determines outlying variables.
+
+        Selected variables are those whose score is below the
+        `alpha / 2`'th or above the `1 - (alpha / 2)`'th quantile of
+        null scores.
+
+        Parameters
+        ----------
+        X:
+            The train data from which to select outlying independent
+            variables. The index will identify which samples in the null
+            data to use for generating the null score distribution.
+        y:
+            The dependent variable's values corresponding in order to
+            the train data in `X`.
+
+        Notes
+        -----
+        - If `train_data` and `train_y` were passed as arguments
+          to the initializer, arguments `X` and `y` are ignored, except
+          for determining which samples are to be used.
+
+        Returns
+        -------
+        self:
+            Fitted feature-selector.
+        """
+        super().fit(X, y)
+        self._decide_train_Xy(X, y)
+        self._calculate_scores(set(X.index))
+        self.lower_quantile, self.upper_quantile = mquantiles(
+            self.null_scores,
+            prob=[self.alpha / 2, 1 - (self.alpha / 2)],
+        )
+        self.selected_columns = self.train_X.columns[
+            (self.train_scores < self.lower_quantile)
+            | (self.upper_quantile < self.train_scores)
+        ]
+        return self
+
+    def transform(self, X):
+        """Filters `X` returning only the selected columns in `X`."""
+        return (
+            X[self.selected_columns]
+            .sum(axis=1)
+            .to_frame()
+            .rename(columns={
+                0: ";".join(map(str, self.selected_columns.to_list()))
+            })
+        )
