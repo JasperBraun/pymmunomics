@@ -210,6 +210,7 @@ class NullScoreSelectorBase(BaseEstimator, TransformerMixin, ABC):
         train_y: Union[ArrayLike, None] = None,
         score_func: Callable = _kendalltau,
         alpha: float = 0.05,
+        flatten_columns: bool = False,
     ):
         """Base class for variable selectors via null distribution of scores.
 
@@ -239,6 +240,7 @@ class NullScoreSelectorBase(BaseEstimator, TransformerMixin, ABC):
         self.train_y = train_y
         self.score_func = score_func
         self.alpha = alpha
+        self.flatten_columns = flatten_columns
 
         self.null_scores = empty(self.null_X.shape[1])
         self.train_scores = None
@@ -260,7 +262,13 @@ class NullScoreSelectorBase(BaseEstimator, TransformerMixin, ABC):
 
     def transform(self, X):
         """Filters `X` returning only the selected columns in `X`."""
-        return X[self.selected_columns]
+        result = X[self.selected_columns]
+        if self.flatten_columns and type(result.columns) == MultiIndex:
+            flat_names = str(tuple(result.columns.names))
+            flat_columns = result.columns.to_flat_index().map(str)
+            result.columns = flat_columns
+            result.columns.name = flat_names
+        return result
 
     def _decide_train_Xy(self, X, y):
         if self.train_X is None:
