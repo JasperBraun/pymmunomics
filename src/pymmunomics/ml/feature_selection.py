@@ -52,6 +52,11 @@ class DimensionList(Dimension, IdentityDimension):
             sample.append(item)
         return sample
 
+    def set_transformer(self, transform="identity"):
+        for i in range(len(self.dimensions)):
+            for key in self.dimensions[i]:
+                self.dimensions[i][key].set_transformer(transform=transform)
+
 class GroupedTransformer(BaseEstimator, TransformerMixin):
 
     def __init__(
