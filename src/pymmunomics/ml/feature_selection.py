@@ -19,6 +19,21 @@ def _kendalltau(x, y):
     else:
         return correlation
 
+class FlattenColumnTransformer(TransformerMixin):
+    def __init__(self, transformer):
+        self.transformer = transformer
+    def fit(self, X, y):
+        self.transformer.fit(X, y)
+    def transform(self, X):
+        result = self.transformer.transform(X)
+        if type(result.columns) == MultiIndex:
+            flat_names = str(tuple(result.columns.names))
+            flat_columns = result.columns.to_flat_index().map(str)
+            result.columns = flat_columns
+            result.columns.name = flat_names
+        return result
+
+
 class IdentityDimension(ABC):
     def __init__(self):
         self.transformer = FunctionTransformer()
