@@ -24,6 +24,7 @@ class FlattenColumnTransformer(TransformerMixin):
         self.transformer = transformer
     def fit(self, X, y):
         self.transformer.fit(X, y)
+        return self
     def transform(self, X):
         result = self.transformer.transform(X)
         if type(result.columns) == MultiIndex:
