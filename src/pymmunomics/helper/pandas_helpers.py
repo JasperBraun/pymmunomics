@@ -81,6 +81,23 @@ def assert_groups_equal(
         other = group_pipe(groupby.get_group(group))
         assert_frame_equal(first, other, **assert_frame_equal_kwargs)
 
+def column_combinations(data_frame: DataFrame, columns: Sequence[str]):
+    """Obtains set of value combinations in columns.
+
+    Parameters
+    ----------
+    data_frame:
+        Data from which to extract combinations.
+    columns:
+        Columns whose value-combinations to extract.
+
+    Returns
+    -------
+    combinations:
+        A set of tuples of combinations of values in specified columns.
+    """
+    return set(zip(*[data_frame[col] for col in columns]))
+
 
 def concat_partial_groupby_apply(
     data_frame: DataFrame,
@@ -376,6 +393,53 @@ def concat_weighted_value_counts(
             counts_list[-1] /= data_frame[weight].sum()
     counts = concat(counts_list)
     return counts
+
+def read_mapping(
+    filepaths: Sequence[str],
+    keys: Sequence[str],
+    values: Sequence[str],
+    read_funcs: Sequence[Callable] = [read_csv],
+    read_kwargs: Union[Sequence[dict], None] = None,
+):
+    """Reads file into dictionary mapping one column to the another.
+
+    Parameters
+    ----------
+    filepaths:
+        Paths to files containing mapped keys and values.
+    keys:
+        Corresponding columns containing the keys.
+    values:
+        Corresponding columns containing the values.
+    read_funcs:
+        Read filepath into ``pandas.DataFrame``.
+    read_kwargs:
+        Passed to corresponding members of `read_funcs`.
+
+    Note
+    ----
+    Single value from duplicate values for same key is chosen without
+    guarantee about which.
+
+    Returns
+    -------
+    mapping: dict
+        Maps key column entries to corresponding value column entries.
+    """
+    if read_kwargs is None:
+        read_kwargs = [{} for _ in range(len(filepaths))]
+    mapping = {}
+    for filepath, key, value, read_func, read_kwargs_ in zip(
+        filepaths, keys, values, read_funcs, read_kwargs
+    ):
+        mapping.update(
+            read_func(filepath, **read_kwargs)
+            [[key, value]]
+            .set_index(key)
+            .to_dict()
+            [value]
+        )
+    return mapping
 
 def weighted_mean(
     data_frame: DataFrame,
