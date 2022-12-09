@@ -1,6 +1,7 @@
 from typing import (
     Callable,
     Dict,
+    Hashable,
     Iterable,
     List,
     Mapping,
@@ -8,9 +9,67 @@ from typing import (
     Sequence,
     Union,
 )
+from warnings import warn
 
-from pandas import concat, DataFrame
+from numpy import empty
+from numpy.typing import ArrayLike
+from pandas import concat, DataFrame, read_csv, Series
 from pandas.testing import assert_frame_equal
+
+from pymmunomics.helper.exception import AmbiguousValuesWarning
+from pymmunomics.helper.generic_helpers import chain_update
+
+def agg_first_safely(
+    series: Series,
+    dropna: bool = True,
+):
+    if series.nunique(dropna=dropna) > 1:
+        warn(AmbiguousValuesWarning(
+            "Aggregating values %s using first row's value: %s; (series name: %s)"
+            % (set(series), series.iloc[0:1], series.name)
+        ))
+    return series.iloc[0]
+
+def apply_zipped(
+    data_frame: DataFrame,
+    keys: Sequence[str],
+    func: Callable,
+    *args,
+    unpack: bool = True,
+    **kwargs,
+) -> list:
+    """Efficiently applies function to tuples of values from columns.
+
+    Parameters
+    ----------
+    data_frame:
+        Data to which to apply function.
+    keys:
+        Columns whose values to zip and pass to function.
+    func:
+        Called on each combination of values in the specified columns.
+    unpack:
+        Determines whether or not value combinations should be passed as
+        tuples or as individual positional arguments.
+    args, kwargs:
+        Passed to func at every call.
+
+    Returns
+    -------
+    return_values:
+        A list of return values corresponding to the function calls.
+    """
+    zipped_columns = zip(*[data_frame[key] for key in keys])
+    if unpack:
+        return [
+            func(*vals, *args, **kwargs)
+            for vals in zipped_columns
+        ]
+    else:
+        return [
+            func(vals, *args, **kwargs)
+            for vals in zipped_columns
+        ]
 
 def assert_groups_equal(
     data_frame: DataFrame,
@@ -97,7 +156,6 @@ def column_combinations(data_frame: DataFrame, columns: Sequence[str]):
         A set of tuples of combinations of values in specified columns.
     """
     return set(zip(*[data_frame[col] for col in columns]))
-
 
 def concat_partial_groupby_apply(
     data_frame: DataFrame,
@@ -394,32 +452,147 @@ def concat_weighted_value_counts(
     counts = concat(counts_list)
     return counts
 
-def read_mapping(
-    filepaths: Sequence[str],
-    keys: Sequence[str],
-    values: Sequence[str],
-    read_funcs: Sequence[Callable] = [read_csv],
-    read_kwargs: Union[Sequence[dict], None] = None,
+def pairwise_apply(
+    func: Callable,
+    left: DataFrame,
+    right: DataFrame,
+    func_kwargs: dict,
+    out: ArrayLike = None,
+    is_valid_relative_position: Callable = None,
 ):
-    """Reads file into dictionary mapping one column to the another.
+    """Applies function to pairs of rows from two data frames.
 
     Parameters
     ----------
-    filepaths:
-        Paths to files containing mapped keys and values.
-    keys:
-        Corresponding columns containing the keys.
-    values:
-        Corresponding columns containing the values.
-    read_funcs:
-        Read filepath into ``pandas.DataFrame``.
+    func:
+        The function to call on pairs of rows from left and right.
+    left, right:
+        The tables from which to extract pairs of rows.
+    func_kwargs:
+        Additional keyword arguments to pass to func at every call.
+    out:
+        Array in which to store results of function calls.
+    is_valid_relative_position:
+        If set, must take arguments i, j, where i is the row position in
+        left and j the row position in right, and evaluate True or False.
+        func is only applied to values whose positions are valid.
+
+    Returns
+    -------
+    A pandas.DataFrame indexed by rows of left with columns indexed by
+    rows of right and return values of func for corresponding call on
+    rows from left and right. Returns None and stores return values of
+    func in out instead if out is specified.
+    """
+    if out is None:
+        out_ = empty(shape=(left.shape[0], right.shape[0]), dtype=dtype("f8"))
+    else:
+        out_ = out
+    for i in range(left.shape[0]):
+        left_row = left.iloc[i]
+        for j in range(right.shape[0]):
+            if is_valid_relative_position is None or is_valid_relative_position(i, j):
+                right_row = right.iloc[j]
+                out_[i, j] = func(left_row, right_row, **func_kwargs)
+    if out is None:
+        result = DataFrame(data=out_, index=left.index, columns=right.index)
+        return result
+    else:
+        return None
+
+def pipe_assign_from_func(
+    data_frame: DataFrame,
+    names: Union[str, Sequence[str]],
+    pipe_func: Callable,
+    inplace: bool = False,
+    **kwargs,
+) -> DataFrame:
+    """Assigns column(s) from function applied to data.
+
+    Parameters
+    ----------
+    data_frame:
+        Data to which to apply function and append column(s).
+    names:
+        Name(s) of columns to assign.
+    pipe_func:
+        Function to apply to data to obtain new columns data.
+    inplace:
+        Determines whether or not data is modified in place.
+    kwargs:
+        Passed to `pipe_func`.
+
+    Returns
+    -------
+    new_data_frame:
+        The old `data_frame` plus new columns named `keys` with values
+        filled in by func applied to `data_frame`.
+    """
+    if inplace:
+        data_frame_ = data_frame
+    else:
+        data_frame_ = data_frame.copy()
+    data_frame_[names] = pipe_func(data_frame, **kwargs)
+    return data_frame_
+
+def read_as_tuples(
+    filepath: str,
+    columns: Sequence[str],
+    read_func: Callable = read_csv,
+    read_kwargs: Union[dict, None] = None,
+) -> list:
+    """Reads columns into list of tuples.
+
+    Parameters
+    ----------
+    filepath:
+        Path to file containing columns of interest.
+    columns:
+        Columns of interest.
+    read_func:
+        Reads filepath into ``pandas.DataFrame``.
     read_kwargs:
-        Passed to corresponding members of `read_funcs`.
+        Passed to `read_func`.
+
+    Returns
+    -------
+    tuples:
+        List of tuples of the value combinations in the columns of
+        interest.
+    """
+    if read_kwargs is None:
+        read_kwargs = {}
+    return list(
+        read_func(filepath, **read_kwargs)
+        [columns]
+        .apply(tuple, axis=1)
+    )
+
+def read_mapping(
+    filepath: str,
+    key: Union[str, Sequence[str]],
+    value: str,
+    read_func: Callable = read_csv,
+    read_kwargs: Union[dict, None] = None,
+) -> dict:
+    """Reads file into dictionary mapping key to values columns.
+
+    Parameters
+    ----------
+    filepath:
+        Path to file containing mapped keys and values.
+    key:
+        Column(s) containing the keys.
+    value:
+        Column containing the values.
+    read_func:
+        Reads filepath into ``pandas.DataFrame``.
+    read_kwargs:
+        Passed to `read_func`.
 
     Note
     ----
-    Single value from duplicate values for same key is chosen without
-    guarantee about which.
+    Duplicate mappings are uniqued without guarantees.
 
     Returns
     -------
@@ -427,19 +600,78 @@ def read_mapping(
         Maps key column entries to corresponding value column entries.
     """
     if read_kwargs is None:
-        read_kwargs = [{} for _ in range(len(filepaths))]
-    mapping = {}
-    for filepath, key, value, read_func, read_kwargs_ in zip(
-        filepaths, keys, values, read_funcs, read_kwargs
-    ):
-        mapping.update(
-            read_func(filepath, **read_kwargs)
-            [[key, value]]
-            .set_index(key)
-            .to_dict()
-            [value]
-        )
+        read_kwargs = {}
+    if type(key) == str:
+        subset = [key, value]
+    else:
+        subset = [*key, value]
+    mapping = (
+        read_func(filepath, **read_kwargs)
+        [subset]
+        .dropna()
+        .set_index(key)
+        .to_dict()
+        [value]
+    )
     return mapping
+
+def read_combine_mappings(
+    filepaths: Sequence[str],
+    keys: Sequence[str],
+    values: Sequence[str],
+    read_funcs: Sequence[Callable],
+    read_kwargs: Union[Sequence[Union[dict, None]], None] = None,
+) -> dict:
+    """Reads files into dictionary mapping key to values columns.
+
+    Parameters
+    ----------
+    filepaths:
+        Paths to files containing mapped keys and values.
+    keys:
+        Each file's column containing the keys.
+    values:
+        Each file's column containing the values.
+    read_funcs:
+        For each file, reads filepath into ``pandas.DataFrame``.
+    read_kwargs:
+        For each file, passed to corresponding member in `read_funcs`.
+
+    Note
+    ----
+    - Duplicate mappings within files are uniqued without guarantees.
+    - Duplicate mappings in subsequent files take precedence.
+    - Transitive mappings in subsequent files are added individually and
+      combined (i.e. if first file maps x -> y and second maps y -> z,
+      then in the returned dictionary there will be the mappings y -> z
+      and x -> z).
+    - Duplicate mappings in subsequent files are resolved before
+      transitive mappings.
+
+    Returns
+    -------
+    mapping: dict
+        Maps key column entries to corresponding value column entries.
+    """
+    zip_lists = [filepaths, keys, values, read_funcs, read_kwargs]
+    if len(set(map(len, zip_lists))) > 1:
+        raise InvalidArgumentError(
+            "Must provide equal numbers of filepaths, key columns,"
+            " value columns, read functions, and read function keyword"
+            " arguments."
+        )
+    mappings = []
+    for filepath, key, value, read_func, read_kwargs_ in zip(*zip_lists):
+        mapping = read_mapping(
+            filepath=filepath,
+            key=key,
+            value=value,
+            read_func=read_func,
+            read_kwargs=read_kwargs_,
+        )
+        mappings.append(mapping)
+    combined_mappings = chain_update(mappings=mappings)
+    return combined_mappings
 
 def weighted_mean(
     data_frame: DataFrame,

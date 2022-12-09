@@ -4,6 +4,9 @@ class PymmunomicsBaseWarning(Warning):
 class ArgumentWarning(PymmunomicsBaseWarning):
     pass
 
+class AmbiguousValuesWarning(PymmunomicsBaseWarning):
+    pass
+
 class PymmunomicsBaseError(Exception):
     pass
 

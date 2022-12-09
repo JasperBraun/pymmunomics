@@ -1,6 +1,6 @@
 from typing import Iterable, Literal, Mapping, Sequence, Union
 
-from pandas import DataFrame
+from pandas import concat, DataFrame
 
 from pymmunomics.helper.pandas_helpers import (
     concat_partial_groupby_apply,
@@ -271,3 +271,55 @@ def get_repertoire_sizes(
         .astype(int)
     )
     return sizes
+
+def repertoire_from_sequence_table(
+    sequence_table: DataFrame,
+    clonotype_columns: Sequence[str],
+    count_name: str = "clone_size",
+    frequency_name: str = "clone_fraction",
+    other_agg: Union[dict, None] = None,
+) -> DataFrame:
+    """Converts observations into values with counts and frequencies.
+
+    Parameters
+    ----------
+    sequence_table:
+        Table of sequence observations. Lists the same clonotype
+        repeatedly each time it is observed.
+    clonotype_columns:
+        Columns whose value combinations identify and distinguish
+        clonotypeß
+    count_name:
+        Name of column for counts.
+    frequency_name:
+        Name of colunn for normalized counts.
+    other_agg:
+        Maps other columns that are not in clonotype_columns to
+        aggregation functions to aggregate over same clonotype groups.
+
+    Returns
+    -------
+    repertoire:
+        A table listing clonotypes and their counts, normalized counts
+        and possibly aggregations of other columns across the
+        clonotypes.
+    """
+    counts = (
+        sequence_table[clonotype_columns]
+        .value_counts()
+        .to_frame()
+        .rename(columns={0: count_name})
+    )
+    frequencies = (
+        sequence_table[clonotype_columns]
+        .value_counts(normalize=True)
+        .to_frame()
+        .rename(columns={0: frequency_name})
+    )
+    join_frames = [counts, frequencies]
+    if other_agg is not None:
+        join_frames.append(
+            sequence_table.groupby(clonotype_columns).agg(other_agg)
+        )
+    repertoire = concat(join_frames, axis=1).reset_index()
+    return repertoire
