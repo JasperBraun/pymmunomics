@@ -294,3 +294,12 @@ class Pipeline:
 
 def prepend(s: str, prefix: str):
     return f"{prefix}{s}"
+
+def set_intersections(sets: Sequence[set]):
+    if len(sets) == 0:
+        intersection = set()
+    else:
+        intersection = sets[0]
+    for item in sets[1:]:
+        intersection = intersection.intersection(item)
+    return intersection

@@ -7,6 +7,9 @@ class ArgumentWarning(PymmunomicsBaseWarning):
 class AmbiguousValuesWarning(PymmunomicsBaseWarning):
     pass
 
+class DivergingValuesWarning(PymmunomicsBaseWarning):
+    pass
+
 class PymmunomicsBaseError(Exception):
     pass
 

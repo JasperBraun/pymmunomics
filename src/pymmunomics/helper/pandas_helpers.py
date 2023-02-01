@@ -16,7 +16,7 @@ from numpy.typing import ArrayLike
 from pandas import concat, DataFrame, read_csv, Series
 from pandas.testing import assert_frame_equal
 
-from pymmunomics.helper.exception import AmbiguousValuesWarning
+from pymmunomics.helper.exception import AmbiguousValuesWarning, DivergingValuesWarning
 from pymmunomics.helper.generic_helpers import chain_update
 
 def agg_first_safely(
@@ -452,6 +452,24 @@ def concat_weighted_value_counts(
     counts = concat(counts_list)
     return counts
 
+def apply_to_cols(
+    data_frame: DataFrame,
+    mapped_func: Callable,
+    kwarg_column_map: Union[dict, None] = None,
+    **kwargs,
+):
+    """
+
+    """
+    if kwarg_column_map is None:
+        kwarg_column_map = {}
+    mapped_kwargs = {
+        kwarg: data_frame[columns].to_numpy()
+        for kwarg, columns
+        in kwarg_column_map.items()
+    }
+    return mapped_func(**mapped_kwargs, **kwargs)
+
 def pairwise_apply(
     func: Callable,
     left: DataFrame,
@@ -672,6 +690,100 @@ def read_combine_mappings(
         mappings.append(mapping)
     combined_mappings = chain_update(mappings=mappings)
     return combined_mappings
+
+def remove_duplicated_rows(
+    data_frame: DataFrame,
+    identity_columns: Sequence[str],
+    value_columns: Sequence[str],
+    equal_nan: bool=False,
+) -> tuple[DataFrame, DataFrame]:
+    """Removes rows corresponding to duplicated data.
+
+    Parameters
+    ----------
+    data_frame:
+        Table with columns identity_columns and value_columns.
+    identity_columns:
+        Names of identity columns. These columns determine what is
+        considered duplicate data.
+    value_columns:
+        Names of value columns. These columns are tested for equality
+        among duplicated rows. Must be numeric columns.
+    equal_nan:
+        See numpy.allclose. Used when comparing rows of valus in
+        value_columns To test for uniqueness of values per combination
+        of items in identity_columns.
+
+    Returns
+    -------
+    A tuple consisting of:
+    0 - uniqued:
+        Same as data_frame, except rows with duplicate identity column
+        value combinations removed. First data row for any given
+        identity column value combination is kept.
+    1 - duplicated:
+        The portion of data_frame that was removed.
+
+    Notes
+    -----
+    Will warn if duplicated rows didn't agree in value_columns.
+    """
+    is_duplicate = data_frame[identity_columns].duplicated()
+    grouped = data_frame.groupby(identity_columns)
+    for duplicate, df in grouped:
+        if len(df) > 0:
+            all_values = df[value_columns].to_numpy()
+            first_row = all_values[0]
+            diverging_values = False
+            for row in all_values[1:]:
+                if not allclose(first_row, row, equal_nan=equal_nan):
+                    diverging_values = True
+
+            if diverging_values:
+                warn(DivergingValuesWarning(
+                    "Values for %s diverged unexpectedly; only first"
+                    " measurement is used: %s." % (duplicate, df)
+                ))
+    return (data_frame.loc[~is_duplicate], data_frame.loc[is_duplicate])
+
+def squash_column_safely(column: Series, preference: list=[]):
+    """Reduces column into single value.
+
+    Parameters
+    ----------
+    column:
+        Column to reduce.
+    preference:
+        List of values to choose when ambiguities are present in order
+        of preference.
+
+    Returns
+    -------
+    The first value of column if unambiguous. If column contains
+    multiple unique values, then the first item in preference that is
+    also in the column is returned. If none of the items preference are
+    found, then the first item is returned.
+
+    Notes
+    -----
+    Warns if column contains more than one unique value.
+    """
+    uniqued = set(column.unique())
+    if len(uniqued) > 1:
+        for item in preference:
+            if item in uniqued:
+                squashed_value = item
+                break
+        else:
+            squashed_value = column.iloc[0]
+        warn(DivergingValuesWarning(
+            f"More than one distinct value in column:"
+            f" {uniqued}; squashed into single value:"
+            f" {squashed_value}."
+        ))
+    else:
+        squashed_value = column.iloc[0]
+    return squashed_value
 
 def weighted_mean(
     data_frame: DataFrame,
