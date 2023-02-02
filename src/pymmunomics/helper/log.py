@@ -31,5 +31,5 @@ getLogger("py.warnings").addHandler(LOG_HANDLER)
 
 def set_log_level(level):
     LOGGER.setLevel(level)
-    if LOGGER.level > 30:
-        captureWarnings(False)
+    # if LOGGER.level > 30:
+    #     captureWarnings(False)
