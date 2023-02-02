@@ -15,3 +15,6 @@ class PymmunomicsBaseError(Exception):
 
 class InvalidArgumentError(PymmunomicsBaseError):
     pass
+
+class NotImplementedError(PymmunomicsBaseError):
+    pass

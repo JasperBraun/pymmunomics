@@ -27,6 +27,7 @@ from polyleven import levenshtein
 from scipy.sparse import spmatrix
 from ray import remote, get, put
 
+from pymmunomics.helper.exception import NotImplementedError
 from pymmunomics.helper.log import LOGGER
 
 def binding_similarity(left, right):
@@ -35,66 +36,66 @@ def binding_similarity(left, right):
     else:
         return 0.3**levenshtein(left[0], right[0])
 
-def expected_similarities(
-    similarity_function: Callable,
-    query: ndarray,
-    query_index: Union[Index, MultiIndex],
-    subject: ndarray,
-    subject_relative_abundance: ndarray,
-    similarity_matrix_filepath: Union[str, None]=None,
-) -> DataFrame:
-    """Calculates expected similarities of query to subject species.
+# def expected_similarities(
+#     similarity_function: Callable,
+#     query: ndarray,
+#     query_index: Union[Index, MultiIndex],
+#     subject: ndarray,
+#     subject_species_frequencies: ndarray,
+#     similarity_matrix_filepath: Union[str, None]=None,
+# ) -> DataFrame:
+#     """Calculates expected similarities of query to subject species.
 
-    Parameters
-    ----------
-    similarity_function:
-        Returns similarity between a pair of query and subject species.
-    query, subject:
-        Contain query and subject species. `similarity_function` is
-        applied to each pair of query and subject rows.
-    query_index:
-        Indexes query species and is used as index of the returned
-        expected similarity table.
-    subject_relative_abundance:
-        (1, n) array of query species frequencies (n is the number of
-        species in `query`).
-    similarity_matrix_filepath:
-        Path to file to store binary similarity matrix, if desired.
+#     Parameters
+#     ----------
+#     similarity_function:
+#         Returns similarity between a pair of query and subject species.
+#     query, subject:
+#         Contain query and subject species. `similarity_function` is
+#         applied to each pair of query and subject rows.
+#     query_index:
+#         Indexes query species and is used as index of the returned
+#         expected similarity table.
+#     subject_species_frequencies:
+#         (1, n) array of query species frequencies (n is the number of
+#         species in `query`).
+#     similarity_matrix_filepath:
+#         Path to file to store binary similarity matrix, if desired.
 
-    Returns
-    -------
-    expected_similarities_table:
-        The expected similarities of each query species to the subject
-        species.
-    """
-    if similarity_matrix_filepath is None:
-        out = None
-    else:
-        out = memmap(
-            similarity_matrix_filepath,
-            dtype=float64,
-            mode="w+",
-            offset=0,
-            shape=(query.shape[0], subject.shape[0]),
-            order="C",
-        )
-    similarity = SimilarityFromFunction(
-        similarity=similarity_function,
-        X=query,
-        Y=subject,
-        out=out,
-    )
-    expected_similarities = similarity.weighted_similarities(
-        relative_abundance=subject_relative_abundance,
-    )
-    expected_similarity_table = (
-        DataFrame(
-            data=expected_similarities,
-            columns=["binding_capacity"],
-        )
-        .set_index(query_index)
-    )
-    return expected_similarity_table
+#     Returns
+#     -------
+#     expected_similarities_table:
+#         The expected similarities of each query species to the subject
+#         species.
+#     """
+#     if similarity_matrix_filepath is None:
+#         similarities_out = None
+#     else:
+#         similarities_out = memmap(
+#             similarity_matrix_filepath,
+#             dtype=float64,
+#             mode="w+",
+#             offset=0,
+#             shape=(query.shape[0], subject.shape[0]),
+#             order="C",
+#         )
+#     similarity = SimilarityFromFunction(
+#         similarity=similarity_function,
+#         X=query,
+#         Y=subject,
+#         similarities_out=similarities_out,
+#     )
+#     expected_similarities = similarity.weighted_similarities(
+#         species_frequencies=subject_species_frequencies,
+#     )
+#     expected_similarity_table = (
+#         DataFrame(
+#             data=expected_similarities,
+#             columns=["binding_capacity"],
+#         )
+#         .set_index(query_index)
+#     )
+#     return expected_similarity_table
 
 class Similarity(ABC):
     """Interface for classes computing (weighted) similarities."""
@@ -106,52 +107,52 @@ class Similarity(ABC):
         similarity:
             A similarity matrix, a path to a similarity matrix, or a
             function that can be called on pairs of species to calculate
-            similarities.
+            similarities. Similarity matrix rows correspond to query
+            species and columns to subject species.
         """
         self.similarity = similarity
 
     @abstractmethod
     def weighted_similarities(
-        self, relative_abundance: Union[ndarray, spmatrix]
+        self, species_frequencies: Union[ndarray, spmatrix]
     ) -> ndarray:
         """Calculates weighted sums of similarities for each species.
 
         Parameters
         ----------
-        relative_abundance:
-            Contains the frequencies for each species (rows) in each
-            subcommunity (columns).
+        species_frequencies:
+            Contains the frequencies for each subject species (rows) in
+            each subject (columns).
 
         Returns
         -------
         weighted_similarity_sums:
-            A 2-d array of the same shape as `relative_abundance`, where
-            rows correspond to similarity matrix rows, columns
-            correspond to columns in `relative_abundance`, and each
-            element is a sum of the similarity matrix row weighted by
-            the column in `relative_abundance`.
+            A 2-d array of the same shape as `species_frequencies`,
+            where rows correspond to query species and columns to
+            subject species distributions, and each element is the
+            expectation of similarity of the query species to subject
+            species according to the corresponding frequency
+            distribution of subject species.
         """
         pass
 
 
 class SimilarityFromDataFrame(Similarity):
-    """Implements Similarity using similarities stored in pandas
-    dataframe."""
+    """Implements Similarity using similarities stored in a data frame."""
 
     def weighted_similarities(
-        self, relative_abundance: Union[ndarray, spmatrix]
+        self, species_frequencies: Union[ndarray, spmatrix]
     ) -> ndarray:
-        return self.similarity.to_numpy() @ relative_abundance
+        return self.similarity.to_numpy() @ species_frequencies
 
 
 class SimilarityFromArray(Similarity):
-    """Implements Similarity using similarities stored in a numpy
-    ndarray."""
+    """Implements Similarity using similarities stored in an array."""
 
     def weighted_similarities(
-        self, relative_abundance: Union[ndarray, spmatrix]
+        self, species_frequencies: Union[ndarray, spmatrix]
     ) -> ndarray:
-        return self.similarity @ relative_abundance
+        return self.similarity @ species_frequencies
 
 
 class SimilarityFromFile(Similarity):
@@ -183,10 +184,10 @@ class SimilarityFromFile(Similarity):
         ).shape[0]
 
     def weighted_similarities(
-        self, relative_abundance: Union[ndarray, spmatrix]
+        self, species_frequencies: Union[ndarray, spmatrix]
     ) -> ndarray:
         weighted_similarities = empty(
-            shape=(self.n_similarity_rows, relative_abundance.shape[1]),
+            shape=(self.n_similarity_rows, species_frequencies.shape[1]),
             dtype=float64,
         )
         with read_csv(
@@ -199,7 +200,7 @@ class SimilarityFromFile(Similarity):
             i = 0
             for chunk in similarity_matrix_chunks:
                 weighted_similarities[i : i + self.chunk_size, :] = (
-                    chunk.to_numpy() @ relative_abundance
+                    chunk.to_numpy() @ species_frequencies
                 )
                 i += self.chunk_size
         return weighted_similarities
@@ -209,7 +210,7 @@ class SimilarityFromFile(Similarity):
 def weighted_similarity_chunk(
     similarity: Callable,
     X: ndarray,
-    relative_abundance: ndarray,
+    species_frequencies: ndarray,
     chunk_size: int,
     chunk_index: int,
     Y: ndarray = None,
@@ -221,7 +222,7 @@ def weighted_similarity_chunk(
     for i, row_i in enumerate(chunk):
         for j, row_j in enumerate(Y):
             similarities_chunk[i, j] = similarity(row_i, row_j)
-    return (similarities_chunk @ relative_abundance, similarities_chunk)
+    return (similarities_chunk @ species_frequencies, similarities_chunk)
 
 
 class SimilarityFromFunction(Similarity):
@@ -232,7 +233,7 @@ class SimilarityFromFunction(Similarity):
         similarity: Callable,
         X: ndarray,
         Y: ndarray = None,
-        out: ndarray = None,
+        similarities_out: ndarray = None,
         chunk_size: int = 100,
     ) -> None:
         """
@@ -247,7 +248,7 @@ class SimilarityFromFunction(Similarity):
             matrix (and therefore to rows in the weighted similarities).
             If `Y` is not specified, rows in X also correspond to
             columns in the calculated similarity matrix.
-        out:
+        similarities_out:
             If specified, similarity matrix will be stored in this
             array.
         chunk_size:
@@ -259,37 +260,93 @@ class SimilarityFromFunction(Similarity):
         super().__init__(similarity=similarity)
         self.X = X
         self.Y = Y
-        self.out = out
+        self.similarities_out = similarities_out
         self.chunk_size = chunk_size
 
     def weighted_similarities(
-        self, relative_abundance: Union[ndarray, spmatrix]
+        self, species_frequencies: Union[ndarray, spmatrix]
     ) -> ndarray:
         X_ref = put(self.X)
         Y_ref = put(self.Y)
-        abundance_ref = put(relative_abundance)
+        abundance_ref = put(species_frequencies)
         futures = []
         similarities_chunk_futures = []
         for chunk_index in range(0, self.X.shape[0], self.chunk_size):
             chunk_future = weighted_similarity_chunk.remote(
                 similarity=self.similarity,
                 X=X_ref,
-                relative_abundance=abundance_ref,
+                species_frequencies=abundance_ref,
                 chunk_size=self.chunk_size,
                 chunk_index=chunk_index,
                 Y=Y_ref,
             )
             futures.append(chunk_future)
         weighted_similarity_chunks = get(futures)
-        if self.out is not None:
+        if self.similarities_out is not None:
             for chunk_index, similarities_chunk in zip(
                 range(0, self.X.shape[0], self.chunk_size),
                 weighted_similarity_chunks,
             ):
-                self.out[chunk_index:chunk_index+similarities_chunk[1].shape[0]] = similarities_chunk[1]
+                try:
+                    self.similarities_out[chunk_index:chunk_index+similarities_chunk[1].shape[0]] = similarities_chunk[1]
+                except Exception:
+                    breakpoint()
+                    raise
         return concatenate([
             similarities_chunk[0]
             for similarities_chunk
             in weighted_similarity_chunks
         ])
 
+def make_similarity(
+    similarity: Union[DataFrame, ndarray, str, Callable],
+    X: ndarray = None,
+    Y: ndarray = None,
+    similarities_out: ndarray = None,
+    chunk_size: int = 100,
+) -> Similarity:
+    """Initializes a concrete subclass of Similarity.
+
+    Parameters
+    ----------
+    similarity:
+        If pandas.DataFrame, see
+        pymmunomics.sim.similarity.SimilarityFromFunction. If
+        numpy.ndarray, see pymmunomics.sim.similarity.SimilarityFromFunction.
+        If str, see pymmunomics.sim.similarity.SimilarityFromFunction.
+        If Callable, see pymmunomics.sim.similarity.SimilarityFromFunction.
+    X, Y. similarities_out:
+        Only relevant for pymmunomics.sim.similarity.SimilarityFromFunction.
+    chunk_size:
+        See pymmunomics.sim.similarity.SimilarityFromFunction,
+        or pymmunomics.sim.similarity.SimilarityFromFile. Only
+        relevant if a callable or str is passed as `similarity`.
+
+    Returns
+    -------
+    An instance of a concrete subclass of Similarity.
+    """
+    if similarity is None:
+        return None
+    elif isinstance(similarity, DataFrame):
+        return SimilarityFromDataFrame(similarity=similarity)
+    elif isinstance(similarity, ndarray):
+        return SimilarityFromArray(similarity=similarity)
+    elif isinstance(similarity, str):
+        return SimilarityFromFile(
+            similarity=similarity,
+            chunk_size=chunk_size,
+        )
+    elif isinstance(similarity, Callable):
+        return SimilarityFromFunction(
+            similarity=similarity, X=X, Y=Y, similarities_out=similarities_out, chunk_size=chunk_size,
+        )
+    else:
+        raise NotImplementedError(
+            (
+                "Type %s is not supported for argument "
+                "'similarity'. Valid types include pandas.DataFrame, "
+                "numpy.ndarray, numpy.memmap, str, or typing.Callable"
+            )
+            % type(similarity)
+        )
