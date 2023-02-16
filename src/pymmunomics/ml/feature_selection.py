@@ -19,6 +19,12 @@ def _kendalltau(x, y):
     else:
         return correlation
 
+class IdentityTransformer(TransformerMixin):
+    def fit(self, X, y):
+        return self
+    def transform(self, X):
+        return X
+
 class FlattenColumnTransformer(TransformerMixin):
     def __init__(self, transformer):
         self.transformer = transformer
