@@ -287,11 +287,7 @@ class SimilarityFromFunction(Similarity):
                 range(0, self.X.shape[0], self.chunk_size),
                 weighted_similarity_chunks,
             ):
-                try:
-                    self.similarities_out[chunk_index:chunk_index+similarities_chunk[1].shape[0]] = similarities_chunk[1]
-                except Exception:
-                    breakpoint()
-                    raise
+                self.similarities_out[chunk_index:chunk_index+similarities_chunk[1].shape[0]] = similarities_chunk[1]
         return concatenate([
             similarities_chunk[0]
             for similarities_chunk

@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 from functools import partial
+from math import ceil
+from multiprocessing import cpu_count
 from typing import Any, Callable, Iterable, Mapping, Sequence, Union
 
-from numpy import arange, array, empty, isin
+from numpy import arange, array, concatenate, empty, isin
 from numpy.typing import ArrayLike
 from pandas import concat, DataFrame, isna, MultiIndex, Series
+from ray import remote, get, put
 from scipy.stats import kendalltau
 from scipy.stats.mstats import mquantiles
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -18,6 +21,12 @@ def _kendalltau(x, y):
         return 0.0
     else:
         return correlation
+
+class IdentityTransformer(TransformerMixin):
+    def fit(self, X, y):
+        return self
+    def transform(self, X):
+        return X
 
 class FlattenColumnTransformer(TransformerMixin):
     def __init__(self, transformer):
@@ -217,6 +226,19 @@ class GroupedTransformer(BaseEstimator, TransformerMixin):
             result.columns.name = flat_names
         return result
 
+@remote
+def _calculate_scores_chunk(
+    X, train_index, chunk_index, chunk_size, score_func, y,
+):
+    # train_index_chunk = train_index[chunk_index:chunk_index + chunk_size]
+    chunk_stop = min(chunk_index + chunk_size, X.shape[1])
+    X_train_chunk = X.to_numpy()[train_index, chunk_index:chunk_stop].T
+    out_chunk = empty(X_train_chunk.shape[0])
+    y_train = y[train_index]
+    for j, col in enumerate(X_train_chunk):
+        out_chunk[j] = score_func(col, y_train)
+    return out_chunk
+
 class NullScoreSelectorBase(BaseEstimator, TransformerMixin, ABC):
     def __init__(
         self,
@@ -297,8 +319,27 @@ class NullScoreSelectorBase(BaseEstimator, TransformerMixin, ABC):
             (self.train_X.index, self.train_X, self.train_y, self.train_scores),
         ]:
             train_index = full_index.isin(train_index_items)
-            for j, col in enumerate(X.to_numpy()[train_index].T):
-                out[j] = self.score_func(col, y[train_index])
+            chunk_size = ceil(X.shape[1] / cpu_count())
+            X_ref = put(X)
+            train_index_ref = put(train_index)
+            # out_ref = put(out)
+            y_ref = put(y)
+            chunks = []
+            for chunk_index in range(0, X.shape[1], chunk_size):
+                chunk_future = _calculate_scores_chunk.remote(
+                    X=X_ref,
+                    train_index=train_index_ref,
+                    chunk_index=chunk_index,
+                    chunk_size=chunk_size,
+                    # out=out_ref,
+                    score_func=self.score_func,
+                    y=y_ref,
+                )
+                chunks.append(chunk_future)
+            out[:] = concatenate(get(chunks))
+            # train_index, chunk_index, chunk_size, out, score_func, y,
+            # for j, col in enumerate(X.to_numpy()[train_index].T):
+            #     out[j] = self.score_func(col, y[train_index])
 
 class SelectNullScoreOutlier(NullScoreSelectorBase):
     def fit(self, X: DataFrame, y: ArrayLike):
