@@ -16,6 +16,12 @@ SimilarityFromFile
 SimilarityFromFunction:
     Implements Similarity by calculating pairwise similarities from a 
     user-specified callable.
+
+Functions
+---------
+binding_similarity:
+    Calculates binding similarities of antibodies or B-/T-cell
+    receptors.
 """
 from abc import ABC, abstractmethod
 from typing import Callable, Union
@@ -31,71 +37,15 @@ from pymmunomics.helper.exception import NotImplementedError
 from pymmunomics.helper.log import LOGGER
 
 def binding_similarity(left, right):
+    """
+    Calculates binding similarities as a function of levenshtein
+    distance via an empirically determined relationship between
+    levenshtein distances and dissociation constant ratios.
+    """
     if (left[1], left[2]) != (right[1], right[2]):
         return 0.0
     else:
         return 0.3**levenshtein(left[0], right[0])
-
-# def expected_similarities(
-#     similarity_function: Callable,
-#     query: ndarray,
-#     query_index: Union[Index, MultiIndex],
-#     subject: ndarray,
-#     subject_species_frequencies: ndarray,
-#     similarity_matrix_filepath: Union[str, None]=None,
-# ) -> DataFrame:
-#     """Calculates expected similarities of query to subject species.
-
-#     Parameters
-#     ----------
-#     similarity_function:
-#         Returns similarity between a pair of query and subject species.
-#     query, subject:
-#         Contain query and subject species. `similarity_function` is
-#         applied to each pair of query and subject rows.
-#     query_index:
-#         Indexes query species and is used as index of the returned
-#         expected similarity table.
-#     subject_species_frequencies:
-#         (1, n) array of query species frequencies (n is the number of
-#         species in `query`).
-#     similarity_matrix_filepath:
-#         Path to file to store binary similarity matrix, if desired.
-
-#     Returns
-#     -------
-#     expected_similarities_table:
-#         The expected similarities of each query species to the subject
-#         species.
-#     """
-#     if similarity_matrix_filepath is None:
-#         similarities_out = None
-#     else:
-#         similarities_out = memmap(
-#             similarity_matrix_filepath,
-#             dtype=float64,
-#             mode="w+",
-#             offset=0,
-#             shape=(query.shape[0], subject.shape[0]),
-#             order="C",
-#         )
-#     similarity = SimilarityFromFunction(
-#         similarity=similarity_function,
-#         X=query,
-#         Y=subject,
-#         similarities_out=similarities_out,
-#     )
-#     expected_similarities = similarity.weighted_similarities(
-#         species_frequencies=subject_species_frequencies,
-#     )
-#     expected_similarity_table = (
-#         DataFrame(
-#             data=expected_similarities,
-#             columns=["binding_capacity"],
-#         )
-#         .set_index(query_index)
-#     )
-#     return expected_similarity_table
 
 class Similarity(ABC):
     """Interface for classes computing (weighted) similarities."""
