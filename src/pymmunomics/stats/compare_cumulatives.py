@@ -1,4 +1,18 @@
 """Module for comparison of cumulatives."""
+from typing import Callable, NamedTuple, Tuple, Union
+
+from numpy import (
+    abs as np_abs,
+    arange,
+    argmax,
+    array,
+    ndarray,
+    sum as np_sum,
+)
+from scipy.stats import mannwhitneyu
+
+from pymmunomics.helper.exception import InvalidArgumentError
+from pymmunomics.helper.stats import median_difference
 
 def get_best_separator_pos(items: ndarray):
     """Gets position which best separates items into two groups.
@@ -25,17 +39,17 @@ def get_best_separator_pos(items: ndarray):
         raise InvalidArgumentError(
             "Expect 1-d array, but got shape: %s" % items.shape
         )
-    separator_scores = map(
-        lambda i: abs(sum(items[:i])) + abs(sum(items[i:])),
-        arange(len(items))
-    )
+    separator_scores = array([
+        np_abs(np_sum(items[:i])) + np_abs(np_sum(items[i:]))
+        for i in arange(len(items))
+    ])
     return argmax(separator_scores)
 
 class CompareBestSlopeSeparatorCumulativesResult(NamedTuple):
-    pvalue: float,
-    cumulatives: Tuple[ndarray, ndarray],
-    slopes: ndarray,
-    best_separator_pos: int,
+    pvalue: float
+    cumulatives: Tuple[ndarray, ndarray]
+    slopes: ndarray
+    best_separator_pos: int
 
 def _mannwhitneyu(a: ndarray, b: ndarray):
     return mannwhitneyu(a, b).pvalue
@@ -43,8 +57,8 @@ def _mannwhitneyu(a: ndarray, b: ndarray):
 def _validate_compare_best_slope_separator_cumulatives(
     a: ndarray,
     b: ndarray,
-    slope: Union[Callable, ndarray],
     test_func: Callable,
+    slope: Union[Callable, ndarray],
 ) -> None:
     if len(a.shape) != 2 or len(b.shape) != 2 or a.shape[1] != b.shape[1]:
         raise InvalidArgumentError(
@@ -65,8 +79,8 @@ def _validate_compare_best_slope_separator_cumulatives(
 def compare_best_slope_separator_cumulatives(
   a: ndarray,
   b: ndarray,
-  slope: Union[Callable, ndarray],
-  test_func: Callable=_mannwhitneyu,
+  slope: Union[Callable, ndarray] = median_difference,
+  test_func: Callable = _mannwhitneyu,
 ) -> CompareBestSlopeSeparatorCumulativesResult:
     """Compares cumulatives up to best slope-separating line.
 
@@ -91,13 +105,13 @@ def compare_best_slope_separator_cumulatives(
     )
 
     if callable(slope):
-        slopes = [slope(a_col, b_col) for a_col, b_col in zip(a.T, b.T)]
+        slopes = array([slope(a_col, b_col) for a_col, b_col in zip(a.T, b.T)])
     else:
         slopes = slope
 
     best_separator_pos = get_best_separator_pos(slopes)
-    cumulatives_a = a[:,:i].sum(axis=1)
-    cumulatives_b = b[:,:i].sum(axis=1)
+    cumulatives_a = a[:,:best_separator_pos].sum(axis=1)
+    cumulatives_b = b[:,:best_separator_pos].sum(axis=1)
     result = CompareBestSlopeSeparatorCumulativesResult(
         pvalue=test_func(cumulatives_a, cumulatives_b),
         cumulatives=(cumulatives_a, cumulatives_b),

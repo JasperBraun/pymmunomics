@@ -6,7 +6,7 @@ from os import remove
 from os.path import isfile
 from shutil import copyfileobj
 from sys import stdout
-from typing import Any, Iterable, Literal, Sequence, Union
+from typing import Any, Hashable, Iterable, Literal, Sequence, Union
 
 from pymmunomics.helper.exception import InvalidArgumentError
 
@@ -295,11 +295,20 @@ class Pipeline:
 def prepend(s: str, prefix: str):
     return f"{prefix}{s}"
 
-def set_intersections(sets: Sequence[set]):
+def set_intersections(sets: Sequence[Iterable[Hashable]]):
     if len(sets) == 0:
         intersection = set()
     else:
-        intersection = sets[0]
+        intersection = set(sets[0])
     for item in sets[1:]:
-        intersection = intersection.intersection(item)
+        intersection = intersection.intersection(set(item))
     return intersection
+
+def set_unions(sets: Sequence[Iterable[Hashable]]):
+    if len(sets) == 0:
+        union = set()
+    else:
+        union = set(sets[0])
+    for item in sets[1:]:
+        union = union.union(set(item))
+    return union
