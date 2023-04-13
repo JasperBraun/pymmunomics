@@ -272,9 +272,7 @@ def make_similarity(
     -------
     An instance of a concrete subclass of Similarity.
     """
-    if similarity is None:
-        return None
-    elif isinstance(similarity, DataFrame):
+    if isinstance(similarity, DataFrame):
         return SimilarityFromDataFrame(similarity=similarity)
     elif isinstance(similarity, ndarray):
         return SimilarityFromArray(similarity=similarity)
