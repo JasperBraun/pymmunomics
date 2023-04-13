@@ -288,7 +288,7 @@ def repertoire_from_sequence_table(
         repeatedly each time it is observed.
     clonotype_columns:
         Columns whose value combinations identify and distinguish
-        clonotypeß
+        clonotypes
     count_name:
         Name of column for counts.
     frequency_name:

@@ -1,18 +1,176 @@
-from numpy import isclose, nan
-from pandas import DataFrame, isna, Index, MultiIndex
-from pandas.testing import assert_frame_equal
-from pytest import raises, warns
+import warnings
 
+from numpy import isclose, nan
+from pandas import DataFrame, isna, Index, MultiIndex, Series
+from pandas.testing import assert_frame_equal
+from pytest import fixture, raises, warns
+
+from pymmunomics.helper.exception import AmbiguousValuesWarning
 from pymmunomics.helper.pandas_helpers import (
+    agg_first_safely,
+    apply_zipped,
     assert_groups_equal,
     concat_partial_groupby_apply,
     concat_pivot_pipe_melt,
     concat_weighted_value_counts,
+    pipe_assign_from_func,
     weighted_mean,
     weighted_variance,
     weighted_skewness,
 )
 
+class TestAggFirstSafely:
+    def test_drop_nans_nonambiguous(self):
+        series = Series([1, nan, 1])
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=AmbiguousValuesWarning)
+            actual_result = agg_first_safely(
+                series=series,
+                dropna=True,
+            )
+        assert actual_result == 1
+
+    def test_drop_nans_ambiguous(self):
+        series = Series([1, nan, 2, 1])
+        with warns(AmbiguousValuesWarning):
+            actual_result = agg_first_safely(
+                series=series,
+                dropna=True,
+            )
+        assert actual_result == 1
+
+    def test_keep_nans_nonambiguous(self):
+        series = Series(["foo", "foo", "foo"])
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=AmbiguousValuesWarning)
+            actual_result = agg_first_safely(
+                series=series,
+                dropna=False,
+            )
+        assert actual_result == "foo"
+
+    def test_keep_nans_ambiguous(self):
+        series = Series(["foo", nan, "foo", "foo"])
+        with warns(AmbiguousValuesWarning):
+            actual_result = agg_first_safely(
+                series=series,
+                dropna=False,
+            )
+        assert actual_result == "foo"
+
+    def test_nan_result_nonambiguous(self):
+        series = Series([nan, nan, nan])
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=AmbiguousValuesWarning)
+            actual_result = agg_first_safely(
+                series=series,
+                dropna=False,
+            )
+        assert isna(actual_result)
+
+    def test_nan_result_ambiguous(self):
+        series = Series([nan, "foo"])
+        with warns(AmbiguousValuesWarning):
+            actual_result = agg_first_safely(
+                series=series,
+                dropna=False,
+            )
+        assert isna(actual_result)
+
+class TestApplyZipped:
+    def fake_func(*args, **kwargs):
+        return (args, kwargs)
+
+    @fixture
+    def data_frame(self):
+        return DataFrame(
+            columns=["a", "b", "c", "d"],
+            data=[
+                [1, 10, "x", "foo"],
+                [2, 20, "x", "foo"],
+                [3, 30, "y", "foo"],                
+            ]
+        )
+
+    def test_standard_input(self, data_frame):
+        keys = ["a", "c"]
+        func = TestApplyZipped.fake_func
+        expected_result = [
+            ((1, "x"), {}),
+            ((2, "x"), {}),
+            ((3, "y"), {}),
+        ]
+        actual_result = apply_zipped(
+            data_frame=data_frame,
+            keys=keys,
+            func=func,
+        )
+        assert actual_result == expected_result
+
+    def test_packed(self, data_frame):
+        keys = ["a", "c"]
+        func = TestApplyZipped.fake_func
+        expected_result = [
+            (((1, "x"),), {}),
+            (((2, "x"),), {}),
+            (((3, "y"),), {}),
+        ]
+        actual_result = apply_zipped(
+            data_frame=data_frame,
+            keys=keys,
+            func=func,
+            unpack=False,
+        )
+        assert actual_result == expected_result
+
+    def test_single_key(self, data_frame):
+        keys = ["c"]
+        func = TestApplyZipped.fake_func
+        expected_result = [
+            (("x",), {}),
+            (("x",), {}),
+            (("y",), {}),
+        ]
+        actual_result = apply_zipped(
+            data_frame=data_frame,
+            keys=keys,
+            func=func,
+        )
+        assert actual_result == expected_result
+
+    def test_single_key_packed(self, data_frame):
+        keys = ["c"]
+        func = TestApplyZipped.fake_func
+        expected_result = [
+            ((("x",),), {}),
+            ((("x",),), {}),
+            ((("y",),), {}),
+        ]
+        actual_result = apply_zipped(
+            data_frame=data_frame,
+            keys=keys,
+            func=func,
+            unpack=False,
+        )
+        assert actual_result == expected_result
+
+    def test_args_kwargs(self, data_frame):
+        keys = ["a", "c"]
+        func = TestApplyZipped.fake_func
+        expected_result = [
+            ((1, "x", "foo", 0), {"zip": "zap"}),
+            ((2, "x", "foo", 0), {"zip": "zap"}),
+            ((3, "y", "foo", 0), {"zip": "zap"}),
+        ]
+        actual_result = apply_zipped(
+            data_frame,
+            keys,
+            func,
+            "foo",
+            0,
+            zip="zap",
+        )
+        assert actual_result == expected_result
 
 class TestAssertGroupsEqual:
     def test_nopipe(self):
@@ -1043,6 +1201,115 @@ class TestConcatWeightedValueCounts:
             normalize=True,
         )
         assert_frame_equal(actual, expected)
+
+class TestPipeAssignFromFunc:
+    def fake_func_single_column(data, *args, **kwargs):
+        if "add" in kwargs:
+            add = kwargs["add"]
+        else:
+            add = 1
+        return (data + add).sum(axis=1).to_numpy()
+
+    def fake_func_multiple_columns(data, *args, **kwargs):
+        if "add" in kwargs:
+            add = kwargs["add"]
+        else:
+            add = 1
+        return (data + add).to_numpy()
+
+    @fixture
+    def data_frame(self):
+        return DataFrame(
+            columns=["a", "b"],
+            data=[
+                [1, 10],
+                [2, 20],
+                [3, 30],
+            ]
+        )
+
+    def test_single_column(self, data_frame):
+        names = "c"
+        pipe_func = TestPipeAssignFromFunc.fake_func_single_column
+
+        expected_result = DataFrame(
+            columns=["a", "b", "c"],
+            data=[
+                [1, 10, 13],
+                [2, 20, 24],
+                [3, 30, 35],
+            ]
+        )
+        actual_result = pipe_assign_from_func(
+            data_frame=data_frame,
+            names=names,
+            pipe_func=pipe_func,
+        )
+        assert_frame_equal(actual_result, expected_result)
+        assert not (actual_result is data_frame)
+
+    def test_multiple_columns(self, data_frame):
+        names = ["c", "d"]
+        pipe_func = TestPipeAssignFromFunc.fake_func_multiple_columns
+
+        expected_result = DataFrame(
+            columns=["a", "b", "c", "d"],
+            data=[
+                [1, 10, 2, 11],
+                [2, 20, 3, 21],
+                [3, 30, 4, 31],
+            ]
+        )
+        actual_result = pipe_assign_from_func(
+            data_frame=data_frame,
+            names=names,
+            pipe_func=pipe_func,
+        )
+        assert_frame_equal(actual_result, expected_result)
+        assert not (actual_result is data_frame)
+
+    def test_inplace(self, data_frame):
+        data_frame_ = data_frame.copy()
+        names = "c"
+        pipe_func = TestPipeAssignFromFunc.fake_func_single_column
+
+        expected_result = DataFrame(
+            columns=["a", "b", "c"],
+            data=[
+                [1, 10, 13],
+                [2, 20, 24],
+                [3, 30, 35],
+            ]
+        )
+        actual_result = pipe_assign_from_func(
+            data_frame=data_frame_,
+            names=names,
+            pipe_func=pipe_func,
+            inplace=True,
+        )
+        assert_frame_equal(actual_result, expected_result)
+        assert actual_result is data_frame_
+
+    def test_kwargs(self, data_frame):
+        names = "c"
+        pipe_func = TestPipeAssignFromFunc.fake_func_single_column
+
+        expected_result = DataFrame(
+            columns=["a", "b", "c"],
+            data=[
+                [1, 10, 21],
+                [2, 20, 32],
+                [3, 30, 43],
+            ]
+        )
+        actual_result = pipe_assign_from_func(
+            data_frame=data_frame,
+            names=names,
+            pipe_func=pipe_func,
+            add=5,
+        )
+        assert_frame_equal(actual_result, expected_result)
+        assert not (actual_result is data_frame)
 
 class TestWeightedMean:
     def test_simple(self):

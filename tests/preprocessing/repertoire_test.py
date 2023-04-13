@@ -1,9 +1,11 @@
 from pandas import DataFrame, Index, MultiIndex
 from pandas.testing import assert_frame_equal
+from pytest import fixture
 
 from pymmunomics.preprocessing.repertoire import (
     count_features,
     get_repertoire_sizes,
+    repertoire_from_sequence_table,
 )
 
 class TestCountFeatures:
@@ -590,3 +592,164 @@ class TestGetRepertoireSizes:
             partial_repertoire_pools=[[], ["g1"]],
         )
         assert_frame_equal(actual, expected, check_like=True)
+
+class TestRepertoireFromSequenceTable:
+    @fixture
+    def sequence_table(self):
+        return DataFrame(
+            columns=["c1", "c2", "c3", "other1", "other2"],
+            data=[
+                ["foo", "foo", "foo", "other1_1", "other2_1"],
+                ["foo", "foo", "bar", "other1_1", "other2_1"],
+                ["foo", "bar", "foo", "other1_1", "other2_1"],
+                ["foo", "bar", "bar", "other1_1", "other2_1"],
+                ["bar", "foo", "foo", "other1_1", "other2_1"],
+                ["bar", "foo", "bar", "other1_1", "other2_1"],
+                ["bar", "bar", "foo", "other1_1", "other2_1"],
+                ["bar", "bar", "bar", "other1_1", "other2_1"],
+                ["foo", "foo", "bar", "other1_2", "other2_1"],
+                ["bar", "foo", "foo", "other1_1", "other2_2"],
+                ["foo", "foo", "foo", "other1_2", "other2_2"],
+                ["foo", "foo", "foo", "other1_2", "other2_3"],
+                ["foo", "bar", "bar", "other1_1", "other2_1"],
+                ["foo", "bar", "bar", "other1_1", "other2_1"],
+            ]
+        )
+
+    def test_single_clonotype_column(self, sequence_table):
+        clonotype_columns = ["c1"]
+
+        sort_cols = ["c1"]
+        sorted_cols = ["c1", "clone_size", "clone_fraction"]
+        expected_repertoire = (
+            DataFrame(
+                columns=["c1", "clone_size", "clone_fraction"],
+                data=[
+                    ["foo", 9, 9/14],
+                    ["bar", 5, 5/14],
+                ],
+            )
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
+            [sorted_cols]
+        )
+
+        actual_repertoire = (
+            repertoire_from_sequence_table(
+                sequence_table=sequence_table,
+                clonotype_columns=clonotype_columns,
+            )
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
+            [sorted_cols]
+        )
+
+        assert_frame_equal(actual_repertoire, expected_repertoire)
+
+    def test_multiple_clonotype_column(self, sequence_table):
+        clonotype_columns = ["c1", "c2"]
+
+        sort_cols = ["c1", "c2"]
+        sorted_cols = ["c1", "c2", "clone_size", "clone_fraction"]
+        expected_repertoire = (
+            DataFrame(
+                columns=["c1", "c2", "clone_size", "clone_fraction"],
+                data=[
+                    ["foo", "foo", 5, 5/14],
+                    ["foo", "bar", 4, 4/14],
+                    ["bar", "foo", 3, 3/14],
+                    ["bar", "bar", 2, 2/14],
+                ],
+            )
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
+            [sorted_cols]
+        )
+
+        actual_repertoire = (
+            repertoire_from_sequence_table(
+                sequence_table=sequence_table,
+                clonotype_columns=clonotype_columns,
+            )
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
+            [sorted_cols]
+        )
+
+        assert_frame_equal(actual_repertoire, expected_repertoire)
+
+    def test_count_name_frequency_name(self, sequence_table):
+        clonotype_columns = ["c1", "c2", "c3"]
+        count_name = "count"
+        frequency_name = "frequency"
+
+        sort_cols = ["c1", "c2", "c3"]
+        sorted_cols = ["c1", "c2", "c3", "count", "frequency"]
+        expected_repertoire = (
+            DataFrame(
+                columns=["c1", "c2", "c3", "count", "frequency"],
+                data=[
+                    ["foo", "foo", "foo", 3, 3/14],
+                    ["foo", "foo", "bar", 2, 2/14],
+                    ["foo", "bar", "foo", 1, 1/14],
+                    ["foo", "bar", "bar", 3, 3/14],
+                    ["bar", "foo", "foo", 2, 2/14],
+                    ["bar", "foo", "bar", 1, 1/14],
+                    ["bar", "bar", "foo", 1, 1/14],
+                    ["bar", "bar", "bar", 1, 1/14],
+                ],
+            )
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
+            [sorted_cols]
+        )
+
+        actual_repertoire = (
+            repertoire_from_sequence_table(
+                sequence_table=sequence_table,
+                clonotype_columns=clonotype_columns,
+                count_name=count_name,
+                frequency_name=frequency_name,
+            )
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
+            [sorted_cols]
+        )
+
+        assert_frame_equal(actual_repertoire, expected_repertoire)
+
+    def test_other_agg(self, sequence_table):
+        clonotype_columns = ["c1", "c2"]
+        other_agg = {"other1": set, "other2": tuple}
+
+        sort_cols = ["c1", "c2"]
+        sorted_cols = ["c1", "c2", "clone_size", "clone_fraction", "other1", "other2"]
+        expected_repertoire = (
+            DataFrame(
+                columns=["c1", "c2", "clone_size", "clone_fraction", "other1", "other2"],
+                data=[
+                    ["foo", "foo", 5, 5/14, {"other1_1", "other1_2"}, ("other2_1", "other2_1", "other2_1", "other2_2", "other2_3")],
+                    ["foo", "bar", 4, 4/14, {"other1_1",}, ("other2_1", "other2_1", "other2_1", "other2_1")],
+                    ["bar", "foo", 3, 3/14, {"other1_1",}, ("other2_1", "other2_1", "other2_2")],
+                    ["bar", "bar", 2, 2/14, {"other1_1",}, ("other2_1", "other2_1")],
+                ],
+            )
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
+            [sorted_cols]
+        )
+
+        actual_repertoire = (
+            repertoire_from_sequence_table(
+                sequence_table=sequence_table,
+                clonotype_columns=clonotype_columns,
+                other_agg=other_agg,
+            )
+            .sort_values(sort_cols)
+            .reset_index(drop=True)
+            [sorted_cols]
+        )
+
+        assert_frame_equal(actual_repertoire, expected_repertoire)
+
+
