@@ -11,7 +11,7 @@ from typing import (
 )
 from warnings import warn
 
-from numpy import empty
+from numpy import allclose, empty
 from numpy.typing import ArrayLike
 from pandas import concat, DataFrame, read_csv, Series
 from pandas.testing import assert_frame_equal
