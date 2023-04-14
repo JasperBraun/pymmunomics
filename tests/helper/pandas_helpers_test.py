@@ -5,7 +5,11 @@ from pandas import DataFrame, isna, Index, MultiIndex, read_csv, read_excel, Ser
 from pandas.testing import assert_frame_equal
 from pytest import fixture, raises, warns
 
-from pymmunomics.helper.exception import AmbiguousValuesWarning
+from pymmunomics.helper.exception import (
+    AmbiguousValuesWarning,
+    DivergingValuesWarning,
+    InvalidArgumentError,
+)
 from pymmunomics.helper.pandas_helpers import (
     agg_first_safely,
     apply_zipped,
@@ -16,6 +20,8 @@ from pymmunomics.helper.pandas_helpers import (
     pipe_assign_from_func,
     read_mapping,
     read_combine_mappings,
+    remove_duplicated_rows,
+    squash_column_safely,
     weighted_mean,
     weighted_variance,
     weighted_skewness,
@@ -1313,9 +1319,9 @@ class TestPipeAssignFromFunc:
         assert_frame_equal(actual_result, expected_result)
         assert not (actual_result is data_frame)
 
-class TestReadCombineMapping:
+class TestReadMapping:
     @fixture
-    def tables(self):
+    def table(self):
         return DataFrame(
             columns=["col1", "col2", "col3", "col4"],
             data=[
@@ -1790,6 +1796,438 @@ class TestReadCombineMappings:
         )
 
         assert actual_mapping == expected_mapping
+
+    def test_invalid_argument(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = ["col2", "col2"]
+        values = ["col4", "col4"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        with raises(InvalidArgumentError):
+            read_combine_mappings(
+                filepaths=filepaths[:1],
+                keys=keys,
+                values=values,
+                read_funcs=[read_csv, read_csv],
+                read_kwargs=[{}, {}],
+            )
+
+        with raises(InvalidArgumentError):
+            read_combine_mappings(
+                filepaths=filepaths,
+                keys=keys[:1],
+                values=values,
+                read_funcs=[read_csv, read_csv],
+                read_kwargs=[{}, {}],
+            )
+
+        with raises(InvalidArgumentError):
+            read_combine_mappings(
+                filepaths=filepaths,
+                keys=keys,
+                values=values[:1],
+                read_funcs=[read_csv, read_csv],
+                read_kwargs=[{}, {}],
+            )
+
+        with raises(InvalidArgumentError):
+            read_combine_mappings(
+                filepaths=filepaths,
+                keys=keys,
+                values=values,
+                read_funcs=[read_csv],
+                read_kwargs=[{}, {}],
+            )
+
+        with raises(InvalidArgumentError):
+            read_combine_mappings(
+                filepaths=filepaths,
+                keys=keys,
+                values=values,
+                read_funcs=[read_csv, read_csv],
+                read_kwargs=[{}],
+            )
+
+class TestRemoveDuplicatedRows:
+    @fixture
+    def data_frame(self):
+        return DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "a", 1, 10, 100,  nan],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+
+    def test_single_identity_value_nondiverging(self, data_frame):
+        identity_columns = ["id2"]
+        value_columns = ["val1"]
+        equal_nan = False
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,2],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,3,4,5,6,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "a", 1, 10, 100,  nan],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=DivergingValuesWarning)
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+        assert_frame_equal(actual_data_frame, expected_data_frame)
+        assert_frame_equal(actual_duplicated, expected_duplicated)
+
+    def test_single_identity_value_diverging(self, data_frame):
+        identity_columns = ["id1"]
+        value_columns = ["val1"]
+        equal_nan = False
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,4],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["b", "a", "a", 1, 10, 100,  nan],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,2,3,5,6,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warns(DivergingValuesWarning):
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+        assert_frame_equal(actual_data_frame, expected_data_frame)
+        assert_frame_equal(actual_duplicated, expected_duplicated)
+
+    def test_multiple_identity_single_value_nondiverging(self, data_frame):
+        identity_columns = ["id1", "id2"]
+        value_columns = ["val1"]
+        equal_nan = False
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,2,4,6],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+                ["b", "a", "a", 1, 10, 100,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,3,5,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=DivergingValuesWarning)
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+        assert_frame_equal(actual_data_frame, expected_data_frame)
+        assert_frame_equal(actual_duplicated, expected_duplicated)
+
+    def test_multiple_identity_multiple_value_diverging(self, data_frame):
+        identity_columns = ["id1", "id2"]
+        value_columns = ["val1", "val2"]
+        equal_nan = False
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,2,4,6],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+                ["b", "a", "a", 1, 10, 100,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,3,5,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warns(DivergingValuesWarning):
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+        assert_frame_equal(actual_data_frame, expected_data_frame)
+        assert_frame_equal(actual_duplicated, expected_duplicated)
+
+    def test_single_identity_equal_nan_value_nondiverging(self, data_frame):
+        identity_columns = ["id2"]
+        value_columns = ["val4"]
+        equal_nan = True
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,2],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,3,4,5,6,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "a", 1, 10, 100,  nan],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=DivergingValuesWarning)
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+        assert_frame_equal(actual_data_frame, expected_data_frame)
+        assert_frame_equal(actual_duplicated, expected_duplicated)
+
+    def test_single_identity_equal_nan_value_diverging(self, data_frame):
+        identity_columns = ["id1"]
+        value_columns = ["val3"]
+        equal_nan = True
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,4],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["b", "a", "a", 1, 10, 100,  nan],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,2,3,5,6,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warns(DivergingValuesWarning):
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+        assert_frame_equal(actual_data_frame, expected_data_frame)
+        assert_frame_equal(actual_duplicated, expected_duplicated)
+
+    def test_multiple_identity_single_equal_nan_value_nondiverging(self, data_frame):
+        identity_columns = ["id1", "id2"]
+        value_columns = ["val4"]
+        equal_nan = True
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,2],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,3,4,5,6,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "a", 1, 10, 100,  nan],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=DivergingValuesWarning)
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+
+    def test_multiple_identity_multiple_nan_value_diverging(self, data_frame):
+        identity_columns = ["id1", "id2"]
+        value_columns = ["val1", "val3"]
+        equal_nan = True
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,2,4,6],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+                ["b", "a", "a", 1, 10, 100,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,3,5,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warns(DivergingValuesWarning):
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+        assert_frame_equal(actual_data_frame, expected_data_frame)
+        assert_frame_equal(actual_duplicated, expected_duplicated)
+
+    def test_non_equal_nan_value_diverging(self, data_frame):
+        identity_columns = ["id2"]
+        value_columns = ["val3"]
+        equal_nan = False
+
+        expected_data_frame = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[0,2],
+            data=[
+                ["a", "a", "a", 1, 10, 100,  nan],
+                ["a", "b", "a", 3, 30, 300, 2000],
+            ],
+        ).astype({"val3": float})
+        expected_duplicated = DataFrame(
+            columns=["id1", "id2", "id3", "val1", "val2", "val3", "val4"],
+            index=[1,3,4,5,6,7],
+            data=[
+                ["a", "a", "b", 1, 20, nan,  nan],
+                ["a", "b", "b", 3, 40, 300, 2000],
+                ["b", "a", "a", 1, 10, 100,  nan],
+                ["b", "a", "b", 1, 20, nan,  nan],
+                ["b", "b", "a", 3, 30, 300, 2000],
+                ["b", "b", "b", 3, 40, 300, 2000],
+            ],
+        )
+        with warns(DivergingValuesWarning):
+            actual_data_frame, actual_duplicated = remove_duplicated_rows(
+                data_frame=data_frame,
+                identity_columns=identity_columns,
+                value_columns=value_columns,
+                equal_nan=equal_nan,
+            )
+        assert_frame_equal(actual_data_frame, expected_data_frame)
+        assert_frame_equal(actual_duplicated, expected_duplicated)
+
+
+class TestSquashColumnSafely:
+    def test_simple_input(self):
+        column = Series(["foo", "foo", "foo"])
+        preference = []
+
+        expected_squashed = "foo"
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=DivergingValuesWarning)
+            actual_squashed = squash_column_safely(
+                column=column,
+                preference=preference,
+            )
+
+        assert actual_squashed == expected_squashed
+
+    def test_diverging_with_preference(self):
+        column = Series(["foo", "bar", "foo"])
+        preference = ["baz", "bar"]
+
+        expected_squashed = "bar"
+        with warns(DivergingValuesWarning):
+            actual_squashed = squash_column_safely(
+                column=column,
+                preference=preference,
+            )
+
+        assert actual_squashed == expected_squashed
+
+    def test_diverging_without_preference(self):
+        column = Series(["foo", "bar", "foo"])
+        preference = ["baz", "bazinga"]
+
+        expected_squashed = "foo"
+        with warns(DivergingValuesWarning):
+            actual_squashed = squash_column_safely(
+                column=column,
+                preference=preference,
+            )
+
+        assert actual_squashed == expected_squashed
 
 class TestWeightedMean:
     def test_simple(self):
