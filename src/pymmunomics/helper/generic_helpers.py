@@ -43,10 +43,24 @@ def chain_update(
     else:
         result = deepcopy(mappings[0])
         for mapping in mappings[1:]:
-            result.update(mapping)
-            for key, value in result.items():
-                if value in mapping:
-                    result[key] = mapping[value]
+            # Update duplicate mappings
+            for key in result:
+                if key in mapping:
+                    result[key] = mapping[key]
+            # Transitive mappings
+            transitives = {}
+            for key in result:
+                if result[key] in mapping:
+                    transitives[key] = mapping[result[key]]
+            result.update(transitives)
+            # missing mappings
+            for key in mapping:
+                if key not in result:
+                    result[key] = mapping[key]
+            # result.update(mapping)
+            # for key, value in result.items():
+            #     if value in mapping:
+            #         result[key] = mapping[value]
     return result
 
 def concatenate_files(

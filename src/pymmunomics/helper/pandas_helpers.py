@@ -16,7 +16,11 @@ from numpy.typing import ArrayLike
 from pandas import concat, DataFrame, read_csv, Series
 from pandas.testing import assert_frame_equal
 
-from pymmunomics.helper.exception import AmbiguousValuesWarning, DivergingValuesWarning
+from pymmunomics.helper.exception import (
+    AmbiguousValuesWarning,
+    DivergingValuesWarning,
+    InvalidArgumentError,
+)
 from pymmunomics.helper.generic_helpers import chain_update
 
 def agg_first_safely(
@@ -487,38 +491,38 @@ def pipe_assign_from_func(
     data_frame_[names] = pipe_func(data_frame, **kwargs)
     return data_frame_
 
-def read_as_tuples(
-    filepath: str,
-    columns: Sequence[str],
-    read_func: Callable = read_csv,
-    read_kwargs: Union[dict, None] = None,
-) -> list:
-    """Reads columns into list of tuples.
+# def read_as_tuples(
+#     filepath: str,
+#     columns: Sequence[str],
+#     read_func: Callable = read_csv,
+#     read_kwargs: Union[dict, None] = None,
+# ) -> list:
+#     """Reads columns into list of tuples.
 
-    Parameters
-    ----------
-    filepath:
-        Path to file containing columns of interest.
-    columns:
-        Columns of interest.
-    read_func:
-        Reads filepath into ``pandas.DataFrame``.
-    read_kwargs:
-        Passed to `read_func`.
+#     Parameters
+#     ----------
+#     filepath:
+#         Path to file containing columns of interest.
+#     columns:
+#         Columns of interest.
+#     read_func:
+#         Reads filepath into ``pandas.DataFrame``.
+#     read_kwargs:
+#         Passed to `read_func`.
 
-    Returns
-    -------
-    tuples:
-        List of tuples of the value combinations in the columns of
-        interest.
-    """
-    if read_kwargs is None:
-        read_kwargs = {}
-    return list(
-        read_func(filepath, **read_kwargs)
-        [columns]
-        .apply(tuple, axis=1)
-    )
+#     Returns
+#     -------
+#     tuples:
+#         List of tuples of the value combinations in the columns of
+#         interest.
+#     """
+#     if read_kwargs is None:
+#         read_kwargs = {}
+#     return list(
+#         read_func(filepath, **read_kwargs)
+#         [columns]
+#         .apply(tuple, axis=1)
+#     )
 
 def read_mapping(
     filepath: str,
@@ -572,7 +576,7 @@ def read_combine_mappings(
     keys: Sequence[str],
     values: Sequence[str],
     read_funcs: Sequence[Callable],
-    read_kwargs: Union[Sequence[Union[dict, None]], None] = None,
+    read_kwargs: Union[Sequence[Union[dict, None]], None],
 ) -> dict:
     """Reads files into dictionary mapping key to values columns.
 

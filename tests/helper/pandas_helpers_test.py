@@ -1,7 +1,7 @@
 import warnings
 
 from numpy import isclose, nan
-from pandas import DataFrame, isna, Index, MultiIndex, Series
+from pandas import DataFrame, isna, Index, MultiIndex, read_csv, read_excel, Series
 from pandas.testing import assert_frame_equal
 from pytest import fixture, raises, warns
 
@@ -14,6 +14,8 @@ from pymmunomics.helper.pandas_helpers import (
     concat_pivot_pipe_melt,
     concat_weighted_value_counts,
     pipe_assign_from_func,
+    read_mapping,
+    read_combine_mappings,
     weighted_mean,
     weighted_variance,
     weighted_skewness,
@@ -1310,6 +1312,484 @@ class TestPipeAssignFromFunc:
         )
         assert_frame_equal(actual_result, expected_result)
         assert not (actual_result is data_frame)
+
+class TestReadCombineMapping:
+    @fixture
+    def tables(self):
+        return DataFrame(
+            columns=["col1", "col2", "col3", "col4"],
+            data=[
+                [1, 10, "foo", "x"],
+                [nan, 20, "bar", "y"],
+                [3, 30, "foo", "z"],
+            ],
+        )
+
+    def test_single_key(self, tmp_path, table):
+        filepath = f"{tmp_path}/file.csv"
+        key = "col2"
+        value = "col4"
+
+        table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            10: "x",
+            20: "y",
+            30: "z",
+        }
+        actual_mapping = read_mapping(
+            filepath=filepath,
+            key=key,
+            value=value,
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_single_key_list(self, tmp_path, table):
+        filepath = f"{tmp_path}/file.csv"
+        key = ["col2"]
+        value = "col4"
+
+        table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            10: "x",
+            20: "y",
+            30: "z",
+        }
+        actual_mapping = read_mapping(
+            filepath=filepath,
+            key=key,
+            value=value,
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_multiple_keys(self, tmp_path, table):
+        filepath = f"{tmp_path}/file.csv"
+        key = ["col3", "col2"]
+        value = "col4"
+
+        table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            ("foo", 10): "x",
+            ("bar", 20): "y",
+            ("foo", 30): "z",
+        }
+        actual_mapping = read_mapping(
+            filepath=filepath,
+            key=key,
+            value=value,
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_drop_nan_key(self, tmp_path, table):
+        filepath = f"{tmp_path}/file.csv"
+        key = ["col1", "col2"]
+        value = "col4"
+
+        table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            (1, 10): "x",
+            (3, 30): "z",
+        }
+        actual_mapping = read_mapping(
+            filepath=filepath,
+            key=key,
+            value=value,
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_drop_nan_value(self, tmp_path, table):
+        filepath = f"{tmp_path}/file.csv"
+        key = "col2"
+        value = "col1"
+
+        table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            10: 1,
+            30: 3,
+        }
+        actual_mapping = read_mapping(
+            filepath=filepath,
+            key=key,
+            value=value,
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_read_func(self, tmp_path, table):
+        filepath = f"{tmp_path}/file.xlsx"
+        key = ["col2"]
+        value = "col4"
+
+        table.to_excel(filepath, index=False)
+
+        expected_mapping = {
+            10: "x",
+            20: "y",
+            30: "z",
+        }
+        actual_mapping = read_mapping(
+            filepath=filepath,
+            key=key,
+            value=value,
+            read_func=read_excel,
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_read_kwargs(self, tmp_path, table):
+        filepath = f"{tmp_path}/file.csv"
+        key = ["col2"]
+        value = "col4"
+
+        table.to_csv(filepath, index=False, sep="\t")
+
+        expected_mapping = {
+            10: "x",
+            20: "y",
+            30: "z",
+        }
+        actual_mapping = read_mapping(
+            filepath=filepath,
+            key=key,
+            value=value,
+            read_kwargs={"sep": "\t"},
+        )
+
+        assert actual_mapping == expected_mapping
+
+class TestReadCombineMappings:
+    @fixture
+    def tables(self):
+        return [
+            DataFrame(
+                columns=["col1", "col2", "col3", "col4"],
+                data=[
+                    [1, 10, "foo", "x"],
+                    [nan, 20, "bar", "y"],
+                    [3, 30, "foo", "z"],
+                ],
+            ),
+            DataFrame(
+                columns=["col1", "col2", "col3", "col4"],
+                data=[
+                    [4, 40, "bar", "x"],
+                    [5, 50, "bar", "y"],
+                    [nan, 60, "bar", "z"],
+                ],
+            ),
+        ]
+
+    def test_single_key(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = ["col2", "col2"]
+        values = ["col4", "col4"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            10: "x",
+            20: "y",
+            30: "z",
+            40: "x",
+            50: "y",
+            60: "z",
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv, read_csv],
+            read_kwargs=[{}, {}],
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_single_key_list(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = [["col2"], ["col2"]]
+        values = ["col4", "col4"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            10: "x",
+            20: "y",
+            30: "z",
+            40: "x",
+            50: "y",
+            60: "z",
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv, read_csv],
+            read_kwargs=[{}, {}],
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_multiple_keys(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = [["col3", "col2"], ["col3", "col2"]]
+        values = ["col4", "col4"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            ("foo", 10): "x",
+            ("bar", 20): "y",
+            ("foo", 30): "z",
+            ("bar", 40): "x",
+            ("bar", 50): "y",
+            ("bar", 60): "z",
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv, read_csv],
+            read_kwargs=[{}, {}],
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_drop_nan_key(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = [["col1", "col2"], ["col1", "col2"]]
+        values = ["col4", "col4"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            (1, 10): "x",
+            (3, 30): "z",
+            (4, 40): "x",
+            (5, 50): "y",
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv, read_csv],
+            read_kwargs=[{}, {}],
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_drop_nan_value(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = ["col2", "col2"]
+        values = ["col1", "col1"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            10: 1,
+            30: 3,
+            40: 4,
+            50: 5,
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv, read_csv],
+            read_kwargs=[{}, {}],
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_read_funcs(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file0.xlsx",
+            f"{tmp_path}/file1.csv",
+        ]
+        keys = ["col2", "col2"]
+        values = ["col4", "col4"]
+        read_funcs = [read_excel, read_csv]
+
+        tables[0].to_excel(filepaths[0], index=False)
+        tables[1].to_csv(filepaths[1], index=False)
+
+        expected_mapping = {
+            10: "x",
+            20: "y",
+            30: "z",
+            40: "x",
+            50: "y",
+            60: "z",
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=read_funcs,
+            read_kwargs=[{}, {}],
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_read_kwargs(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = ["col2", "col2"]
+        values = ["col4", "col4"]
+        read_kwargs = [{"sep": "\t"}, {"comment": "#"}]
+
+        tables[0].to_csv(filepaths[0], sep="\t", index=False)
+        with open(filepaths[1], "w") as file:
+            file.write("# comment line 1\n")
+            file.write("# comment line 2\n")
+            tables[1].to_csv(file, index=False)
+
+        expected_mapping = {
+            10: "x",
+            20: "y",
+            30: "z",
+            40: "x",
+            50: "y",
+            60: "z",
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv, read_csv],
+            read_kwargs=read_kwargs,
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_mixed_keys_values(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = [["col3", "col2"], ["col1"]]
+        values = ["col4", "col2"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            ("foo", 10): "x",
+            ("bar", 20): "y",
+            ("foo", 30): "z",
+            4: 40,
+            5: 50,
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv, read_csv],
+            read_kwargs=[{}, {}],
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_single_table(self, tmp_path, tables):
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = [["col3", "col2"]]
+        values = ["col4"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            ("foo", 10): "x",
+            ("bar", 20): "y",
+            ("foo", 30): "z",
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths[:1],
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv],
+            read_kwargs=[{}],
+        )
+
+        assert actual_mapping == expected_mapping
+
+    def test_transiftives_duplicates(self, tmp_path):
+        tables = [
+            DataFrame(
+                columns=["col1", "col2", "col3", "col4"],
+                data=[
+                    [1, 10, "a", "x"],
+                    [2, 20, "b", "y"],
+                    [3, 30, "c", "z"],
+                ],
+            ),
+            DataFrame(
+                columns=["col1", "col2", "col3", "col4"],
+                data=[
+                    [4, 40, "a", "y"],
+                    [5, 50, "z", "x"],
+                    [6, 60, "y", "z"],
+                ],
+            ),
+        ]
+        filepaths = [
+            f"{tmp_path}/file{i}.csv"
+            for i in range(len(tables))
+        ]
+        keys = [["col3"], ["col3"]]
+        values = ["col4", "col4"]
+
+        for table, filepath in zip(tables, filepaths):
+            table.to_csv(filepath, index=False)
+
+        expected_mapping = {
+            "b": "z",
+            "c": "x",
+            "a": "z",
+            "z": "x",
+            "y": "z",
+        }
+        actual_mapping = read_combine_mappings(
+            filepaths=filepaths,
+            keys=keys,
+            values=values,
+            read_funcs=[read_csv, read_csv],
+            read_kwargs=[{}, {}],
+        )
+
+        assert actual_mapping == expected_mapping
 
 class TestWeightedMean:
     def test_simple(self):
