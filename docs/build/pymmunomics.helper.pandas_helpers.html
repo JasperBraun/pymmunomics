@@ -1,0 +1,986 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>&lt;no title&gt; &#8212; pymmunomics 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pymmunomics.helper.pandas_helpers';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="pymmunomics.helper.stats.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="pymmunomics.helper.numpy_helpers.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">pymmunomics 1.0.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="modules.html">
+                        pymmunomics
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="modules.html">
+                        pymmunomics
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
+        <div class="sidebar-primary-item">
+<h3><a href="index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pymmunomics</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pymmunomics.html">pymmunomics package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pymmunomics.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pymmunomics.experimental.html">pymmunomics.experimental package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pymmunomics.helper.html">pymmunomics.helper package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pymmunomics.ml.html">pymmunomics.ml package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pymmunomics.preprocessing.html">pymmunomics.preprocessing package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pymmunomics.sim.html">pymmunomics.sim package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pymmunomics.stats.html">pymmunomics.stats package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pymmunomics.html#module-pymmunomics">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="modules.html" class="nav-link">pymmunomics</a></li>
+    
+    
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    
+    
+    <li class="breadcrumb-item"><a href="pymmunomics.helper.html" class="nav-link">pymmunomics.helper package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">&lt;no title&gt;</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <span class="target" id="module-pymmunomics.helper.pandas_helpers"></span><dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.agg_first_safely">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">agg_first_safely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropna</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.agg_first_safely" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.apply_zipped">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">apply_zipped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unpack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.apply_zipped" title="Permalink to this definition">#</a></dt>
+<dd><p>Efficiently applies function to tuples of values from columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>Data to which to apply function.</p>
+</dd>
+<dt><strong>keys:</strong></dt><dd><p>Columns whose values to zip and pass to function.</p>
+</dd>
+<dt><strong>func:</strong></dt><dd><p>Called on each combination of values in the specified columns.</p>
+</dd>
+<dt><strong>unpack:</strong></dt><dd><p>Determines whether or not value combinations should be passed as
+tuples or as individual positional arguments.</p>
+</dd>
+<dt><strong>args, kwargs:</strong></dt><dd><p>Passed to func at every call.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>return_values:</dt><dd><p>A list of return values corresponding to the function calls.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.assert_groups_equal">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">assert_groups_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_pipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assert_frame_equal_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.assert_groups_equal" title="Permalink to this definition">#</a></dt>
+<dd><p>Checks equality of all-against-one groups in data_frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>Data to group and test equality of all-against-one group.</p>
+</dd>
+<dt><strong>groupby_kwargs:</strong></dt><dd><p>Keyword arguments for <cite>pandas.DataFrame.groupby</cite>.</p>
+</dd>
+<dt><strong>group_pipe:</strong></dt><dd><p>Function applied to each group before testing equality.</p>
+</dd>
+<dt><strong>assert_frame_equal_kwargs:</strong></dt><dd><p>Keyword arguments for <cite>pandas.testing.assert_frame_equal</cite> used
+for each pair of groups.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>AssertionError:</dt><dd><p>Propagated from <cite>pandas.testing.assert_frame_equal</cite> when a
+comparison fails.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.helper.pandas_helpers</span> <span class="kn">import</span> <span class="n">assert_groups_equal</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="s2">&quot;g2&quot;</span><span class="p">,</span> <span class="s2">&quot;val1&quot;</span><span class="p">,</span> <span class="s2">&quot;val2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">assert_groups_equal</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_frame</span><span class="o">=</span><span class="n">data_frame</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">groupby_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="s2">&quot;g2&quot;</span><span class="p">]},</span>
+<span class="gp">... </span>    <span class="n">group_pipe</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;val1&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">assert_groups_equal</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_frame</span><span class="o">=</span><span class="n">data_frame</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">groupby_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="s2">&quot;g2&quot;</span><span class="p">]},</span>
+<span class="gp">... </span>    <span class="n">group_pipe</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;val2&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">AssertionError</span>: <span class="n">DataFrame.iloc[:, 0] (column name=&quot;val2&quot;) are different</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.column_combinations">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">column_combinations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.column_combinations" title="Permalink to this definition">#</a></dt>
+<dd><p>Obtains set of value combinations in columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>Data from which to extract combinations.</p>
+</dd>
+<dt><strong>columns:</strong></dt><dd><p>Columns whose value-combinations to extract.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>combinations:</dt><dd><p>A set of tuples of combinations of values in specified columns.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.concat_partial_groupby_apply">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">concat_partial_groupby_apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">func_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pooled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[[]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pooled_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pooled'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">func_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.concat_partial_groupby_apply" title="Permalink to this definition">#</a></dt>
+<dd><p>Applies func to partial groupings data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>Data to group and apply function to.</p>
+</dd>
+<dt><strong>func:</strong></dt><dd><p>Must take a group of <cite>data_frame</cite> grouped by <cite>by</cite> and return a
+<code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>. Additional arguments and keyword argument can be
+passed using <cite>*func_args</cite> and <cite>*func_kwargs</cite>. If multiple
+callables, the functions are applied independently and their
+results are concatenated along axis=1 per partially pooled
+group.</p>
+</dd>
+<dt><strong>by:</strong></dt><dd><p>The columns to group by if no columns were pooled.</p>
+</dd>
+<dt><strong>pooled:</strong></dt><dd><p>The various subsets of <cite>by</cite> whose subgroups in the grouped
+<cite>data_frame</cite> should be pooled for the different applications of
+<cite>func</cite> on the resulting partially pooled groups.</p>
+</dd>
+<dt><strong>pooled_val:</strong></dt><dd><p>The value to assign to the columns defined by members of
+<cite>pooled</cite> whenever their subgroups are pooled.</p>
+</dd>
+<dt><strong>func_keys:</strong></dt><dd><p>If provided, an additional index level is prepended to the
+columns with these values corresponding to the results of each
+of the applied functions.</p>
+</dd>
+<dt><strong>col_names:</strong></dt><dd><p>Names for the levels in the resulting hierarchical column index.</p>
+</dd>
+<dt><strong>*func_args, **func_kwargs:</strong></dt><dd><p>Additional positional and keyword arguments to forward to func
+in addition to each data group.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>func_results:</dt><dd><p>Concatenation of results of func applied to the various data
+groupings. Index lists the values for columns listed in <cite>by</cite>
+indicating the group func was applied to. Pooled columns will
+have <cite>pooled_val</cite> in this index.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.helper.pandas_helpers</span> <span class="kn">import</span> <span class="n">concat_partial_groupby_apply</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;group1&quot;</span><span class="p">,</span> <span class="s2">&quot;group2&quot;</span><span class="p">,</span> <span class="s2">&quot;val&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concat_partial_groupby_apply</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_frame</span><span class="o">=</span><span class="n">data_frame</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;val&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">prod</span><span class="p">(),</span>
+<span class="gp">... </span>    <span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;group1&quot;</span><span class="p">,</span> <span class="s2">&quot;group2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">pooled</span><span class="o">=</span><span class="p">[[],</span> <span class="p">[</span><span class="s2">&quot;group2&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;group1&quot;</span><span class="p">,</span> <span class="s2">&quot;group2&quot;</span><span class="p">]],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">                 val</span>
+<span class="go">group1 group2       </span>
+<span class="go">a      a           2</span>
+<span class="go">       b          77</span>
+<span class="go">b      a         195</span>
+<span class="go">a      pooled    154</span>
+<span class="go">b      pooled    195</span>
+<span class="go">pooled pooled  30030</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.concat_pivot_pipe_melt">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">concat_pivot_pipe_melt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">func_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">func_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.concat_pivot_pipe_melt" title="Permalink to this definition">#</a></dt>
+<dd><p>Pipes pivotted data into func and melts result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>Data to pivot, pipe and melt.</p>
+</dd>
+<dt><strong>func:</strong></dt><dd><p>Must take pivotted <cite>data_frame</cite> with columns partially selected
+for one of <cite>values</cite> at a time as input and return a
+<code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+</dd>
+<dt><strong>values, columns, index:</strong></dt><dd><p>Used as argument for same-named parameters in
+<code class="docutils literal notranslate"><span class="pre">pandas.DataFrame.pivot</span></code>. If single value column, then a
+sequence of length 1 (ex.: [“value_col”]) must be used.</p>
+</dd>
+<dt><strong>*func_args, **func_kwargs:</strong></dt><dd><p>Additional positional and keyword arguments to forward to func
+in addition to the pivotted data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>func_results:</dt><dd><p>Concatenation (along axis=1) of melted return values of <cite>func</cite>
+applied to pivotted data with partially selected columns for
+members of <cite>values</cite> one at a time. Index consists of
+combinations of values of <cite>columns</cite> and either values of
+original index of <cite>data_frame</cite>, or values in <cite>index</cite> columns if
+provided.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.helper.pandas_helpers</span> <span class="kn">import</span> <span class="n">concat_pivot_pipe_melt</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;idx&quot;</span><span class="p">,</span> <span class="s2">&quot;col&quot;</span><span class="p">,</span> <span class="s2">&quot;val1&quot;</span><span class="p">,</span> <span class="s2">&quot;val2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_frame</span>
+<span class="go">  idx col  val1  val2</span>
+<span class="go">0   a   a     1   1.0</span>
+<span class="go">1   a   b     2   NaN</span>
+<span class="go">2   a   c     3   3.0</span>
+<span class="go">3   b   a     4   4.0</span>
+<span class="go">4   b   b     5   NaN</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concat_pivot_pipe_melt</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_frame</span><span class="o">=</span><span class="n">data_frame</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">func</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">fillna</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;val1&quot;</span><span class="p">,</span> <span class="s2">&quot;val2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">index</span><span class="o">=</span><span class="s2">&quot;idx&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">         val1  val2</span>
+<span class="go">idx col            </span>
+<span class="go">a   a     1.0   1.0</span>
+<span class="go">    b     2.0   0.0</span>
+<span class="go">    c     3.0   3.0</span>
+<span class="go">b   a     4.0   4.0</span>
+<span class="go">    b     5.0   0.0</span>
+<span class="go">    c     0.0   0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.concat_weighted_value_counts">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">concat_weighted_value_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.concat_weighted_value_counts" title="Permalink to this definition">#</a></dt>
+<dd><p>Counts weighted number of occurrences of value combinations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>Table whose values to count.</p>
+</dd>
+<dt><strong>subsets:</strong></dt><dd><p>Column combinations whose values to count.</p>
+</dd>
+<dt><strong>weight:</strong></dt><dd><p>Effective count of each row’s value combination.</p>
+</dd>
+<dt><strong>normalize:</strong></dt><dd><p>If true, return relative frequencies instead of absolute counts.
+The counts for each column combination are normalized
+independently.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>feature_counts:</dt><dd><p>A table indexed by column combinations (index level ‘columns’)
+and their corresponding values (index level ‘values’) with
+single column ‘count’ (or ‘frequency’ if <cite>normalize == True</cite>),
+which contains the sum of the effective counts of the indexed
+value combination (normalized by the sum of all effective
+counts).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.helper.pandas_helpers</span> <span class="kn">import</span> <span class="n">concat_weighted_value_counts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;column_1&quot;</span><span class="p">,</span> <span class="s2">&quot;column_2&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concat_weighted_value_counts</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_frame</span><span class="o">=</span><span class="n">data_frame</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">subsets</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;column_2&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;column_1&quot;</span><span class="p">,</span> <span class="s2">&quot;column_2&quot;</span><span class="p">]],</span>
+<span class="gp">... </span>    <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">                             frequency</span>
+<span class="go">columns              values           </span>
+<span class="go">column_2             x        0.009990</span>
+<span class="go">                     y        0.990010</span>
+<span class="go">(column_1, column_2) (a, x)   0.000990</span>
+<span class="go">                     (b, x)   0.009000</span>
+<span class="go">                     (b, y)   0.090001</span>
+<span class="go">                     (c, y)   0.900009</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.pipe_assign_from_func">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">pipe_assign_from_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipe_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.pipe_assign_from_func" title="Permalink to this definition">#</a></dt>
+<dd><p>Assigns column(s) from function applied to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>Data to which to apply function and append column(s).</p>
+</dd>
+<dt><strong>names:</strong></dt><dd><p>Name(s) of columns to assign.</p>
+</dd>
+<dt><strong>pipe_func:</strong></dt><dd><p>Function to apply to data to obtain new columns data.</p>
+</dd>
+<dt><strong>inplace:</strong></dt><dd><p>Determines whether or not data is modified in place.</p>
+</dd>
+<dt><strong>kwargs:</strong></dt><dd><p>Passed to <cite>pipe_func</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>new_data_frame:</dt><dd><p>The old <cite>data_frame</cite> plus new columns named <cite>keys</cite> with values
+filled in by func applied to <cite>data_frame</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.read_combine_mappings">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">read_combine_mappings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepaths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_funcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.read_combine_mappings" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads files into dictionary mapping key to values columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepaths:</strong></dt><dd><p>Paths to files containing mapped keys and values.</p>
+</dd>
+<dt><strong>keys:</strong></dt><dd><p>Each file’s column containing the keys.</p>
+</dd>
+<dt><strong>values:</strong></dt><dd><p>Each file’s column containing the values.</p>
+</dd>
+<dt><strong>read_funcs:</strong></dt><dd><p>For each file, reads filepath into <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p>
+</dd>
+<dt><strong>read_kwargs:</strong></dt><dd><p>For each file, passed to corresponding member in <cite>read_funcs</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>mapping: dict</dt><dd><p>Maps key column entries to corresponding value column entries.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.read_mapping">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">read_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">filepath:</span> <span class="pre">str,</span> <span class="pre">key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">~typing.Sequence[str],</span> <span class="pre">value:</span> <span class="pre">str,</span> <span class="pre">read_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">read_csv&gt;,</span> <span class="pre">read_kwargs:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.read_mapping" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads file into dictionary mapping key to values columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath:</strong></dt><dd><p>Path to file containing mapped keys and values.</p>
+</dd>
+<dt><strong>key:</strong></dt><dd><p>Column(s) containing the keys.</p>
+</dd>
+<dt><strong>value:</strong></dt><dd><p>Column containing the values.</p>
+</dd>
+<dt><strong>read_func:</strong></dt><dd><p>Reads filepath into <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p>
+</dd>
+<dt><strong>read_kwargs:</strong></dt><dd><p>Passed to <cite>read_func</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>mapping: dict</dt><dd><p>Maps key column entries to corresponding value column entries.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.remove_duplicated_rows">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">remove_duplicated_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identity_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equal_nan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.remove_duplicated_rows" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes rows corresponding to duplicated data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>Table with columns identity_columns and value_columns.</p>
+</dd>
+<dt><strong>identity_columns:</strong></dt><dd><p>Names of identity columns. These columns determine what is
+considered duplicate data.</p>
+</dd>
+<dt><strong>value_columns:</strong></dt><dd><p>Names of value columns. These columns are tested for equality
+among duplicated rows. Must be numeric columns.</p>
+</dd>
+<dt><strong>equal_nan:</strong></dt><dd><p>See numpy.allclose. Used when comparing rows of valus in
+value_columns To test for uniqueness of values per combination
+of items in identity_columns.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>A tuple consisting of:</dt><dd></dd>
+<dt>0 - uniqued:</dt><dd><p>Same as data_frame, except rows with duplicate identity column
+value combinations removed. First data row for any given
+identity column value combination is kept.</p>
+</dd>
+<dt>1 - duplicated:</dt><dd><p>The portion of data_frame that was removed.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Will warn if duplicated rows didn’t agree in value_columns.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.squash_column_safely">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">squash_column_safely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.squash_column_safely" title="Permalink to this definition">#</a></dt>
+<dd><p>Reduces column into single value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>column:</strong></dt><dd><p>Column to reduce.</p>
+</dd>
+<dt><strong>preference:</strong></dt><dd><p>List of values to choose when ambiguities are present in order
+of preference.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>The first value of column if unambiguous. If column contains</dt><dd></dd>
+<dt>multiple unique values, then the first item in preference that is</dt><dd></dd>
+<dt>also in the column is returned. If none of the items preference are</dt><dd></dd>
+<dt>found, then the first item is returned.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Warns if column contains more than one unique value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.weighted_mean">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">weighted_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.weighted_mean" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculates weigthed mean of column values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>The table containing weights and values.</p>
+</dd>
+<dt><strong>value:</strong></dt><dd><p>Column containing values.</p>
+</dd>
+<dt><strong>weight:</strong></dt><dd><p>Column containing weights corresponding to values.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>result</dt><dd><dl class="simple">
+<dt>The resulting weighted mean defined as:</dt><dd><p>sum(weights * values)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.weighted_skewness">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">weighted_skewness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.weighted_skewness" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculates skewness from values and weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>The table containing weights and values.</p>
+</dd>
+<dt><strong>value:</strong></dt><dd><p>Column containing values.</p>
+</dd>
+<dt><strong>weight:</strong></dt><dd><p>Column containing weights corresponding to values.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>result</dt><dd><dl class="simple">
+<dt>The resulting skewness defined as:</dt><dd><p>sum(weights * ((values - mean) ** 3)) / (sum(weights * ((values - mean) ** 2)) ** (3/2))</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymmunomics.helper.pandas_helpers.weighted_variance">
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.helper.pandas_helpers.</span></span><span class="sig-name descname"><span class="pre">weighted_variance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.helper.pandas_helpers.weighted_variance" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculates variance from values and weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_frame:</strong></dt><dd><p>The table containing weights and values.</p>
+</dd>
+<dt><strong>value:</strong></dt><dd><p>Column containing values.</p>
+</dd>
+<dt><strong>weight:</strong></dt><dd><p>Column containing weights corresponding to values.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>result</dt><dd><dl class="simple">
+<dt>The resulting variance defined as:</dt><dd><p>sum(weights * ((values - mean) ** 2))</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+
+
+                </article>
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#"><code class="docutils literal notranslate"><span class="pre">agg_first_safely()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.apply_zipped"><code class="docutils literal notranslate"><span class="pre">apply_zipped()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.assert_groups_equal"><code class="docutils literal notranslate"><span class="pre">assert_groups_equal()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.column_combinations"><code class="docutils literal notranslate"><span class="pre">column_combinations()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.concat_partial_groupby_apply"><code class="docutils literal notranslate"><span class="pre">concat_partial_groupby_apply()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.concat_pivot_pipe_melt"><code class="docutils literal notranslate"><span class="pre">concat_pivot_pipe_melt()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.concat_weighted_value_counts"><code class="docutils literal notranslate"><span class="pre">concat_weighted_value_counts()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.pipe_assign_from_func"><code class="docutils literal notranslate"><span class="pre">pipe_assign_from_func()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.read_combine_mappings"><code class="docutils literal notranslate"><span class="pre">read_combine_mappings()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.read_mapping"><code class="docutils literal notranslate"><span class="pre">read_mapping()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.remove_duplicated_rows"><code class="docutils literal notranslate"><span class="pre">remove_duplicated_rows()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.squash_column_safely"><code class="docutils literal notranslate"><span class="pre">squash_column_safely()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.weighted_mean"><code class="docutils literal notranslate"><span class="pre">weighted_mean()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.weighted_skewness"><code class="docutils literal notranslate"><span class="pre">weighted_skewness()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.helper.pandas_helpers.weighted_variance"><code class="docutils literal notranslate"><span class="pre">weighted_variance()</span></code></a></li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="_sources/pymmunomics.helper.pandas_helpers.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2022, Jasper Braun.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
