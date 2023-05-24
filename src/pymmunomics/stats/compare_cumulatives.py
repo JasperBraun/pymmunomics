@@ -33,9 +33,9 @@ def get_best_separator_pos(items: ndarray):
     pos:
         Position which best separates `items` into 2 groups.
     """
-    if len(items.shape) != 1:
+    if len(items.shape) != 1 or items.shape == (0,):
         raise InvalidArgumentError(
-            "Expect 1-d array, but got shape: %s" % items.shape
+            "Expect 1-d array, but got shape: %s" % (items.shape,)
         )
     separator_scores = array([
         np_abs(np_sum(items[:i])) + np_abs(np_sum(items[i:]))
