@@ -81,7 +81,7 @@ class NullScoreSelectorBase(BaseEstimator, TransformerMixin, ABC):
             `null_X` and `train_X`. Index and column headers are used to
             identify samples and variables, respectively. `null_y`, and
             `train_y` are the dependent variable values. Either both, or
-            neither of `train_data` and `train_y` must be provided.
+            neither of `train_X` and `train_y` must be provided.
         score_func:
             Function that takes two numpy arrays and returns a score.
             Will be used to assign scores to variables in null and
@@ -251,11 +251,11 @@ class AggregateNullScoreOutlier(NullScoreSelectorBase):
 
         Parameters
         ----------
-        X:
+        X : DataFrame
             The train data from which to select outlying independent
             variables. The index will identify which samples in the null
             data to use for generating the null score distribution.
-        y:
+        y : ArrayLike
             The dependent variable's values corresponding in order to
             the train data in `X`.
 

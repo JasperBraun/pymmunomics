@@ -20,9 +20,7 @@ def get_best_separator_pos(items: ndarray):
     Best separating position `i` optimizes the absolute value of the sum
     of items before plus the absolute value of the sum of items after
     the position:
-    ```
         abs(items[0] + ... + items[i-1]) + abs(items[i] + ... + items[n])
-    ```
     where `n` is the length of `items`
 
     Parameters
