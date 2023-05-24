@@ -217,7 +217,147 @@ clonotypes from different subtypes are pooled together (corresponding to
 the second item in the argument `["cell subtype"]`
 `partial_repertoire_pools`)
 
-# CDR3 length comparison
+CDR3 length comparison
+----------------------
+
+`pymmunomics` implements a statistical test meant for the comparison of
+CDR3 length distributions between groups. Given the frequency of each
+CDR3 length in the repertoire of each subject in two groups, such as
+cases and controls, this test uses a two-tailed Mann-Whitney-U to
+compare the cumulatives up to a certain point. This point is chosen to
+be at a CDR3 length at which the shift is the most pronounced.
+
+The function :func:`pymmunomics.stats.compare_cumulatives.compare_best_slope_separator_cumulatives`
+implements this test. In the following example, frequencies for CDR3
+lengths 1 through 6 for 6 individuals are stored in two arrays `a` and
+`b`, with 3 individuals per group.  Note that the frequencies do not
+actually add up to 1 in this example, nor is a CDR3 length range of 1-6
+realistic.
+
+>>> import numpy as np
+>>> from pymmunomics.stats.compare_cumulatives import compare_best_slope_separator_cumulatives
+>>> 
+>>> a = np.array([
+...     [0.4, 0.5, 0.6, 0.1, 0.2, 0.3],
+...     [0.5, 0.6, 0.7, 0.2, 0.3, 0.4],
+...     [0.6, 0.7, 0.8, 0.3, 0.4, 0.5],
+... ])
+>>> b = np.array([
+...     [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+...     [0.2, 0.3, 0.4, 0.5, 0.6, 0.7],
+...     [0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+... ])
+>>> result = compare_best_slope_separator_cumulatives(a, b)
+>>> print(f"pvalue: {result.pvalue}")
+>>> print(f"cumulatives: {result.cumulatives}")
+>>> print(f"slopes: {result.slopes}")
+>>> print(f"best_separator_pos: {result.best_separator_pos}")
+pvalue: 0.1
+cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+best_separator_pos: 3
+
+In addition to the `.pvalue`, the resulting object returns the
+`.cumulatives`, which are the values of the cumulatives of each of the
+input rows up to the point at which it determined the cumulatives are
+best compared. This point is determined with the help of the `.slopes`.
+These are medians of the differences of values in `b` minus values in
+`a` per column. The `.best_separator_pos` is the index of the column up
+to which the cumulatives are compared. This is determined via choosing
+the column `i` which maximizes `abs(sum(slopes[:i])) + abs(sum(slopes[i:]))`.
+
+The function allows for specification of a different statistical test
+then the default two-tailed Mann-Whitney-U test. For that purpose, its
+`test_func` parameter accepts a callable that takes two arrays (the
+cumulatives) and returns a p-value. In the next example, a one-sided
+Mann-Whitney-U is used.
+
+>>> import numpy as np
+>>> from pymmunomics.stats.compare_cumulatives import compare_best_slope_separator_cumulatives
+>>> from scipy.stats import mannwhitneyu
+>>> 
+>>> a = np.array([
+...     [0.4, 0.5, 0.6, 0.1, 0.2, 0.3],
+...     [0.5, 0.6, 0.7, 0.2, 0.3, 0.4],
+...     [0.6, 0.7, 0.8, 0.3, 0.4, 0.5],
+... ])
+>>> b = np.array([
+...     [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+...     [0.2, 0.3, 0.4, 0.5, 0.6, 0.7],
+...     [0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+... ])
+>>> test_func = lambda x, y: mannwhitneyu(x, y, alternative="greater").pvalue
+>>> result = compare_best_slope_separator_cumulatives(a, b, test_func=test_func)
+>>> print(f"pvalue: {result.pvalue}")
+>>> print(f"cumulatives: {result.cumulatives}")
+>>> print(f"slopes: {result.slopes}")
+>>> print(f"best_separator_pos: {result.best_separator_pos}")
+pvalue: 0.05
+cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+best_separator_pos: 3
+
+By default, the slopes are the column-wise median differences from
+observations in `b` minus observations in `a`. The parameter `slope` can
+be used to specify a custom array of slopes or a custom function which
+calculates the slopes. A function would have to take two arrays (columns
+from inputs `a` and `b`) and return a value that is then used as the
+slope. In the next example, the slopes are determined to be the
+difference between the first item in a column of `b` minus the third
+item in a column of `a`.
+
+>>> import numpy as np
+>>> from pymmunomics.stats.compare_cumulatives import compare_best_slope_separator_cumulatives
+>>> from scipy.stats import linregress
+>>> 
+>>> a = np.array([
+...     [0.4, 0.5, 0.6, 0.1, 0.2, 0.3],
+...     [0.5, 0.6, 0.7, 0.2, 0.3, 0.4],
+...     [0.6, 0.7, 0.8, 0.3, 0.4, 0.5],
+... ])
+>>> b = np.array([
+...     [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+...     [0.2, 0.3, 0.4, 0.5, 0.6, 0.7],
+...     [0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+... ])
+>>> slope = lambda x, y: y[0] - x[2]
+>>> result = compare_best_slope_separator_cumulatives(a, b, slope=slope)
+>>> print(f"pvalue: {result.pvalue}")
+>>> print(f"cumulatives: {result.cumulatives}")
+>>> print(f"slopes: {result.slopes}")
+>>> print(f"best_separator_pos: {result.best_separator_pos}")
+pvalue: 0.1
+cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+slopes: [-0.5 -0.5 -0.5  0.1  0.1  0.1]
+best_separator_pos: 3
+
+In this example, an array of slopes is forced by passing the array as
+argument to the parameter `slope`.
+
+>>> import numpy as np
+>>> from pymmunomics.stats.compare_cumulatives import compare_best_slope_separator_cumulatives
+>>> from scipy.stats import linregress
+>>> 
+>>> a = np.array([
+...     [0.4, 0.5, 0.6, 0.1, 0.2, 0.3],
+...     [0.5, 0.6, 0.7, 0.2, 0.3, 0.4],
+...     [0.6, 0.7, 0.8, 0.3, 0.4, 0.5],
+... ])
+>>> b = np.array([
+...     [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+...     [0.2, 0.3, 0.4, 0.5, 0.6, 0.7],
+...     [0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+... ])
+>>> slope = np.array([-0.3, -0.2, 0.1, 0.2, 0.3, 0.4])
+>>> result = compare_best_slope_separator_cumulatives(a, b, slope=slope)
+>>> print(f"pvalue: {result.pvalue}")
+>>> print(f"cumulatives: {result.cumulatives}")
+>>> print(f"slopes: {result.slopes}")
+>>> print(f"best_separator_pos: {result.best_separator_pos}")
+pvalue: 0.1
+cumulatives: (array([0.9, 1.1, 1.3]), array([0.3, 0.5, 0.7]))
+slopes: [-0.3 -0.2  0.1  0.2  0.3  0.4]
+best_separator_pos: 2
 
 Binding capacity
 ----------------
