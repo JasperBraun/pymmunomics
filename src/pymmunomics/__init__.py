@@ -248,14 +248,14 @@ realistic.
 ...     [0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
 ... ])
 >>> result = compare_best_slope_separator_cumulatives(a, b)
->>> print(f"pvalue: {result.pvalue}")
->>> print(f"cumulatives: {result.cumulatives}")
->>> print(f"slopes: {result.slopes}")
->>> print(f"best_separator_pos: {result.best_separator_pos}")
-pvalue: 0.1
-cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
-slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
-best_separator_pos: 3
+>>> result.pvalue
+0.1
+>>> result.cumulatives
+(array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+>>> result.slopes
+array([-0.3, -0.3, -0.3,  0.3,  0.3,  0.3])
+>>> result.best_separator_pos
+3
 
 In addition to the `.pvalue`, the resulting object returns the
 `.cumulatives`, which are the values of the cumulatives of each of the
@@ -288,14 +288,14 @@ Mann-Whitney-U is used.
 ... ])
 >>> test_func = lambda x, y: mannwhitneyu(x, y, alternative="greater").pvalue
 >>> result = compare_best_slope_separator_cumulatives(a, b, test_func=test_func)
->>> print(f"pvalue: {result.pvalue}")
->>> print(f"cumulatives: {result.cumulatives}")
->>> print(f"slopes: {result.slopes}")
->>> print(f"best_separator_pos: {result.best_separator_pos}")
-pvalue: 0.05
-cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
-slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
-best_separator_pos: 3
+>>> result.pvalue
+0.05
+>>> result.cumulatives
+(array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+>>> result.slopes
+array([-0.3, -0.3, -0.3,  0.3,  0.3,  0.3])
+>>> result.best_separator_pos
+3
 
 By default, the slopes are the column-wise median differences from
 observations in `b` minus observations in `a`. The parameter `slope` can
@@ -322,17 +322,17 @@ item in a column of `a`.
 ... ])
 >>> slope = lambda x, y: y[0] - x[2]
 >>> result = compare_best_slope_separator_cumulatives(a, b, slope=slope)
->>> print(f"pvalue: {result.pvalue}")
->>> print(f"cumulatives: {result.cumulatives}")
->>> print(f"slopes: {result.slopes}")
->>> print(f"best_separator_pos: {result.best_separator_pos}")
-pvalue: 0.1
-cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
-slopes: [-0.5 -0.5 -0.5  0.1  0.1  0.1]
-best_separator_pos: 3
+>>> result.pvalue
+0.1
+>>> result.cumulatives
+(array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+>>> result.slopes
+array([-0.5, -0.5, -0.5,  0.1,  0.1,  0.1])
+>>> result.best_separator_pos
+3
 
-In this example, an array of slopes is forced by passing the array as
-argument to the parameter `slope`.
+In the next example, an array of slopes is forced by passing the array
+as argument to the parameter `slope`.
 
 >>> import numpy as np
 >>> from pymmunomics.stats.compare_cumulatives import compare_best_slope_separator_cumulatives
@@ -350,14 +350,14 @@ argument to the parameter `slope`.
 ... ])
 >>> slope = np.array([-0.3, -0.2, 0.1, 0.2, 0.3, 0.4])
 >>> result = compare_best_slope_separator_cumulatives(a, b, slope=slope)
->>> print(f"pvalue: {result.pvalue}")
->>> print(f"cumulatives: {result.cumulatives}")
->>> print(f"slopes: {result.slopes}")
->>> print(f"best_separator_pos: {result.best_separator_pos}")
-pvalue: 0.1
-cumulatives: (array([0.9, 1.1, 1.3]), array([0.3, 0.5, 0.7]))
-slopes: [-0.3 -0.2  0.1  0.2  0.3  0.4]
-best_separator_pos: 2
+>>> result.pvalue
+0.1
+>>> result.cumulatives
+(array([0.9, 1.1, 1.3]), array([0.3, 0.5, 0.7]))
+>>> result.slopes
+array([-0.3, -0.2,  0.1,  0.2,  0.3,  0.4])
+>>> result.best_separator_pos
+2
 
 Binding capacity
 ----------------
@@ -462,6 +462,15 @@ array([[0.1924],
   is None, similarities are calculated between all pairs of clonotypes
   in `X`
 
+Classes :class:`pymmunomics.sim.similarity.SimilarityFromDataFrame`,
+:class:`pymmunomics.sim.similarity.SimilarityFromArray`,
+:class:`pymmunomics.sim.similarity.SimilarityFromFile`, can be used for
+calculating average similarities between query slonotype and the
+repertoire using a precalculated similarity matrix. The datatype of that
+similarity matrix informs the choice of class.
+:func:`pymmunomics.sim.similarity.make_similarity` can be used to choose
+the correct class.
+
 Feature selection
 -----------------
 
@@ -536,13 +545,14 @@ null-data scores indicate which features should be selected.
 ...     null_y=null_y,
 ...     alpha=0.5, # select everything with score 
 ... ).fit(train_X, train_y)
->>> print(f"train_scores - null_scores: {selector.train_scores - selector.null_scores}")
->>> print(f"lower and upper quantiles: {selector.lower_quantile}, {selector.upper_quantile}")
->>> print(f"selected columns: {selector.selected_columns}")
+>>> selector.train_scores - selector.null_scores
+array([ 0.33950617,  0.45061728,  0.28230453,  0.49382716,  0.43004115,
+       -0.72839506])
+>>> selector.lower_quantile, selector.upper_quantile
+(0.23176954732510288, 0.4527777777777777)
+>>> selector.selected_columns
+Index(['IGHV3-30', 'IGHV4-34'], dtype='object')
 >>> selector.transform(train_X)
-train_scores - null_scores: [ 0.33950617  0.45061728  0.28230453  0.49382716  0.43004115 -0.72839506]
-lower and upper quantiles: 0.23176954732510288, 0.4527777777777777
-selected columns: Index(['IGHV3-30', 'IGHV4-34'], dtype='object')
           IGHV3-30  IGHV4-34
 case1         0.20      0.10
 case2         0.20      0.11
@@ -566,4 +576,9 @@ measurements. In this mechanism, scores are calculated from all features
 (train and null) together with the response variable. train features
 whose score falls outside the desired quantiles of the null feature
 scores are selected.
+
+:class:`pymmunomics.ml.feature_selection.AggregateNullScoreOutlier` does
+the same as :class:`pymmunomics.ml.feature_selection.SelectNullScoreOutlier`
+except that a single aggregate feature is derived from the selected
+features via summation.
 """

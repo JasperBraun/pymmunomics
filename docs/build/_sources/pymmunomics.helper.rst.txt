@@ -13,7 +13,6 @@ Submodules
    pymmunomics.helper.numpy_helpers
    pymmunomics.helper.pandas_helpers
    pymmunomics.helper.stats
-   pymmunomics.helper.untitled
 
 Module contents
 ---------------

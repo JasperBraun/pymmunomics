@@ -1,41 +1,38 @@
 
-
 <!DOCTYPE html>
 
-
-<html lang="en" >
-
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Classes &#8212; pymmunomics 1.0.0 documentation</title>
-  
-  
-  
-  <script data-cfasync="false">
+  <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=9b1a4fa89bdd0e95b23b" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=9b1a4fa89bdd0e95b23b" rel="stylesheet">
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/6.1.2/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=9b1a4fa89bdd0e95b23b">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'pymmunomics.sim.similarity';</script>
@@ -43,260 +40,247 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pymmunomics.stats package" href="pymmunomics.stats.html" />
     <link rel="prev" title="pymmunomics.sim package" href="pymmunomics.sim.html" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="en"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
   </head>
   
   
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
 
   
-  
-  <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
   <label class="overlay overlay-primary" for="__primary"></label>
+
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
   <label class="overlay overlay-secondary" for="__secondary"></label>
+
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
     <div class="search-button__search-container">
-<form class="bd-search d-flex align-items-center"
-      action="search.html"
-      method="get">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search"
-         class="form-control"
-         name="q"
-         id="search-input"
-         placeholder="Search the docs ..."
-         aria-label="Search the docs ..."
-         autocomplete="off"
-         autocorrect="off"
-         autocapitalize="off"
-         spellcheck="false"/>
+      
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
+</form>
+    </div>
   </div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-<div class="bd-header__inner bd-page-width">
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
   <label class="sidebar-toggle primary-toggle" for="__primary">
-    <span class="fa-solid fa-bars"></span>
+      <span class="fas fa-bars"></span>
   </label>
-  
-  <div class="navbar-header-items__start">
+  <div id="navbar-start">
     
-      <div class="navbar-item">
+    
   
 
+
 <a class="navbar-brand logo" href="index.html">
+
   
   
   
+  
+  
+  
+  
+
   
   
     <p class="title logo__title">pymmunomics 1.0.0 documentation</p>
   
-</a></div>
+</a>
     
   </div>
-  
+
   
   <div class=" navbar-header-items">
-    
-    <div class="me-auto navbar-header-items__center">
+    <div id="navbar-center" class="mr-auto">
       
-        <div class="navbar-item"><nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
-  <ul class="bd-navbar-elements navbar-nav">
-    
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.helper.html">
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.helper.html">
                         pymmunomics.helper package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.ml.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.ml.html">
                         pymmunomics.ml package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.preprocessing.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.preprocessing.html">
                         pymmunomics.preprocessing package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.sim.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.sim.html">
                         pymmunomics.sim package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.stats.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.stats.html">
                         pymmunomics.stats package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
-  </ul>
-</nav></div>
+    </ul>
+</nav>
+      </div>
       
     </div>
-    
-    
-    <div class="navbar-header-items__end">
+
+    <div id="navbar-end">
+      <div class="navbar-end-item navbar-end__search-button-container">
+        
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search">
+  <i class="fas fa-search"></i>
+</button>
+      </div>
       
-        <div class="navbar-item navbar-persistent--container">
-          
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
-        </div>
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
       
-      
-        <div class="navbar-item">
-<script>
-document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
-  </button>
-`);
-</script></div>
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
       
     </div>
-    
   </div>
-  
-  
-    <div class="navbar-persistent--mobile">
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
-    </div>
-  
+
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary">
-      <span class="fa-solid fa-outdent"></span>
-    </label>
+  <div class="search-button-container--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search">
+  <i class="fas fa-search"></i>
+</button>
+  </div>
+
   
+
 </div>
-
-    </nav>
+  </nav>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
       
       <div class="bd-sidebar-primary bd-sidebar">
         
-
   
   <div class="sidebar-header-items sidebar-primary__section">
     
     
       <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
         
-          <div class="navbar-item"><nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
-  <ul class="bd-navbar-elements navbar-nav">
-    
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.helper.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.helper.html">
                         pymmunomics.helper package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.ml.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.ml.html">
                         pymmunomics.ml package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.preprocessing.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.preprocessing.html">
                         pymmunomics.preprocessing package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.sim.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.sim.html">
                         pymmunomics.sim package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="pymmunomics.stats.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="pymmunomics.stats.html">
                         pymmunomics.stats package
-                      </a>
-                    </li>
+                    </a>
+                </li>
                 
-  </ul>
-</nav></div>
-        
+    </ul>
+</nav>
+      </div>
+      
       </div>
     
+
     
     
-      <div class="sidebar-header-items__end">
-        
-          <div class="navbar-item">
-<script>
-document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
-  </button>
-`);
-</script></div>
-        
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
       </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
     
   </div>
+
   
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-<div id="searchbox"></div></div>
-        <div class="sidebar-primary-item">
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+    </div>
+    <div class="sidebar-start-items__item">
 <h3><a href="index.html">Table of Contents</a></h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pymmunomics.helper.html">pymmunomics.helper package</a></li>
@@ -305,61 +289,31 @@ document.write(`
 <li class="toctree-l1 current"><a class="reference internal" href="pymmunomics.sim.html">pymmunomics.sim package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pymmunomics.stats.html">pymmunomics.stats package</a></li>
 </ul>
-</div>
+
     </div>
-  
-  
-  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
   
-  <div id="rtd-footer-container"></div>
 
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
 
       </div>
-      
-      <main id="main-content" class="bd-main">
+      <main class="bd-main">
         
         
-          <div class="bd-content">
-            <div class="bd-article-container">
-              
-              <div class="bd-header-article">
-<div class="header-article-items header-article__inner">
-  
-    <div class="header-article-items__start">
-      
-        <div class="header-article-item">
-
-
-
-<nav aria-label="Breadcrumbs">
-  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
-    
-    <li class="breadcrumb-item breadcrumb-home">
-      <a href="index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
-      </a>
-    </li>
-    
-    <li class="breadcrumb-item"><a href="pymmunomics.sim.html" class="nav-link">pymmunomics.sim package</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page">Classes</li>
-  </ul>
-</nav>
-</div>
-      
-    </div>
-  
-  
-</div>
-</div>
-              
-              
-              
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
                 
-<div id="searchbox"></div>
-                <article class="bd-article" role="main">
-                  
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
   <span class="target" id="module-pymmunomics.sim.similarity"></span><p>Module for calculating (weighted) similarities.</p>
 <section id="classes">
 <h1>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">#</a></h1>
@@ -390,7 +344,7 @@ receptors.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.Similarity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">Similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.sim.similarity.Similarity" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">Similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.sim.similarity.Similarity" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Interface for classes computing (weighted) similarities.</p>
 <p class="rubric">Methods</p>
@@ -422,7 +376,7 @@ species and columns to subject species.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.Similarity.weighted_similarities">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">spmatrix</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.Similarity.weighted_similarities" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">spmatrix</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.Similarity.weighted_similarities" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculates weighted sums of similarities for each species.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -450,7 +404,7 @@ distribution of subject species.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.SimilarityFromArray">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">SimilarityFromArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromArray" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">SimilarityFromArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromArray" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pymmunomics.sim.similarity.Similarity" title="pymmunomics.sim.similarity.Similarity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Similarity</span></code></a></p>
 <p>Implements Similarity using similarities stored in an array.</p>
 <p class="rubric">Methods</p>
@@ -482,7 +436,7 @@ species and columns to subject species.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.SimilarityFromArray.weighted_similarities">
-<span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">spmatrix</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromArray.weighted_similarities" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">spmatrix</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromArray.weighted_similarities" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculates weighted sums of similarities for each species.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -510,7 +464,7 @@ distribution of subject species.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.SimilarityFromDataFrame">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">SimilarityFromDataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromDataFrame" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">SimilarityFromDataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromDataFrame" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pymmunomics.sim.similarity.Similarity" title="pymmunomics.sim.similarity.Similarity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Similarity</span></code></a></p>
 <p>Implements Similarity using similarities stored in a data frame.</p>
 <p class="rubric">Methods</p>
@@ -542,7 +496,7 @@ species and columns to subject species.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.SimilarityFromDataFrame.weighted_similarities">
-<span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">spmatrix</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromDataFrame.weighted_similarities" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">spmatrix</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromDataFrame.weighted_similarities" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculates weighted sums of similarities for each species.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -605,7 +559,7 @@ should have a single-row header.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.SimilarityFromFile.weighted_similarities">
-<span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">spmatrix</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromFile.weighted_similarities" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">spmatrix</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromFile.weighted_similarities" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculates weighted sums of similarities for each species.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -633,7 +587,7 @@ distribution of subject species.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.SimilarityFromFunction">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">SimilarityFromFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarities_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromFunction" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">SimilarityFromFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarities_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromFunction" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pymmunomics.sim.similarity.Similarity" title="pymmunomics.sim.similarity.Similarity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Similarity</span></code></a></p>
 <p>Calculates similarities from user-specified similarity function.</p>
 <p class="rubric">Methods</p>
@@ -675,7 +629,7 @@ require more memory.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.SimilarityFromFunction.weighted_similarities">
-<span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">spmatrix</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromFunction.weighted_similarities" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">weighted_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_frequencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">spmatrix</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.SimilarityFromFunction.weighted_similarities" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculates weighted sums of similarities for each species.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -727,7 +681,7 @@ respectively.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pymmunomics.sim.similarity.make_similarity">
-<span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">make_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarities_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pymmunomics.sim.similarity.Similarity" title="pymmunomics.sim.similarity.Similarity"><span class="pre">Similarity</span></a></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.make_similarity" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pymmunomics.sim.similarity.</span></span><span class="sig-name descname"><span class="pre">make_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarities_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pymmunomics.sim.similarity.Similarity" title="pymmunomics.sim.similarity.Similarity"><span class="pre">Similarity</span></a></span></span><a class="headerlink" href="#pymmunomics.sim.similarity.make_similarity" title="Permalink to this definition">#</a></dt>
 <dd><p>Initializes a concrete subclass of Similarity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -756,108 +710,52 @@ relevant if a callable or str is passed as <cite>similarity</cite>.</p>
 
 
 
-                </article>
-              
-              
-              
-            </div>
+            </article>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Classes</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.Similarity"><code class="docutils literal notranslate"><span class="pre">Similarity</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.Similarity.weighted_similarities"><code class="docutils literal notranslate"><span class="pre">Similarity.weighted_similarities()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.SimilarityFromArray"><code class="docutils literal notranslate"><span class="pre">SimilarityFromArray</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.SimilarityFromArray.weighted_similarities"><code class="docutils literal notranslate"><span class="pre">SimilarityFromArray.weighted_similarities()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.SimilarityFromDataFrame"><code class="docutils literal notranslate"><span class="pre">SimilarityFromDataFrame</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.SimilarityFromDataFrame.weighted_similarities"><code class="docutils literal notranslate"><span class="pre">SimilarityFromDataFrame.weighted_similarities()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.SimilarityFromFile"><code class="docutils literal notranslate"><span class="pre">SimilarityFromFile</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.SimilarityFromFile.weighted_similarities"><code class="docutils literal notranslate"><span class="pre">SimilarityFromFile.weighted_similarities()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.SimilarityFromFunction"><code class="docutils literal notranslate"><span class="pre">SimilarityFromFunction</span></code></a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.SimilarityFromFunction.weighted_similarities"><code class="docutils literal notranslate"><span class="pre">SimilarityFromFunction.weighted_similarities()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.binding_similarity"><code class="docutils literal notranslate"><span class="pre">binding_similarity()</span></code></a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.sim.similarity.make_similarity"><code class="docutils literal notranslate"><span class="pre">make_similarity()</span></code></a></li>
-</ul>
-
-  </nav></div>
-
-  <div class="sidebar-secondary-item">
-  <div class="tocsection sourcelink">
-    <a href="_sources/pymmunomics.sim.similarity.rst.txt">
-      <i class="fa-solid fa-file-lines"></i> Show Source
-    </a>
-  </div>
-</div>
-
-</div></div>
-              
             
           </div>
-          <footer class="bd-footer-content">
+          
+          
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
             
-          </footer>
+          </div>
+        </footer>
         
       </main>
     </div>
   </div>
+
   
+    
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=9b1a4fa89bdd0e95b23b"></script>
 
-  <footer class="bd-footer">
-<div class="bd-footer__inner bd-page-width">
+  <footer class="bd-footer"><div class="bd-footer__inner container">
   
-    <div class="footer-items__start">
-      
-        <div class="footer-item">
-  <p class="copyright">
+  <div class="footer-item">
     
-      © Copyright 2022, Jasper Braun.
-      <br/>
-    
-  </p>
-</div>
-      
-        <div class="footer-item">
-  <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
-    <br/>
-  </p>
-</div>
-      
-    </div>
-  
-  
-    <div class="footer-items__end">
-      
-        <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
-</p></div>
-      
-    </div>
-  
-</div>
+<p class="copyright">
 
+    &copy; Copyright 2022, Jasper Braun.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.2.3.<br>
+</p>
+
+  </div>
+  
+</div>
   </footer>
   </body>
 </html>
