@@ -1,4 +1,4 @@
-Results of doctest builder run on 2023-05-22 16:23:09
+Results of doctest builder run on 2023-05-24 17:33:17
 =====================================================
 
 Document: pymmunomics.helper.pandas_helpers
@@ -22,6 +22,134 @@ Document: index
 **********************************************************************
 File "../../src/pymmunomics/__init__.py", line ?, in default
 Failed example:
+    print(f"pvalue: {result.pvalue}")
+Expected nothing
+Got:
+    pvalue: 0.1
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"cumulatives: {result.cumulatives}")
+Expected nothing
+Got:
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"slopes: {result.slopes}")
+Expected nothing
+Got:
+    slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"best_separator_pos: {result.best_separator_pos}")
+Expected:
+    pvalue: 0.1
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+    slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+    best_separator_pos: 3
+Got:
+    best_separator_pos: 3
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"pvalue: {result.pvalue}")
+Expected nothing
+Got:
+    pvalue: 0.05
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"cumulatives: {result.cumulatives}")
+Expected nothing
+Got:
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"slopes: {result.slopes}")
+Expected nothing
+Got:
+    slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"best_separator_pos: {result.best_separator_pos}")
+Expected:
+    pvalue: 0.05
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+    slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+    best_separator_pos: 3
+Got:
+    best_separator_pos: 3
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"pvalue: {result.pvalue}")
+Expected nothing
+Got:
+    pvalue: 0.1
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"cumulatives: {result.cumulatives}")
+Expected nothing
+Got:
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"slopes: {result.slopes}")
+Expected nothing
+Got:
+    slopes: [-0.5 -0.5 -0.5  0.1  0.1  0.1]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"best_separator_pos: {result.best_separator_pos}")
+Expected:
+    pvalue: 0.1
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+    slopes: [-0.5 -0.5 -0.5  0.1  0.1  0.1]
+    best_separator_pos: 3
+Got:
+    best_separator_pos: 3
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"pvalue: {result.pvalue}")
+Expected nothing
+Got:
+    pvalue: 0.1
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"cumulatives: {result.cumulatives}")
+Expected nothing
+Got:
+    cumulatives: (array([0.9, 1.1, 1.3]), array([0.3, 0.5, 0.7]))
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"slopes: {result.slopes}")
+Expected nothing
+Got:
+    slopes: [-0.3 -0.2  0.1  0.2  0.3  0.4]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"best_separator_pos: {result.best_separator_pos}")
+Expected:
+    pvalue: 0.1
+    cumulatives: (array([0.9, 1.1, 1.3]), array([0.3, 0.5, 0.7]))
+    slopes: [-0.3 -0.2  0.1  0.2  0.3  0.4]
+    best_separator_pos: 2
+Got:
+    best_separator_pos: 2
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
     print(f"train_scores - null_scores: {selector.train_scores - selector.null_scores}")
 Expected nothing
 Got:
@@ -71,16 +199,144 @@ Got:
     control9      0.21      0.20
 **********************************************************************
 1 items had failures:
-   4 of  37 in default
-37 tests in 1 items.
-33 passed and 4 failed.
-***Test Failed*** 4 failures.
+  20 of  79 in default
+79 tests in 1 items.
+59 passed and 20 failed.
+***Test Failed*** 20 failures.
 
 Document: pymmunomics
 ---------------------
 **********************************************************************
 File "../../src/pymmunomics/__init__.py", line ?, in default
 Failed example:
+    print(f"pvalue: {result.pvalue}")
+Expected nothing
+Got:
+    pvalue: 0.1
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"cumulatives: {result.cumulatives}")
+Expected nothing
+Got:
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"slopes: {result.slopes}")
+Expected nothing
+Got:
+    slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"best_separator_pos: {result.best_separator_pos}")
+Expected:
+    pvalue: 0.1
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+    slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+    best_separator_pos: 3
+Got:
+    best_separator_pos: 3
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"pvalue: {result.pvalue}")
+Expected nothing
+Got:
+    pvalue: 0.05
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"cumulatives: {result.cumulatives}")
+Expected nothing
+Got:
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"slopes: {result.slopes}")
+Expected nothing
+Got:
+    slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"best_separator_pos: {result.best_separator_pos}")
+Expected:
+    pvalue: 0.05
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+    slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]
+    best_separator_pos: 3
+Got:
+    best_separator_pos: 3
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"pvalue: {result.pvalue}")
+Expected nothing
+Got:
+    pvalue: 0.1
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"cumulatives: {result.cumulatives}")
+Expected nothing
+Got:
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"slopes: {result.slopes}")
+Expected nothing
+Got:
+    slopes: [-0.5 -0.5 -0.5  0.1  0.1  0.1]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"best_separator_pos: {result.best_separator_pos}")
+Expected:
+    pvalue: 0.1
+    cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))
+    slopes: [-0.5 -0.5 -0.5  0.1  0.1  0.1]
+    best_separator_pos: 3
+Got:
+    best_separator_pos: 3
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"pvalue: {result.pvalue}")
+Expected nothing
+Got:
+    pvalue: 0.1
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"cumulatives: {result.cumulatives}")
+Expected nothing
+Got:
+    cumulatives: (array([0.9, 1.1, 1.3]), array([0.3, 0.5, 0.7]))
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"slopes: {result.slopes}")
+Expected nothing
+Got:
+    slopes: [-0.3 -0.2  0.1  0.2  0.3  0.4]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"best_separator_pos: {result.best_separator_pos}")
+Expected:
+    pvalue: 0.1
+    cumulatives: (array([0.9, 1.1, 1.3]), array([0.3, 0.5, 0.7]))
+    slopes: [-0.3 -0.2  0.1  0.2  0.3  0.4]
+    best_separator_pos: 2
+Got:
+    best_separator_pos: 2
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
     print(f"train_scores - null_scores: {selector.train_scores - selector.null_scores}")
 Expected nothing
 Got:
@@ -130,14 +386,14 @@ Got:
     control9      0.21      0.20
 **********************************************************************
 1 items had failures:
-   4 of  37 in default
-37 tests in 1 items.
-33 passed and 4 failed.
-***Test Failed*** 4 failures.
+  20 of  79 in default
+79 tests in 1 items.
+59 passed and 20 failed.
+***Test Failed*** 20 failures.
 
 Doctest summary
 ===============
-  101 tests
-    8 failures in tests
+  185 tests
+   40 failures in tests
     0 failures in setup code
     0 failures in cleanup code

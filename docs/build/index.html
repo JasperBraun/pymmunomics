@@ -554,7 +554,146 @@ argument of <cite>partial_repertoire_pools</cite>) and one round of counts where
 clonotypes from different subtypes are pooled together (corresponding to
 the second item in the argument <cite>[“cell subtype”]</cite>
 <cite>partial_repertoire_pools</cite>)</p>
-<p># CDR3 length comparison</p>
+</section>
+<section id="cdr3-length-comparison">
+<h1>CDR3 length comparison<a class="headerlink" href="#cdr3-length-comparison" title="Permalink to this heading">#</a></h1>
+<p><cite>pymmunomics</cite> implements a statistical test meant for the comparison of
+CDR3 length distributions between groups. Given the frequency of each
+CDR3 length in the repertoire of each subject in two groups, such as
+cases and controls, this test uses a two-tailed Mann-Whitney-U to
+compare the cumulatives up to a certain point. This point is chosen to
+be at a CDR3 length at which the shift is the most pronounced.</p>
+<p>The function <a class="reference internal" href="pymmunomics.stats.compare_cumulatives.html#pymmunomics.stats.compare_cumulatives.compare_best_slope_separator_cumulatives" title="pymmunomics.stats.compare_cumulatives.compare_best_slope_separator_cumulatives"><code class="xref py py-func docutils literal notranslate"><span class="pre">pymmunomics.stats.compare_cumulatives.compare_best_slope_separator_cumulatives()</span></code></a>
+implements this test. In the following example, frequencies for CDR3
+lengths 1 through 6 for 6 individuals are stored in two arrays <cite>a</cite> and
+<cite>b</cite>, with 3 individuals per group.  Note that the frequencies do not
+actually add up to 1 in this example, nor is a CDR3 length range of 1-6
+realistic.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.stats.compare_cumulatives</span> <span class="kn">import</span> <span class="n">compare_best_slope_separator_cumulatives</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">compare_best_slope_separator_cumulatives</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pvalue: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">pvalue</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cumulatives: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">cumulatives</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;slopes: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">slopes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;best_separator_pos: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">best_separator_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">pvalue: 0.1</span>
+<span class="go">cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))</span>
+<span class="go">slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]</span>
+<span class="go">best_separator_pos: 3</span>
+</pre></div>
+</div>
+<p>In addition to the <cite>.pvalue</cite>, the resulting object returns the
+<cite>.cumulatives</cite>, which are the values of the cumulatives of each of the
+input rows up to the point at which it determined the cumulatives are
+best compared. This point is determined with the help of the <cite>.slopes</cite>.
+These are medians of the differences of values in <cite>b</cite> minus values in
+<cite>a</cite> per column. The <cite>.best_separator_pos</cite> is the index of the column up
+to which the cumulatives are compared. This is determined via choosing
+the column <cite>i</cite> which maximizes <cite>abs(sum(slopes[:i])) + abs(sum(slopes[i:]))</cite>.</p>
+<p>The function allows for specification of a different statistical test
+then the default two-tailed Mann-Whitney-U test. For that purpose, its
+<cite>test_func</cite> parameter accepts a callable that takes two arrays (the
+cumulatives) and returns a p-value. In the next example, a one-sided
+Mann-Whitney-U is used.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.stats.compare_cumulatives</span> <span class="kn">import</span> <span class="n">compare_best_slope_separator_cumulatives</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">mannwhitneyu</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">mannwhitneyu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;greater&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">pvalue</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">compare_best_slope_separator_cumulatives</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">test_func</span><span class="o">=</span><span class="n">test_func</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pvalue: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">pvalue</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cumulatives: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">cumulatives</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;slopes: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">slopes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;best_separator_pos: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">best_separator_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">pvalue: 0.05</span>
+<span class="go">cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))</span>
+<span class="go">slopes: [-0.3 -0.3 -0.3  0.3  0.3  0.3]</span>
+<span class="go">best_separator_pos: 3</span>
+</pre></div>
+</div>
+<p>By default, the slopes are the column-wise median differences from
+observations in <cite>b</cite> minus observations in <cite>a</cite>. The parameter <cite>slope</cite> can
+be used to specify a custom array of slopes or a custom function which
+calculates the slopes. A function would have to take two arrays (columns
+from inputs <cite>a</cite> and <cite>b</cite>) and return a value that is then used as the
+slope. In the next example, the slopes are determined to be the
+difference between the first item in a column of <cite>b</cite> minus the third
+item in a column of <cite>a</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.stats.compare_cumulatives</span> <span class="kn">import</span> <span class="n">compare_best_slope_separator_cumulatives</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slope</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">compare_best_slope_separator_cumulatives</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">slope</span><span class="o">=</span><span class="n">slope</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pvalue: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">pvalue</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cumulatives: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">cumulatives</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;slopes: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">slopes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;best_separator_pos: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">best_separator_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">pvalue: 0.1</span>
+<span class="go">cumulatives: (array([1.5, 1.8, 2.1]), array([0.6, 0.9, 1.2]))</span>
+<span class="go">slopes: [-0.5 -0.5 -0.5  0.1  0.1  0.1]</span>
+<span class="go">best_separator_pos: 3</span>
+</pre></div>
+</div>
+<p>In this example, an array of slopes is forced by passing the array as
+argument to the parameter <cite>slope</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.stats.compare_cumulatives</span> <span class="kn">import</span> <span class="n">compare_best_slope_separator_cumulatives</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slope</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">compare_best_slope_separator_cumulatives</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">slope</span><span class="o">=</span><span class="n">slope</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pvalue: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">pvalue</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cumulatives: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">cumulatives</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;slopes: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">slopes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;best_separator_pos: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">best_separator_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">pvalue: 0.1</span>
+<span class="go">cumulatives: (array([0.9, 1.1, 1.3]), array([0.3, 0.5, 0.7]))</span>
+<span class="go">slopes: [-0.3 -0.2  0.1  0.2  0.3  0.4]</span>
+<span class="go">best_separator_pos: 2</span>
+</pre></div>
+</div>
 </section>
 <section id="binding-capacity">
 <h1>Binding capacity<a class="headerlink" href="#binding-capacity" title="Permalink to this heading">#</a></h1>
@@ -563,7 +702,7 @@ pairs of clonotypes.</p>
 <p>The binding similarity of a pair of clonotypes is 0
 when V- or J-genes disagree and otherwise a function of the Levenshtein
 distance between the two CDR3 sequences. The exact function was
-determined experimentally to be <cite>0.3 ** leveshtein_distance</cite>. To
+determined experimentally to be <cite>0.3 ** Levenshtein_distance</cite>. To
 calculate binding similarity, use
 <a class="reference internal" href="pymmunomics.sim.similarity.html#pymmunomics.sim.similarity.binding_similarity" title="pymmunomics.sim.similarity.binding_similarity"><code class="xref py py-func docutils literal notranslate"><span class="pre">pymmunomics.sim.similarity.binding_similarity()</span></code></a>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pymmunomics.sim.similarity</span> <span class="kn">import</span> <span class="n">binding_similarity</span>
@@ -776,6 +915,7 @@ scores are selected.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Clonotype feature frequencies</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#cdr3-length-comparison">CDR3 length comparison</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#binding-capacity">Binding capacity</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-selection">Feature selection</a></li>
 </ul>
