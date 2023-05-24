@@ -24,7 +24,7 @@ binding_similarity:
     receptors.
 """
 from abc import ABC, abstractmethod
-from typing import Callable, Union
+from typing import Callable, Sequence, Union
 
 from numpy import memmap, ndarray, empty, concatenate, float64
 from numpy.typing import ArrayLike
@@ -36,11 +36,23 @@ from ray import remote, get, put
 from pymmunomics.helper.exception import NotImplementedError
 from pymmunomics.helper.log import LOGGER
 
-def binding_similarity(left, right):
+def binding_similarity(left: Sequence, right: Sequence):
     """
     Calculates binding similarities as a function of levenshtein
     distance via an empirically determined relationship between
     levenshtein distances and dissociation constant ratios.
+
+    Parameters
+    ----------
+    left, right:
+        Clonotypes to compare. Must have CDR3 sequence at its 0th
+        coordinate, and V-/J-gene at 2nd and 3rd coordinates,
+        respectively.
+
+    Returns
+    -------
+    0 when V- or J-genes differ; otherwise, a function of the
+    Levenshtein distance of the CDR3s learned empirically: `0.3 ** distance`
     """
     if (left[1], left[2]) != (right[1], right[2]):
         return 0.0
@@ -261,7 +273,7 @@ def make_similarity(
         numpy.ndarray, see pymmunomics.sim.similarity.SimilarityFromFunction.
         If str, see pymmunomics.sim.similarity.SimilarityFromFunction.
         If Callable, see pymmunomics.sim.similarity.SimilarityFromFunction.
-    X, Y. similarities_out:
+    X, Y, similarities_out:
         Only relevant for pymmunomics.sim.similarity.SimilarityFromFunction.
     chunk_size:
         See pymmunomics.sim.similarity.SimilarityFromFunction,

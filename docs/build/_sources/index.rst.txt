@@ -1,4 +1,12 @@
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
-   modules
+   pymmunomics.helper
+   pymmunomics.ml
+   pymmunomics.preprocessing
+   pymmunomics.sim
+   pymmunomics.stats
+
+.. automodule:: pymmunomics
+   :members:
+   :special-members: __init__

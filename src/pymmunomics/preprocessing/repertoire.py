@@ -49,7 +49,7 @@ def count_features(
           provided.
     shared_clonotype_feature_groups:
         If provided, all repertoires with the same value in all but these
-        columns are forced to have frequencies for the same clonotype
+        group columns are forced to have frequencies for the same clonotype
         feature values per feature group. Missing counts are set to 0.
 
     Returns

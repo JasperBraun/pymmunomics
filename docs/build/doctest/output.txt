@@ -1,4 +1,4 @@
-Results of doctest builder run on 2023-05-19 14:10:00
+Results of doctest builder run on 2023-05-22 16:23:09
 =====================================================
 
 Document: pymmunomics.helper.pandas_helpers
@@ -17,9 +17,127 @@ Document: pymmunomics.preprocessing.repertoire
 8 passed and 0 failed.
 Test passed.
 
+Document: index
+---------------
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"train_scores - null_scores: {selector.train_scores - selector.null_scores}")
+Expected nothing
+Got:
+    train_scores - null_scores: [ 0.33950617  0.45061728  0.28230453  0.49382716  0.43004115 -0.72839506]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"lower and upper quantiles: {selector.lower_quantile}, {selector.upper_quantile}")
+Expected nothing
+Got:
+    lower and upper quantiles: 0.23176954732510288, 0.4527777777777777
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"selected columns: {selector.selected_columns}")
+Expected nothing
+Got:
+    selected columns: Index(['IGHV3-30', 'IGHV4-34'], dtype='object')
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    selector.transform(train_X)
+Expected:
+    train_scores - null_scores: [ 0.33950617  0.45061728  0.28230453  0.49382716  0.43004115 -0.72839506]
+    lower and upper quantiles: 0.23176954732510288, 0.4527777777777777
+    selected columns: Index(['IGHV3-30', 'IGHV4-34'], dtype='object')
+              IGHV3-30  IGHV4-34
+    case1         0.20      0.10
+    case2         0.20      0.11
+    case3         0.22      0.09
+    case4         0.19      0.10
+    case5         0.21      0.10
+    control6      0.19      0.19
+    control7      0.17      0.20
+    control8      0.19      0.20
+    control9      0.21      0.20
+Got:
+              IGHV3-30  IGHV4-34
+    case1         0.20      0.10
+    case2         0.20      0.11
+    case3         0.22      0.09
+    case4         0.19      0.10
+    case5         0.21      0.10
+    control6      0.19      0.19
+    control7      0.17      0.20
+    control8      0.19      0.20
+    control9      0.21      0.20
+**********************************************************************
+1 items had failures:
+   4 of  37 in default
+37 tests in 1 items.
+33 passed and 4 failed.
+***Test Failed*** 4 failures.
+
+Document: pymmunomics
+---------------------
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"train_scores - null_scores: {selector.train_scores - selector.null_scores}")
+Expected nothing
+Got:
+    train_scores - null_scores: [ 0.33950617  0.45061728  0.28230453  0.49382716  0.43004115 -0.72839506]
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"lower and upper quantiles: {selector.lower_quantile}, {selector.upper_quantile}")
+Expected nothing
+Got:
+    lower and upper quantiles: 0.23176954732510288, 0.4527777777777777
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    print(f"selected columns: {selector.selected_columns}")
+Expected nothing
+Got:
+    selected columns: Index(['IGHV3-30', 'IGHV4-34'], dtype='object')
+**********************************************************************
+File "../../src/pymmunomics/__init__.py", line ?, in default
+Failed example:
+    selector.transform(train_X)
+Expected:
+    train_scores - null_scores: [ 0.33950617  0.45061728  0.28230453  0.49382716  0.43004115 -0.72839506]
+    lower and upper quantiles: 0.23176954732510288, 0.4527777777777777
+    selected columns: Index(['IGHV3-30', 'IGHV4-34'], dtype='object')
+              IGHV3-30  IGHV4-34
+    case1         0.20      0.10
+    case2         0.20      0.11
+    case3         0.22      0.09
+    case4         0.19      0.10
+    case5         0.21      0.10
+    control6      0.19      0.19
+    control7      0.17      0.20
+    control8      0.19      0.20
+    control9      0.21      0.20
+Got:
+              IGHV3-30  IGHV4-34
+    case1         0.20      0.10
+    case2         0.20      0.11
+    case3         0.22      0.09
+    case4         0.19      0.10
+    case5         0.21      0.10
+    control6      0.19      0.19
+    control7      0.17      0.20
+    control8      0.19      0.20
+    control9      0.21      0.20
+**********************************************************************
+1 items had failures:
+   4 of  37 in default
+37 tests in 1 items.
+33 passed and 4 failed.
+***Test Failed*** 4 failures.
+
 Doctest summary
 ===============
-   27 tests
-    0 failures in tests
+  101 tests
+    8 failures in tests
     0 failures in setup code
     0 failures in cleanup code

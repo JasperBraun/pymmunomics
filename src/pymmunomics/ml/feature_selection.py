@@ -93,6 +93,11 @@ class NullScoreSelectorBase(BaseEstimator, TransformerMixin, ABC):
         alpha:
             Determines how extreme selected variable scores have to be
             compared to null scores.
+        flatten_columns:
+            If True and the columns of null_X (train_X) are in a
+            pandas.MultinIndex, the index will be flattened. This might
+            be necessary for subsequent scikit-learn functions to be
+            able to accept the transformed X as input.
         """
         self.null_X = null_X
         self.null_y = null_y
