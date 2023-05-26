@@ -1,16 +1,8 @@
-Results of doctest builder run on 2023-05-24 18:19:27
+Results of doctest builder run on 2023-05-24 18:26:43
 =====================================================
 
 Document: index
 ---------------
-1 items passed all tests:
-  79 tests in default
-79 tests in 1 items.
-79 passed and 0 failed.
-Test passed.
-
-Document: pymmunomics
----------------------
 1 items passed all tests:
   79 tests in default
 79 tests in 1 items.
@@ -31,6 +23,14 @@ Document: pymmunomics.helper.pandas_helpers
   19 tests in default
 19 tests in 1 items.
 19 passed and 0 failed.
+Test passed.
+
+Document: pymmunomics
+---------------------
+1 items passed all tests:
+  79 tests in default
+79 tests in 1 items.
+79 passed and 0 failed.
 Test passed.
 
 Doctest summary
