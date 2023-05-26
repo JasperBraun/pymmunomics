@@ -1,38 +1,41 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>&lt;no title&gt; &#8212; pymmunomics 1.0.0 documentation</title>
-  <script>
+  
+  
+  
+  <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=9b1a4fa89bdd0e95b23b" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=9b1a4fa89bdd0e95b23b" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/6.1.2/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=9b1a4fa89bdd0e95b23b">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'pymmunomics.ml.feature_selection';</script>
@@ -40,247 +43,260 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pymmunomics.preprocessing package" href="pymmunomics.preprocessing.html" />
     <link rel="prev" title="pymmunomics.ml package" href="pymmunomics.ml.html" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="docsearch:language" content="en">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
   
   
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
   
-  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
   <label class="overlay overlay-primary" for="__primary"></label>
-
   
-  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
   <label class="overlay overlay-secondary" for="__secondary"></label>
-
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
     <div class="search-button__search-container">
-      
-<form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-    </div>
+</form></div>
   </div>
-
   
-  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
   <label class="sidebar-toggle primary-toggle" for="__primary">
-      <span class="fas fa-bars"></span>
+    <span class="fa-solid fa-bars"></span>
   </label>
-  <div id="navbar-start">
-    
-    
   
-
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
 
 <a class="navbar-brand logo" href="index.html">
-
   
   
   
-  
-  
-  
-  
-
   
   
     <p class="title logo__title">pymmunomics 1.0.0 documentation</p>
   
-</a>
+</a></div>
     
   </div>
-
+  
   
   <div class=" navbar-header-items">
-    <div id="navbar-center" class="mr-auto">
+    
+    <div class="me-auto navbar-header-items__center">
       
-      <div class="navbar-center-item">
-        <nav class="navbar-nav">
-    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
-        Site Navigation
-    </p>
-    <ul id="navbar-main-elements" class="navbar-nav">
-        
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.helper.html">
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.helper.html">
                         pymmunomics.helper package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.ml.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.ml.html">
                         pymmunomics.ml package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.preprocessing.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.preprocessing.html">
                         pymmunomics.preprocessing package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.sim.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.sim.html">
                         pymmunomics.sim package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.stats.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.stats.html">
                         pymmunomics.stats package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
-    </ul>
-</nav>
-      </div>
+  </ul>
+</nav></div>
       
     </div>
-
-    <div id="navbar-end">
-      <div class="navbar-end-item navbar-end__search-button-container">
-        
-<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search">
-  <i class="fas fa-search"></i>
-</button>
-      </div>
+    
+    
+    <div class="navbar-header-items__end">
       
-      <div class="navbar-end-item">
-        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle">
-    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
-    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
-    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
-</span>
-      </div>
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
       
-      <div class="navbar-end-item">
-        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-      </ul>
-      </div>
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
       
     </div>
+    
   </div>
-
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
 
   
-  <div class="search-button-container--mobile">
-<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search">
-  <i class="fas fa-search"></i>
-</button>
-  </div>
-
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
   
-
 </div>
-  </nav>
-  
 
+    </nav>
+  
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
       
       <div class="bd-sidebar-primary bd-sidebar">
         
+
   
   <div class="sidebar-header-items sidebar-primary__section">
     
     
       <div class="sidebar-header-items__center">
-      
-      <div class="navbar-center-item">
-        <nav class="navbar-nav">
-    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
-        Site Navigation
-    </p>
-    <ul id="navbar-main-elements" class="navbar-nav">
         
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.helper.html">
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.helper.html">
                         pymmunomics.helper package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.ml.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.ml.html">
                         pymmunomics.ml package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.preprocessing.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.preprocessing.html">
                         pymmunomics.preprocessing package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.sim.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.sim.html">
                         pymmunomics.sim package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="pymmunomics.stats.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="pymmunomics.stats.html">
                         pymmunomics.stats package
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
-    </ul>
-</nav>
-      </div>
-      
+  </ul>
+</nav></div>
+        
       </div>
     
-
     
     
-    <div class="sidebar-header-items__end">
-      
-      <div class="navbar-end-item">
-        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle">
-    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
-    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
-    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
-</span>
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
       </div>
-      
-      <div class="navbar-end-item">
-        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
-      </ul>
-      </div>
-      
-    </div>
     
   </div>
-
   
-  <div class="sidebar-start-items sidebar-primary__section">
-    <div class="sidebar-start-items__item">
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-    </div>
-    <div class="sidebar-start-items__item">
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="searchbox"></div></div>
+        <div class="sidebar-primary-item">
 <h3><a href="index.html">Table of Contents</a></h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pymmunomics.helper.html">pymmunomics.helper package</a></li>
@@ -289,34 +305,64 @@
 <li class="toctree-l1"><a class="reference internal" href="pymmunomics.sim.html">pymmunomics.sim package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pymmunomics.stats.html">pymmunomics.stats package</a></li>
 </ul>
-
+</div>
     </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
   </div>
   
+  <div id="rtd-footer-container"></div>
 
-  
-  <div class="sidebar-end-items sidebar-primary__section">
-    <div class="sidebar-end-items__item">
-    </div>
-  </div>
 
       </div>
-      <main class="bd-main">
+      
+      <main id="main-content" class="bd-main">
         
         
-        <div class="bd-content">
-          <div class="bd-article-container">
-            
-            <div class="bd-header-article">
-                
-            </div>
-            
-            
-            <article class="bd-article" role="main">
+          <div class="bd-content">
+            <div class="bd-article-container">
               
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="pymmunomics.ml.html" class="nav-link">pymmunomics.ml package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">&lt;no title&gt;</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <span class="target" id="module-pymmunomics.ml.feature_selection"></span><dl class="py class">
 <dt class="sig sig-object py" id="pymmunomics.ml.feature_selection.AggregateNullScoreOutlier">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.ml.feature_selection.</span></span><span class="sig-name descname"><span class="pre">AggregateNullScoreOutlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">null_X:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">null_y:</span> <span class="pre">~typing.Union[~numpy.typing._array_like._SupportsArray[~numpy.dtype],</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~numpy.typing._array_like._SupportsArray[~numpy.dtype]],</span> <span class="pre">bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes,</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~typing.Union[bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes]]],</span> <span class="pre">train_X:</span> <span class="pre">~typing.Optional[~pandas.core.frame.DataFrame]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">train_y:</span> <span class="pre">~typing.Optional[~typing.Union[~numpy.typing._array_like._SupportsArray[~numpy.dtype],</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~numpy.typing._array_like._SupportsArray[~numpy.dtype]],</span> <span class="pre">bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes,</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~typing.Union[bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes]]]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">score_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_kendalltau&gt;,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">flatten_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.AggregateNullScoreOutlier" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.ml.feature_selection.</span></span><span class="sig-name descname"><span class="pre">AggregateNullScoreOutlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">null_X:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">null_y:</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes],</span> <span class="pre">train_X:</span> <span class="pre">~pandas.core.frame.DataFrame</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">train_y:</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">score_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_kendalltau&gt;,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">flatten_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.AggregateNullScoreOutlier" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase" title="pymmunomics.ml.feature_selection.NullScoreSelectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullScoreSelectorBase</span></code></a></p>
 <p>Base class for variable selectors via null distribution of scores.</p>
 <dl class="field-list simple">
@@ -359,17 +405,20 @@ able to accept the transformed X as input.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params</span></code>([deep])</p></td>
 <td><p>Get parameters for this estimator.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_output</span></code>(*[, transform])</p></td>
+<td><p>Set output container.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
 <td><p>Set the parameters of this estimator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.transform" title="pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>(X)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.transform" title="pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>(X)</p></td>
 <td><p>Filters <cite>X</cite> returning only the selected columns in <cite>X</cite>.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">complex</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">complex</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.fit" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculates scores and determines outlying variables.</p>
 <p>Selected variables are those whose score is below the
 <cite>alpha / 2</cite>’th or above the <cite>1 - (alpha / 2)</cite>’th quantile of
@@ -419,6 +468,9 @@ for determining which samples are to be used.</p></li>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_transform</span></code>(X[, y])</p></td>
 <td><p>Fit to data, then transform it.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_output</span></code>(*[, transform])</p></td>
+<td><p>Set output container.</p></td>
+</tr>
 </tbody>
 </table>
 <table class="table">
@@ -453,6 +505,9 @@ for determining which samples are to be used.</p></li>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_transform</span></code>(X[, y])</p></td>
 <td><p>Fit to data, then transform it.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_output</span></code>(*[, transform])</p></td>
+<td><p>Set output container.</p></td>
+</tr>
 </tbody>
 </table>
 <table class="table">
@@ -479,7 +534,7 @@ for determining which samples are to be used.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pymmunomics.ml.feature_selection.NullScoreSelectorBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.ml.feature_selection.</span></span><span class="sig-name descname"><span class="pre">NullScoreSelectorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">null_X:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">null_y:</span> <span class="pre">~typing.Union[~numpy.typing._array_like._SupportsArray[~numpy.dtype],</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~numpy.typing._array_like._SupportsArray[~numpy.dtype]],</span> <span class="pre">bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes,</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~typing.Union[bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes]]],</span> <span class="pre">train_X:</span> <span class="pre">~typing.Optional[~pandas.core.frame.DataFrame]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">train_y:</span> <span class="pre">~typing.Optional[~typing.Union[~numpy.typing._array_like._SupportsArray[~numpy.dtype],</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~numpy.typing._array_like._SupportsArray[~numpy.dtype]],</span> <span class="pre">bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes,</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~typing.Union[bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes]]]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">score_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_kendalltau&gt;,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">flatten_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.ml.feature_selection.</span></span><span class="sig-name descname"><span class="pre">NullScoreSelectorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">null_X:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">null_y:</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes],</span> <span class="pre">train_X:</span> <span class="pre">~pandas.core.frame.DataFrame</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">train_y:</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">score_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_kendalltau&gt;,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">flatten_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Base class for variable selectors via null distribution of scores.</p>
 <dl class="field-list simple">
@@ -519,10 +574,13 @@ able to accept the transformed X as input.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params</span></code>([deep])</p></td>
 <td><p>Get parameters for this estimator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_output</span></code>(*[, transform])</p></td>
+<td><p>Set output container.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
 <td><p>Set the parameters of this estimator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase.transform" title="pymmunomics.ml.feature_selection.NullScoreSelectorBase.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>(X)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase.transform" title="pymmunomics.ml.feature_selection.NullScoreSelectorBase.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>(X)</p></td>
 <td><p>Filters <cite>X</cite> returning only the selected columns in <cite>X</cite>.</p></td>
 </tr>
 </tbody>
@@ -549,7 +607,7 @@ able to accept the transformed X as input.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pymmunomics.ml.feature_selection.SelectNullScoreOutlier">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.ml.feature_selection.</span></span><span class="sig-name descname"><span class="pre">SelectNullScoreOutlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">null_X:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">null_y:</span> <span class="pre">~typing.Union[~numpy.typing._array_like._SupportsArray[~numpy.dtype],</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~numpy.typing._array_like._SupportsArray[~numpy.dtype]],</span> <span class="pre">bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes,</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~typing.Union[bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes]]],</span> <span class="pre">train_X:</span> <span class="pre">~typing.Optional[~pandas.core.frame.DataFrame]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">train_y:</span> <span class="pre">~typing.Optional[~typing.Union[~numpy.typing._array_like._SupportsArray[~numpy.dtype],</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~numpy.typing._array_like._SupportsArray[~numpy.dtype]],</span> <span class="pre">bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes,</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~typing.Union[bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes]]]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">score_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_kendalltau&gt;,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">flatten_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.SelectNullScoreOutlier" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.ml.feature_selection.</span></span><span class="sig-name descname"><span class="pre">SelectNullScoreOutlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">null_X:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">null_y:</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes],</span> <span class="pre">train_X:</span> <span class="pre">~pandas.core.frame.DataFrame</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">train_y:</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">score_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_kendalltau&gt;,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">flatten_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.SelectNullScoreOutlier" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase" title="pymmunomics.ml.feature_selection.NullScoreSelectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullScoreSelectorBase</span></code></a></p>
 <p>Base class for variable selectors via null distribution of scores.</p>
 <dl class="field-list simple">
@@ -592,17 +650,20 @@ able to accept the transformed X as input.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params</span></code>([deep])</p></td>
 <td><p>Get parameters for this estimator.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_output</span></code>(*[, transform])</p></td>
+<td><p>Set output container.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
 <td><p>Set the parameters of this estimator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code>(X)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code>(X)</p></td>
 <td><p>Filters <cite>X</cite> returning only the selected columns in <cite>X</cite>.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymmunomics.ml.feature_selection.SelectNullScoreOutlier.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">complex</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">complex</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.SelectNullScoreOutlier.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.SelectNullScoreOutlier.fit" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculates scores and determines outlying variables.</p>
 <p>Selected variables are those whose score is below the
 <cite>alpha / 2</cite>’th or above the <cite>1 - (alpha / 2)</cite>’th quantile of
@@ -638,7 +699,7 @@ for determining which samples are to be used.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pymmunomics.ml.feature_selection.SelectPairedNullScoreOutlier">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.ml.feature_selection.</span></span><span class="sig-name descname"><span class="pre">SelectPairedNullScoreOutlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">null_X:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">null_y:</span> <span class="pre">~typing.Union[~numpy.typing._array_like._SupportsArray[~numpy.dtype],</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~numpy.typing._array_like._SupportsArray[~numpy.dtype]],</span> <span class="pre">bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes,</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~typing.Union[bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes]]],</span> <span class="pre">train_X:</span> <span class="pre">~typing.Optional[~pandas.core.frame.DataFrame]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">train_y:</span> <span class="pre">~typing.Optional[~typing.Union[~numpy.typing._array_like._SupportsArray[~numpy.dtype],</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~numpy.typing._array_like._SupportsArray[~numpy.dtype]],</span> <span class="pre">bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes,</span> <span class="pre">~numpy.typing._nested_sequence._NestedSequence[~typing.Union[bool,</span> <span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">complex,</span> <span class="pre">str,</span> <span class="pre">bytes]]]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">score_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_kendalltau&gt;,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">flatten_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.SelectPairedNullScoreOutlier" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymmunomics.ml.feature_selection.</span></span><span class="sig-name descname"><span class="pre">SelectPairedNullScoreOutlier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">null_X:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">null_y:</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes],</span> <span class="pre">train_X:</span> <span class="pre">~pandas.core.frame.DataFrame</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">train_y:</span> <span class="pre">~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[~numpy._typing._array_like._SupportsArray[~numpy.dtype[~typing.Any]]]</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~numpy._typing._nested_sequence._NestedSequence[bool</span> <span class="pre">|</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">complex</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">score_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_kendalltau&gt;,</span> <span class="pre">alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.05,</span> <span class="pre">flatten_columns:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymmunomics.ml.feature_selection.SelectPairedNullScoreOutlier" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase" title="pymmunomics.ml.feature_selection.NullScoreSelectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullScoreSelectorBase</span></code></a></p>
 <p>Base class for variable selectors via null distribution of scores.</p>
 <dl class="field-list simple">
@@ -681,10 +742,13 @@ able to accept the transformed X as input.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params</span></code>([deep])</p></td>
 <td><p>Get parameters for this estimator.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_output</span></code>(*[, transform])</p></td>
+<td><p>Set output container.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
 <td><p>Set the parameters of this estimator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code>(X)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code>(X)</p></td>
 <td><p>Filters <cite>X</cite> returning only the selected columns in <cite>X</cite>.</p></td>
 </tr>
 </tbody>
@@ -727,52 +791,112 @@ for determining which samples are to be used.</p></li>
 
 
 
-            </article>
+                </article>
+              
+              
+              
+            </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#"><code class="docutils literal notranslate"><span class="pre">AggregateNullScoreOutlier</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.fit"><code class="docutils literal notranslate"><span class="pre">AggregateNullScoreOutlier.fit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.AggregateNullScoreOutlier.transform"><code class="docutils literal notranslate"><span class="pre">AggregateNullScoreOutlier.transform()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.FlattenColumnTransformer"><code class="docutils literal notranslate"><span class="pre">FlattenColumnTransformer</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.FlattenColumnTransformer.fit"><code class="docutils literal notranslate"><span class="pre">FlattenColumnTransformer.fit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.FlattenColumnTransformer.transform"><code class="docutils literal notranslate"><span class="pre">FlattenColumnTransformer.transform()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.IdentityTransformer"><code class="docutils literal notranslate"><span class="pre">IdentityTransformer</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.IdentityTransformer.fit"><code class="docutils literal notranslate"><span class="pre">IdentityTransformer.fit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.IdentityTransformer.transform"><code class="docutils literal notranslate"><span class="pre">IdentityTransformer.transform()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase"><code class="docutils literal notranslate"><span class="pre">NullScoreSelectorBase</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase.fit"><code class="docutils literal notranslate"><span class="pre">NullScoreSelectorBase.fit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.NullScoreSelectorBase.transform"><code class="docutils literal notranslate"><span class="pre">NullScoreSelectorBase.transform()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.SelectNullScoreOutlier"><code class="docutils literal notranslate"><span class="pre">SelectNullScoreOutlier</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.SelectNullScoreOutlier.fit"><code class="docutils literal notranslate"><span class="pre">SelectNullScoreOutlier.fit()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.SelectPairedNullScoreOutlier"><code class="docutils literal notranslate"><span class="pre">SelectPairedNullScoreOutlier</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pymmunomics.ml.feature_selection.SelectPairedNullScoreOutlier.fit"><code class="docutils literal notranslate"><span class="pre">SelectPairedNullScoreOutlier.fit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="_sources/pymmunomics.ml.feature_selection.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
             
           </div>
-          
-          
-          
-          
-        </div>
-        <footer class="bd-footer-content">
-          <div class="bd-footer-content__inner">
+          <footer class="bd-footer-content">
             
-          </div>
-        </footer>
+          </footer>
         
       </main>
     </div>
   </div>
-
   
-    
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=9b1a4fa89bdd0e95b23b"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-  <footer class="bd-footer"><div class="bd-footer__inner container">
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
   
-  <div class="footer-item">
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
     
-<p class="copyright">
-
-    &copy; Copyright 2022, Jasper Braun.<br>
-
-</p>
-
-  </div>
+      © Copyright 2022, Jasper Braun.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    <br/>
+  </p>
+</div>
+      
+    </div>
   
-  <div class="footer-item">
-    
-<p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.2.3.<br>
-</p>
-
-  </div>
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
   
 </div>
+
   </footer>
   </body>
 </html>
