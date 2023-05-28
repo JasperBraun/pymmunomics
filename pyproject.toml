@@ -24,4 +24,4 @@ repository = "https://github.com/JasperBraun/pymmunomics.git"
 dependencies = {file = ["requirements.txt"]}
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest>=7.3.1"]
