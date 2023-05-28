@@ -1,6 +1,14 @@
 pymmunomics.experimental package
 ================================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pymmunomics.experimental.ml
+
 Module contents
 ---------------
 
