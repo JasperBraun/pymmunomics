@@ -1,13 +1,5 @@
-Results of doctest builder run on 2023-05-28 15:17:28
+Results of doctest builder run on 2023-05-28 15:59:02
 =====================================================
-
-Document: pymmunomics
----------------------
-1 items passed all tests:
-  79 tests in default
-79 tests in 1 items.
-79 passed and 0 failed.
-Test passed.
 
 Document: pymmunomics.preprocessing.repertoire
 ----------------------------------------------
@@ -15,59 +7,6 @@ Document: pymmunomics.preprocessing.repertoire
    8 tests in default
 8 tests in 1 items.
 8 passed and 0 failed.
-Test passed.
-
-Document: pymmunomics.experimental.ml.feature_selection
--------------------------------------------------------
-**********************************************************************
-File "../../src/pymmunomics/experimental/ml/feature_selection.py", line ?, in default
-Failed example:
-    from pymmunomics.ml.feature_selection import GroupedTransformer
-Exception raised:
-    Traceback (most recent call last):
-      File "/Users/arnaoutlab/.pyenv/versions/3.9.10/lib/python3.9/doctest.py", line 1334, in __run
-        exec(compile(example.source, filename, "single",
-      File "<doctest default[3]>", line 1, in <module>
-        from pymmunomics.ml.feature_selection import GroupedTransformer
-    ImportError: cannot import name 'GroupedTransformer' from 'pymmunomics.ml.feature_selection' (/Users/arnaoutlab/Documents/GitHub/pymmunomics/src/pymmunomics/ml/feature_selection.py)
-**********************************************************************
-File "../../src/pymmunomics/experimental/ml/feature_selection.py", line ?, in default
-Failed example:
-    transformer = GroupedTransformer(
-        column_ranges=[f_range, g_range],
-        transformers=[f_transformer, g_transformer],
-    )
-Exception raised:
-    Traceback (most recent call last):
-      File "/Users/arnaoutlab/.pyenv/versions/3.9.10/lib/python3.9/doctest.py", line 1334, in __run
-        exec(compile(example.source, filename, "single",
-      File "<doctest default[11]>", line 1, in <module>
-        transformer = GroupedTransformer(
-    NameError: name 'GroupedTransformer' is not defined
-**********************************************************************
-File "../../src/pymmunomics/experimental/ml/feature_selection.py", line ?, in default
-Failed example:
-    transformer.fit_transform(X, y)
-Exception raised:
-    Traceback (most recent call last):
-      File "/Users/arnaoutlab/.pyenv/versions/3.9.10/lib/python3.9/doctest.py", line 1334, in __run
-        exec(compile(example.source, filename, "single",
-      File "<doctest default[12]>", line 1, in <module>
-        transformer.fit_transform(X, y)
-    NameError: name 'transformer' is not defined
-**********************************************************************
-1 items had failures:
-   3 of  13 in default
-13 tests in 1 items.
-10 passed and 3 failed.
-***Test Failed*** 3 failures.
-
-Document: pymmunomics.helper.pandas_helpers
--------------------------------------------
-1 items passed all tests:
-  19 tests in default
-19 tests in 1 items.
-19 passed and 0 failed.
 Test passed.
 
 Document: index
@@ -78,9 +17,25 @@ Document: index
 79 passed and 0 failed.
 Test passed.
 
+Document: pymmunomics.helper.pandas_helpers
+-------------------------------------------
+1 items passed all tests:
+  19 tests in default
+19 tests in 1 items.
+19 passed and 0 failed.
+Test passed.
+
+Document: pymmunomics
+---------------------
+1 items passed all tests:
+  79 tests in default
+79 tests in 1 items.
+79 passed and 0 failed.
+Test passed.
+
 Doctest summary
 ===============
-  198 tests
-    3 failures in tests
+  185 tests
+    0 failures in tests
     0 failures in setup code
     0 failures in cleanup code
