@@ -7,7 +7,10 @@ pip install --upgrade pip
 pip install "pymmunomics @ git+https://github.com/JasperBraun/pymmunomics"
 ```
 
-for developers (needed for running tests):
+for developers:
 ```sh
-pip install "pymmunomics[dev] @ git+https://github.com/JasperBraun/pymmunomics"
+pip install --upgrade pip
+git clone https://github.com/JasperBraun/pymmunomics
+cd pymmunomics
+pip install -e .[dev]
 ```
