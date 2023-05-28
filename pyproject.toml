@@ -1,6 +1,27 @@
 [build-system]
 requires = [
-    "setuptools>=42",
-    "wheel"
+  "setuptools>=49",
 ]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pymmunomics"
+version = "1.0.0"
+description = "Package containing adaptive immune receptor analysis methods"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Jasper Braun", email = "jasperbraun90@gmail.com"}
+]
+keywords = ["AIRR", "immunology", "immune repertoire"]
+dynamic = ["dependencies"]
+
+[project.urls]
+repository = "https://github.com/JasperBraun/pymmunomics.git"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[project.optional-dependencies]
+dev = ["pytest"]
