@@ -1,18 +1,13 @@
 # pymmunomics
 
-Installation instructions
+## Installation instructions
 
 ```sh
-git+https://github.com/JasperBraun/pymmunomics
+pip install --upgrade pip
+pip install "pymmunomics @ git+https://github.com/JasperBraun/pymmunomics"
 ```
 
-Description
-
-Clonotype feature frequencies
-
-CDR3 length
-
-Binding capacity
-
-Feature selection
-
+for developers (needed for running tests):
+```sh
+pip install "pymmunomics[dev] @ git+https://github.com/JasperBraun/pymmunomics"
+```
