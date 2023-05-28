@@ -12,5 +12,5 @@ for developers:
 pip install --upgrade pip
 git clone https://github.com/JasperBraun/pymmunomics
 cd pymmunomics
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
